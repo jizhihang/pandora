@@ -46,7 +46,7 @@ public class VlatAggregator implements Aggregator {
         // Building a 2-term sized descriptor
         for (double[] descriptor : descriptors) {
             // Finding the nearest centroid index given the next descriptor
-            int nnk = Calculator.findNearestCentroidIndex(descriptor, codebook);
+            int nnk = Calculator.computeNearestCentroidIndex(descriptor, codebook);
 
             for (int i = 0; i < descriptor.length; i++) {
                 // Mapping index into row vector

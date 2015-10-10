@@ -38,7 +38,7 @@ public class BowAggregator implements Aggregator {
         // Building a histogram of media centroid word frequencies
         for (double[] descriptor : descriptors) {
             // Incresing the nearest centroid frequency given the descriptor
-            int index = Calculator.findNearestCentroidIndex(descriptor, codebook);
+            int index = Calculator.computeNearestCentroidIndex(descriptor, codebook);
             
             bow[index]++;
         }

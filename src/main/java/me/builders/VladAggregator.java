@@ -37,7 +37,7 @@ public class VladAggregator implements Aggregator {
         // Accumulating the distances per descriptor
         for (double[] descriptor : descriptors) {
             // Finding the nearest centroid index of the descriptor
-            int index = Calculator.findNearestCentroidIndex(descriptor, codebook);
+            int index = Calculator.computeNearestCentroidIndex(descriptor, codebook);
 
             // Accumulating the distances from the nearest media centroid word
             for (int i = 0; i < descriptor.length; i++) {

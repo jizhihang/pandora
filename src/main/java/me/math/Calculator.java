@@ -8,14 +8,14 @@ package me.math;
 public class Calculator {
 
     /**
-     * A method finds the index of the euclidean nearest centroid a given
+     * A method computes the index of the euclidean nearest centroid a given
      * descriptor belongs to.
      *
      * @param descriptor the descriptor.
      * @param centroids the list of centroids.
      * @return the index of the nearest centroid.
      */
-    public static int findNearestCentroidIndex(double[] descriptor, double[][] centroids) {
+    public static int computeNearestCentroidIndex(double[] descriptor, double[][] centroids) {
         int index = -1;
 
         double min = Double.MAX_VALUE;
@@ -26,9 +26,14 @@ public class Calculator {
 
             for (int j = 0; j < centroids[0].length; j++) {
                 distance += Math.pow(centroids[i][j] - descriptor[j], 2);
+                
+                // Breaking inner loop when distance exceeds minimum
+                if (distance >= min) {
+                    break;
+                }
             }
 
-            // Getting the lowest distance and centroid index so far
+            // Saving lowest distance and centroid index so far
             if (distance < min) {
                 min = distance;
 
