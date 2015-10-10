@@ -6,6 +6,11 @@ import me.math.Calculator;
  * An aggregator implementing the VLAD method to produce a fixed size vector
  * given a variant number of local descriptors extracted from a media item.
  *
+ * See more:<br/>
+ * <em>H. Jegou, F. Perronnin, M. Douze, J. Sanchez, P. Perez, and C. Schmid,
+ * Aggregating local image descriptors into compact codes, IEEE Transactions on
+ * Pattern Analysis and Machine Intelligence, 2012.</em>
+ *
  * @author Akis Papadopoulos, iakopap@gmail.com.
  */
 public class VladAggregator implements Aggregator {
