@@ -21,6 +21,18 @@
         </dependency>
         
         <dependency>
+            <groupId>com.sangupta</groupId>
+            <artifactId>jopensurf</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.boofcv</groupId>
+            <artifactId>all</artifactId>
+            <version>0.19</version>
+        </dependency>
+        
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
