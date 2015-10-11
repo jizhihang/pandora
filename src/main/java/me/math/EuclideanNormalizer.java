@@ -4,6 +4,9 @@ import java.util.Arrays;
 
 /**
  * A vector normalizater using the euclidean norm L2.
+ * 
+ * This class is a modification of a class written by Elefterios
+ * Spyromitros-Xioufis, please see <a href="https://goo.gl/p6wGSv">more</a>.
  *
  * @author Akis Papadopoulos, iakopap@gmail.com.
  */

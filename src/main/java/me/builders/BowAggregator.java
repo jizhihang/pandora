@@ -7,6 +7,9 @@ import me.math.Calculator;
  * size vector given a variant number of local descriptors extracted from a
  * media item.
  *
+ * This class is a modification of a class written by Elefterios
+ * Spyromitros-Xioufis, please see <a href="https://goo.gl/gARWys">more</a>.
+ *
  * @author Akis Papadopoulos, iakopap@gmail.com.
  */
 public class BowAggregator implements Aggregator {
@@ -39,7 +42,7 @@ public class BowAggregator implements Aggregator {
         for (double[] descriptor : descriptors) {
             // Incresing the nearest centroid frequency given the descriptor
             int index = Calculator.computeNearestCentroidIndex(descriptor, codebook);
-            
+
             bow[index]++;
         }
 

@@ -6,6 +6,11 @@ import me.math.Calculator;
  * An aggregator implementing the vlat method to produce a fixed size vector
  * given a variant number of local descriptors extracted from a media item.
  *
+ * See more:<br/>
+ * <em>R. Negrel, D. Picard and P.H. Gosselin, Compact tensor based image
+ * representation for similarity search, 19th IEEE International Conference on
+ * Image Processing (ICIP), 2012.</em>
+ *
  * @author Akis Papadopoulos, iakopap@gmail.com.
  */
 public class VlatAggregator implements Aggregator {

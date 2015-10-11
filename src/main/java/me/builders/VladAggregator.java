@@ -11,6 +11,9 @@ import me.math.Calculator;
  * Aggregating local image descriptors into compact codes, IEEE Transactions on
  * Pattern Analysis and Machine Intelligence, 2012.</em>
  *
+ * This class is a modification of a class written by Elefterios
+ * Spyromitros-Xioufis, please see <a href="https://goo.gl/xiSHRJ">more</a>.
+ *
  * @author Akis Papadopoulos, iakopap@gmail.com.
  */
 public class VladAggregator implements Aggregator {

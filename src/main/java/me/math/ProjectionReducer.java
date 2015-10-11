@@ -8,6 +8,9 @@ import org.ejml.ops.CommonOps;
  * dimensionality, using a projection map produced by a principal component
  * analysis.
  *
+ * This class is a modification of a class written by Peter Abeles, please see
+ * <a href="https://goo.gl/sdBCiC">more</a>.
+ *
  * @author Akis Papadopoulos, iakopap@gmail.com.
  */
 public class ProjectionReducer implements ComponentReducer {

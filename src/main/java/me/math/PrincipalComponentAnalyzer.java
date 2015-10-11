@@ -14,6 +14,9 @@ import org.ejml.ops.SingularOps;
  * massive dimensionality, sorting the most significant components across the
  * full set of dataset attributes.
  *
+ * This class is a modification of a class written by Peter Abeles, please see
+ * <a href="https://goo.gl/sdBCiC">more</a>.
+ *
  * @author Akis Papadopoulos, iakopap@gmail.com.
  */
 public class PrincipalComponentAnalyzer implements ComponentAnalyzer {
@@ -68,9 +71,9 @@ public class PrincipalComponentAnalyzer implements ComponentAnalyzer {
 
         // Sampling on the dataset using seed
         Random gen = new Random(seed);
-        
+
         List<double[]> list = new ArrayList<double[]>();
-        
+
         for (int i = 0; i < data.length; i++) {
             if (gen.nextDouble() <= ratio) {
                 list.add(data[i]);
