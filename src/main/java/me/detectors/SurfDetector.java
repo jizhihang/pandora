@@ -1,8 +1,7 @@
-package me.detectors.image;
+package me.detectors;
 
 import boofcv.abst.feature.detect.extract.ConfigExtract;
 import boofcv.abst.feature.detect.extract.NonMaxSuppression;
-import boofcv.abst.feature.orientation.ConfigSlidingIntegral;
 import boofcv.abst.feature.orientation.OrientationIntegral;
 import boofcv.alg.feature.describe.DescribePointSurf;
 import boofcv.alg.feature.detect.interest.FastHessianFeatureDetector;
@@ -11,13 +10,13 @@ import boofcv.core.image.GeneralizedImageOps;
 import boofcv.factory.feature.describe.FactoryDescribePointAlgs;
 import boofcv.factory.feature.detect.extract.FactoryFeatureExtractor;
 import boofcv.factory.feature.orientation.FactoryOrientationAlgs;
-import boofcv.io.image.UtilImageIO;
+import boofcv.io.image.ConvertBufferedImage;
 import boofcv.struct.feature.ScalePoint;
 import boofcv.struct.feature.SurfFeature;
 import boofcv.struct.image.ImageFloat32;
 import boofcv.struct.image.ImageSingleBand;
+import java.awt.image.BufferedImage;
 import java.util.List;
-import me.detectors.Detector;
 
 /**
  * A detector extracting stable SURF local descriptors given an image using the
@@ -55,10 +54,10 @@ public class SurfDetector implements Detector {
      * A constructor initiating the default parameters.
      */
     public SurfDetector() {
-        this.radius = 2;
+        this.radius = 1;
         this.threshold = 0F;
-        this.features = 200;
-        this.rate = 2;
+        this.features = -1;
+        this.rate = 1;
         this.size = 9;
         this.scales = 4;
         this.octaves = 4;
@@ -86,17 +85,16 @@ public class SurfDetector implements Detector {
     }
 
     /**
-     * A method takes an image file path and returns the detected local
-     * descriptors.
+     * A method detecting visual descriptors given an image item.
      *
-     * @param path the image file path.
-     * @return a list of local descriptors.
+     * @param image the image item.
+     * @return the list of visual descriptors detected.
      * @throws Exception throws unknown error exceptions.
      */
     @Override
-    public double[][] detect(String path) throws Exception {
+    public double[][] detect(BufferedImage image) throws Exception {
         // Setting up image representation
-        ImageFloat32 image = UtilImageIO.loadImage(path, ImageFloat32.class);
+        ImageFloat32 img = ConvertBufferedImage.convertFromSingle(image, null, ImageFloat32.class);
 
         // Working off of integral images
         Class<ImageSingleBand> integralType = GIntegralImageOps.getIntegralType(ImageFloat32.class);
@@ -108,17 +106,16 @@ public class SurfDetector implements Detector {
         FastHessianFeatureDetector<ImageSingleBand> detector = new FastHessianFeatureDetector<ImageSingleBand>(extractor, features, rate, size, scales, octaves);
 
         // Setting up a sliding ii estimator algorithm for orientation
-        ConfigSlidingIntegral csi = new ConfigSlidingIntegral(0.65, Math.PI / 3.0, 8, -1, 6);
-        OrientationIntegral<ImageSingleBand> orientator = FactoryOrientationAlgs.sliding_ii(csi, integralType);
+        OrientationIntegral<ImageSingleBand> orientator = FactoryOrientationAlgs.sliding_ii(null, integralType);
 
         // Setting up stability SURF feature describer algorithm
         DescribePointSurf<ImageSingleBand> describer = FactoryDescribePointAlgs.<ImageSingleBand>surfStability(null, integralType);
 
         // Computing the integral image of the image
-        ImageSingleBand integral = GeneralizedImageOps.createSingleBand(integralType, image.width, image.height);
+        ImageSingleBand integral = GeneralizedImageOps.createSingleBand(integralType, img.width, img.height);
 
         // Transforming image into integral
-        GIntegralImageOps.transform(image, integral);
+        GIntegralImageOps.transform(img, integral);
 
         // Detecting fast hessian features
         detector.detect(integral);
@@ -132,7 +129,7 @@ public class SurfDetector implements Detector {
 
         // Checking if no interest points detected within image
         if (points.isEmpty()) {
-            throw new Exception("No local surfm descriptors detected within, '" + path + "'.");
+            throw new Exception("No local stable SURF descriptors detected given an image.");
         }
 
         // Extracting descriptors iterating through scale points

@@ -1,19 +1,21 @@
 package me.detectors;
 
+import java.awt.image.BufferedImage;
+
 /**
- * An interface to implement a detector in order to extract media content
- * descriptors.
+ * An interface to implement a detector in order to extract visual content
+ * descriptors from a given image.
  *
  * @author Akis Papadopoulos, iakopap@gmail.com.
  */
 public interface Detector {
 
     /**
-     * A method takes a media file path and returns the detected descriptors.
+     * A method detecting visual descriptors given an image item.
      *
-     * @param path the media file path.
-     * @return the list of the detected descriptors.
+     * @param image the image item.
+     * @return the list of visual descriptors detected.
      * @throws Exception throws unknown error exceptions.
      */
-    public double[][] detect(String path) throws Exception;
+    public double[][] detect(BufferedImage image) throws Exception;
 }
