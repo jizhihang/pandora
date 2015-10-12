@@ -1,4 +1,4 @@
-package me.builders;
+package me.aggregation;
 
 import me.math.Calculator;
 

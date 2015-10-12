@@ -1,4 +1,4 @@
-package me.builders;
+package me.aggregation;
 
 /**
  * An interface to aggregate local descriptors extracted from a single media item
