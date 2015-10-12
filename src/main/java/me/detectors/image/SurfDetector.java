@@ -36,7 +36,7 @@ public class SurfDetector implements Detector {
     // Minimum feature intensity
     private float threshold;
 
-    // Number of features, 0 returns all features finds
+    // Number of features, le to 0 returns all features finds
     private int features;
 
     // How often pixels are sampled in the first octave
