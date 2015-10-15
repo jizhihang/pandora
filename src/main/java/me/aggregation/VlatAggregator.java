@@ -9,7 +9,7 @@ package me.aggregation;
  * representation for similarity search, 19th IEEE International Conference on
  * Image Processing (ICIP), 2012.</em>
  *
- * @author Akis Papadopoulos, iakopap@gmail.com.
+ * @author Akis Papadopoulos
  */
 public class VlatAggregator implements Aggregator {
 

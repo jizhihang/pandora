@@ -12,7 +12,7 @@ package me.aggregation;
  * This class is a modification of a class written by Elefterios
  * Spyromitros-Xioufis, please see <a href="https://goo.gl/xiSHRJ">more</a>.
  *
- * @author Akis Papadopoulos, iakopap@gmail.com.
+ * @author Akis Papadopoulos
  */
 public class VladAggregator implements Aggregator {
 

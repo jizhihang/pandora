@@ -9,7 +9,7 @@ import java.util.List;
  * A detector extracting SURF local descriptors given an image using the
  * JOpenSurf library.
  *
- * @author Akis Papadopoulos, iakopap@gmail.com.
+ * @author Akis Papadopoulos
  */
 public class OpenSurfDetector implements Detector {
 

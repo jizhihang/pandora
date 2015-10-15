@@ -3,7 +3,7 @@ package me.math;
 /**
  * An interface to implement a method to reduce the size of a given vector.
  *
- * @author Akis Papadopoulos, iakopap@gmail.com.
+ * @author Akis Papadopoulos
  */
 public interface ComponentReducer {
 

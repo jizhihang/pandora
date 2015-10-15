@@ -4,7 +4,7 @@ package me.math;
  * An interface to implement vector based data analysis like,
  * principal component analysis with singular value decomposition.
  *
- * @author Akis Papadopoulos, iakopap@gmail.com.
+ * @author Akis Papadopoulos
  */
 public interface ComponentAnalyzer {
 

@@ -8,7 +8,7 @@ package me.aggregation;
  * This class is a modification of a class written by Elefterios
  * Spyromitros-Xioufis, please see <a href="https://goo.gl/gARWys">more</a>.
  *
- * @author Akis Papadopoulos, iakopap@gmail.com.
+ * @author Akis Papadopoulos
  */
 public class BowAggregator implements Aggregator {
 

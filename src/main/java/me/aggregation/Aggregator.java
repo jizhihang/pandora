@@ -4,7 +4,7 @@ package me.aggregation;
  * An interface to aggregate local descriptors extracted from a media item into
  * a fixed size vector.
  *
- * @author Akis Papadopoulos, iakopap@gmail.com.
+ * @author Akis Papadopoulos
  */
 public interface Aggregator {
 

@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
  * An interface to implement a detector in order to extract visual content
  * descriptors from a given image.
  *
- * @author Akis Papadopoulos, iakopap@gmail.com.
+ * @author Akis Papadopoulos
  */
 public interface Detector {
 

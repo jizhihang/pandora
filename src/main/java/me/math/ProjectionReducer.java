@@ -11,7 +11,7 @@ import org.ejml.ops.CommonOps;
  * This class is a modification of a class written by Peter Abeles, please see
  * <a href="https://goo.gl/sdBCiC">more</a>.
  *
- * @author Akis Papadopoulos, iakopap@gmail.com.
+ * @author Akis Papadopoulos
  */
 public class ProjectionReducer implements ComponentReducer {
 

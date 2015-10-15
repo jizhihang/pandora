@@ -3,7 +3,7 @@ package me.math;
 /**
  * An interface to implement vector normalization methods.
  *
- * @author Akis Papadopoulos, iakopap@gmail.com.
+ * @author Akis Papadopoulos
  */
 public interface Normalizer {
 
