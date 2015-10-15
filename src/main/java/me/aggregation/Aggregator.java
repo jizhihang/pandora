@@ -1,8 +1,8 @@
 package me.aggregation;
 
 /**
- * An interface to aggregate local descriptors extracted from a single media item
- * into a fixed size vector.
+ * An interface to aggregate local descriptors extracted from a media item into
+ * a fixed size vector.
  *
  * @author Akis Papadopoulos, iakopap@gmail.com.
  */

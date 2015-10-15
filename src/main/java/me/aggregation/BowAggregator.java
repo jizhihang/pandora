@@ -1,11 +1,9 @@
 package me.aggregation;
 
-import me.math.Calculator;
-
 /**
- * An aggregator implementing the bags of words (bow) method to produce a fixed
- * size vector given a variant number of local descriptors extracted from a
- * media item.
+ * An aggregator implementing the bags of words method to produce a fixed size
+ * vector given a variant number of local descriptors extracted from a media
+ * item.
  *
  * This class is a modification of a class written by Elefterios
  * Spyromitros-Xioufis, please see <a href="https://goo.gl/gARWys">more</a>.
@@ -14,34 +12,33 @@ import me.math.Calculator;
  */
 public class BowAggregator implements Aggregator {
 
-    // A dictionary of media centroid words
-    private double[][] codebook;
+    // Vocabulary codebook
+    private Codebook codebook;
 
     /**
-     * A constructor initiating the codebook consisting of a number of media
-     * centroid words given after clustering upon the dataset.
+     * A constructor initiating the vocabulary codebook of centroid words.
      *
-     * @param codebook the list of media centroid words.
+     * @param codebook the vocabulary codebook.
      */
-    public BowAggregator(double[][] codebook) {
+    public BowAggregator(Codebook codebook) {
         this.codebook = codebook;
     }
 
     /**
      * A method aggragates the given list of local descriptors extracted from a
-     * media item into a fixed size vector using the bow method.
+     * media item into a fixed size vector.
      *
      * @param descriptors the list of local descriptors.
      * @return a fixed size vector.
      */
     @Override
     public double[] aggregate(double[][] descriptors) {
-        double[] bow = new double[codebook.length];
+        double[] bow = new double[codebook.getSize()];
 
         // Building a histogram of media centroid word frequencies
         for (double[] descriptor : descriptors) {
             // Incresing the nearest centroid frequency given the descriptor
-            int index = Calculator.computeNearestCentroidIndex(descriptor, codebook);
+            int index = codebook.getNearestCentroidIndex(descriptor);
 
             bow[index]++;
         }

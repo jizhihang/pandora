@@ -1,7 +1,5 @@
 package me.aggregation;
 
-import me.math.Calculator;
-
 /**
  * An aggregator implementing the VLAD method to produce a fixed size vector
  * given a variant number of local descriptors extracted from a media item.
@@ -18,38 +16,42 @@ import me.math.Calculator;
  */
 public class VladAggregator implements Aggregator {
 
-    // A dictionary of media centroid words
-    private double[][] codebook;
+    // Vocabulary codebook
+    private Codebook codebook;
 
     /**
-     * A constructor initiating the codebook consisting of a number of media
-     * centroid words given after clustering upon the dataset.
+     * A constructor initiating the vocabulary codebook of centroid words.
      *
-     * @param codebook the list of media centroid words.
+     * @param codebook the vocabulary codebook.
      */
-    public VladAggregator(double[][] codebook) {
+    public VladAggregator(Codebook codebook) {
         this.codebook = codebook;
     }
 
     /**
      * A method aggragates the given list of local descriptors extracted from a
-     * media item into a fixed size vector using the vlad method.
+     * media item into a fixed size vector.
      *
      * @param descriptors the list of local descriptors.
      * @return a fixed size vector.
      */
     @Override
     public double[] aggregate(double[][] descriptors) {
-        double[] vlad = new double[codebook.length * codebook[0].length];
+        // Calculating the size of the vlad vector
+        int size = codebook.getSize() * codebook.getWidth();
 
-        // Accumulating the distances per descriptor
+        double[] vlad = new double[size];
+
+        // Accumulating the residues per descriptor
         for (double[] descriptor : descriptors) {
             // Finding the nearest centroid index of the descriptor
-            int index = Calculator.computeNearestCentroidIndex(descriptor, codebook);
+            int index = codebook.getNearestCentroidIndex(descriptor);
 
-            // Accumulating the distances from the nearest media centroid word
+            // Accumulating the residues from the nearest centroid
             for (int i = 0; i < descriptor.length; i++) {
-                vlad[index * descriptor.length + i] += descriptor[i] - codebook[index][i];
+                double component = codebook.getComponent(index, i);
+
+                vlad[index * descriptor.length + i] += descriptor[i] - component;
             }
         }
 
