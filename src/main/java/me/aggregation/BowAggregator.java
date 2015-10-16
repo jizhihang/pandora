@@ -7,7 +7,13 @@ import me.math.PowerNormalizer;
 /**
  * An aggregator implementing the bags of words method to produce a fixed size
  * normalized (power, l2) vector given a variant number of local descriptors
- * extracted from a media item.
+ * extracted from a media item, supporting single or multiple vocabulary
+ * vectorization. In case of multiple vocabularies each sub bow vector generated
+ * independently from each vocabulary and then concatenated in a single vector.
+ *
+ * See more for multiple vocabularies:
+ * <em>Jégou, H., & Chum, O. (2012). Negative evidences and co-occurences in
+ * image retrieval: The benefit of PCA and whitening. In ECCV 2012.</em>
  *
  * This class is a modification of a class written by Elefterios
  * Spyromitros-Xioufis, please see <a href="https://goo.gl/gARWys">more</a>.
@@ -16,8 +22,8 @@ import me.math.PowerNormalizer;
  */
 public class BowAggregator implements Aggregator {
 
-    // Vocabulary codebook
-    private Codebook codebook;
+    // Vocabulary codebooks
+    private Codebook[] codebooks;
 
     // Normalization
     private boolean normalize = true;
@@ -29,15 +35,15 @@ public class BowAggregator implements Aggregator {
     Normalizer euclidean;
 
     /**
-     * A constructor initiating the vocabulary codebook of centroid words plus
+     * A constructor initiating the vocabulary codebooks of centroid words plus
      * the normalization option.
      *
-     * @param codebook the vocabulary codebook.
+     * @param codebooks the vocabulary codebooks.
      * @param normalize the option to normalize.
      */
-    public BowAggregator(Codebook codebook, boolean normalize) {
-        this.codebook = codebook;
-        
+    public BowAggregator(Codebook[] codebooks, boolean normalize) {
+        this.codebooks = codebooks;
+
         this.normalize = normalize;
 
         power = new PowerNormalizer();
@@ -53,19 +59,36 @@ public class BowAggregator implements Aggregator {
      */
     @Override
     public double[] aggregate(double[][] descriptors) {
-        double[] bow = new double[codebook.getSize()];
+        // Calculating vector size regarding the number of codebooks and codebook size
+        double[] bow = new double[codebooks.length * codebooks[0].getSize()];
 
-        // Building a histogram of centroid word frequencies
-        for (double[] descriptor : descriptors) {
-            // Incresing the nearest centroid frequency given the descriptor
-            int index = codebook.getNearestCentroidIndex(descriptor);
+        int offset = 0;
 
-            bow[index]++;
+        // Regarding each codebook
+        for (Codebook codebook : codebooks) {
+            double[] subvector = new double[codebook.getSize()];
+
+            // Building the bow subvector
+            for (double[] descriptor : descriptors) {
+                // Increasing nearest centroid's frequency given the descriptor
+                int index = codebook.getNearestCentroidIndex(descriptor);
+
+                subvector[index]++;
+            }
+
+            // Normalize using Power and Euclidean l2 norms
+            if (normalize) {
+                power.normalize(subvector);
+                euclidean.normalize(subvector);
+            }
+
+            // Concatenate the subvector
+            System.arraycopy(subvector, 0, bow, offset, subvector.length);
+            offset += codebook.getSize();
         }
 
-        // Normalize using Power and Euclidean l2 norms
-        if (normalize) {
-            power.normalize(bow);
+        // Normalizing final vector only in case of multiple vocabularies
+        if (codebooks.length > 1 && normalize) {
             euclidean.normalize(bow);
         }
 
