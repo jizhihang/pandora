@@ -59,20 +59,27 @@ public class BowAggregator implements Aggregator {
      */
     @Override
     public double[] aggregate(double[][] descriptors) {
-        // Calculating vector size regarding the number of codebooks and codebook size
-        double[] bow = new double[codebooks.length * codebooks[0].getSize()];
+        // Calculating the final vector size
+        int size = 0;
+
+        // Regarding the number of codebooks and their codebook size
+        for (Codebook codebook : codebooks) {
+            size += codebook.getSize();
+        }
+
+        double[] bow = new double[size];
 
         int offset = 0;
 
         // Regarding each codebook
         for (Codebook codebook : codebooks) {
+            // Building the bow subvector
             double[] subvector = new double[codebook.getSize()];
 
-            // Building the bow subvector
+            // Increasing nearest centroid's frequency for each descriptor
             for (double[] descriptor : descriptors) {
-                // Increasing nearest centroid's frequency given the descriptor
                 int index = codebook.getNearestCentroidIndex(descriptor);
-
+                
                 subvector[index]++;
             }
 
