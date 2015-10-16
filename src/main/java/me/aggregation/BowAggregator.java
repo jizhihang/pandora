@@ -91,7 +91,7 @@ public class BowAggregator implements Aggregator {
 
             // Concatenate the subvector
             System.arraycopy(subvector, 0, bow, offset, subvector.length);
-            offset += codebook.getSize();
+            offset += subvector.length;
         }
 
         // Normalizing final vector only in case of multiple vocabularies
