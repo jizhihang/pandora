@@ -43,6 +43,15 @@ public class Codebook {
     }
 
     /**
+     * A methods returns the set of centroids of the codebook.
+     *
+     * @return the set of centroids.
+     */
+    public double[][] getCentroids() {
+        return centroids;
+    }
+
+    /**
      * A method returns the centroid located at the given index.
      *
      * @param index the index of the centroid.
@@ -50,15 +59,6 @@ public class Codebook {
      */
     public double[] getCentroid(int index) {
         return centroids[index];
-    }
-
-    /**
-     * A methods returns the set of centroids of the codebook.
-     *
-     * @return the set of centroids.
-     */
-    public double[][] getCentroids() {
-        return centroids;
     }
 
     /**
@@ -73,7 +73,7 @@ public class Codebook {
     }
 
     /**
-     * A method computes the index of the euclidean nearest centroid to the
+     * A method computes the index of the Euclidean nearest centroid to the
      * given descriptor.
      *
      * @param descriptor the descriptor.
@@ -106,5 +106,23 @@ public class Codebook {
         }
 
         return index;
+    }
+
+    /**
+     * A method calculates the Euclidean distance between the given descriptor
+     * and the indexed centroid.
+     *
+     * @param descriptor the descriptor.
+     * @param index the indexed centroid.
+     * @return the Euclidean distance.
+     */
+    public double getDistance(double[] descriptor, int index) {
+        double distance = 0;
+
+        for (int j = 0; j < centroids[0].length; j++) {
+            distance += Math.pow(centroids[index][j] - descriptor[j], 2);
+        }
+
+        return distance;
     }
 }
