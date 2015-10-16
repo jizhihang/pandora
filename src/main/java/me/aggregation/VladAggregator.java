@@ -11,12 +11,12 @@ import me.math.PowerNormalizer;
  * of multiple vocabularies each sub bow vector generated independently from
  * each vocabulary and then concatenated in a single vector.
  *
- * See more for vlad method:<br/>
+ * See more about vlad method:<br/>
  * <em>H. Jegou, F. Perronnin, M. Douze, J. Sanchez, P. Perez, and C. Schmid,
  * Aggregating local image descriptors into compact codes, IEEE Transactions on
  * Pattern Analysis and Machine Intelligence, 2012.</em>
  *
- * See more for multiple vocabularies:
+ * See more about multiple vocabularies:
  * <em>Jégou, H., & Chum, O. (2012). Negative evidences and co-occurences in
  * image retrieval: The benefit of PCA and whitening. In ECCV 2012.</em>
  *

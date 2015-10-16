@@ -11,7 +11,7 @@ import me.math.PowerNormalizer;
  * vectorization. In case of multiple vocabularies each sub bow vector generated
  * independently from each vocabulary and then concatenated in a single vector.
  *
- * See more for multiple vocabularies:
+ * See more about multiple vocabularies:
  * <em>Jégou, H., & Chum, O. (2012). Negative evidences and co-occurences in
  * image retrieval: The benefit of PCA and whitening. In ECCV 2012.</em>
  *
