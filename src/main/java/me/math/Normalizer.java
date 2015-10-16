@@ -11,7 +11,6 @@ public interface Normalizer {
      * A method normalizing a given vector.
      *
      * @param vector the components of the vector.
-     * @return a normalized vector.
      */
-    public double[] normalize(double[] vector);
+    public void normalize(double[] vector);
 }

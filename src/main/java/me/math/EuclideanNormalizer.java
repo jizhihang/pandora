@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 /**
  * A vector normalizater using the euclidean norm L2.
- * 
+ *
  * This class is a modification of a class written by Elefterios
  * Spyromitros-Xioufis, please see <a href="https://goo.gl/p6wGSv">more</a>.
  *
@@ -13,20 +13,19 @@ import java.util.Arrays;
 public class EuclideanNormalizer implements Normalizer {
 
     /**
-     * A method applies euclidean normalization L2 on a given vector.
+     * A method normalizing a given vector.
      *
      * @param vector the components of the vector.
-     * @return a normalized vector.
      */
     @Override
-    public double[] normalize(double[] vector) {
+    public void normalize(double[] vector) {
         // Computing vector 2-norm
         double norm2 = 0;
-        
+
         for (int i = 0; i < vector.length; i++) {
             norm2 += vector[i] * vector[i];
         }
-        
+
         norm2 = (double) Math.sqrt(norm2);
 
         // Normalizing the components of the vector
@@ -37,7 +36,5 @@ public class EuclideanNormalizer implements Normalizer {
                 vector[i] = vector[i] / norm2;
             }
         }
-
-        return vector;
     }
 }

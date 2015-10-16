@@ -2,7 +2,7 @@ package me.math;
 
 /**
  * A vector normalizer using power normalization.
- * 
+ *
  * This class is a modification of a class written by Elefterios
  * Spyromitros-Xioufis, please see <a href="https://goo.gl/p6wGSv">more</a>.
  *
@@ -33,14 +33,11 @@ public class PowerNormalizer implements Normalizer {
      * A method normalizing a given vector.
      *
      * @param vector the components of the vector.
-     * @return a normalized vector.
      */
     @Override
-    public double[] normalize(double[] vector) {
+    public void normalize(double[] vector) {
         for (int i = 0; i < vector.length; i++) {
             vector[i] = Math.signum(vector[i]) * Math.pow(Math.abs(vector[i]), a);
         }
-
-        return vector;
     }
 }
