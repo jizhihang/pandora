@@ -1,8 +1,13 @@
 package me.aggregation;
 
+import me.math.EuclideanNormalizer;
+import me.math.Normalizer;
+import me.math.PowerNormalizer;
+
 /**
- * An aggregator implementing the VLAD method to produce a fixed size vector
- * given a variant number of local descriptors extracted from a media item.
+ * An aggregator implementing the VLAD method to produce a fixed size normalized
+ * (power, l2) vector given a variant number of local descriptors extracted from
+ * a media item.
  *
  * See more:<br/>
  * <em>H. Jegou, F. Perronnin, M. Douze, J. Sanchez, P. Perez, and C. Schmid,
@@ -19,13 +24,29 @@ public class VladAggregator implements Aggregator {
     // Vocabulary codebook
     private Codebook codebook;
 
+    // Normalization
+    private boolean normalize = true;
+
+    // Power normalizer
+    Normalizer power;
+
+    // Euclidean normalizer
+    Normalizer euclidean;
+
     /**
-     * A constructor initiating the vocabulary codebook of centroid words.
+     * A constructor initiating the vocabulary codebook of centroid words plus
+     * the normalization option.
      *
      * @param codebook the vocabulary codebook.
+     * @param normalize the normalization option.
      */
-    public VladAggregator(Codebook codebook) {
+    public VladAggregator(Codebook codebook, boolean normalize) {
         this.codebook = codebook;
+
+        this.normalize = normalize;
+
+        power = new PowerNormalizer();
+        euclidean = new EuclideanNormalizer();
     }
 
     /**
@@ -53,6 +74,12 @@ public class VladAggregator implements Aggregator {
 
                 vlad[index * descriptor.length + i] += descriptor[i] - component;
             }
+        }
+
+        // Normalize using Power and Euclidean l2 norms
+        if (normalize) {
+            power.normalize(vlad);
+            euclidean.normalize(vlad);
         }
 
         return vlad;
