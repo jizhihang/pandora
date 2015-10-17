@@ -87,6 +87,7 @@ public class OpenSurfDetector implements Detector {
             float[] components = point.getDescriptor();
 
             double[] descriptor = new double[components.length];
+            
             for (int j = 0; j < components.length; j++) {
                 descriptor[j] = components[j];
             }
