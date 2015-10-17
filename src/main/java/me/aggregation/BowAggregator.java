@@ -1,8 +1,6 @@
 package me.aggregation;
 
-import me.math.EuclideanNormalizer;
 import me.math.Normalizer;
-import me.math.PowerNormalizer;
 
 /**
  * An aggregator implementing the bags of words method to produce a fixed size
@@ -28,12 +26,6 @@ public class BowAggregator implements Aggregator {
     // Normalization
     private boolean normalize = true;
 
-    // Power normalizer
-    Normalizer power;
-
-    // Euclidean normalizer
-    Normalizer euclidean;
-
     /**
      * A constructor initiating the vocabulary codebooks of centroid words plus
      * the normalization option.
@@ -45,9 +37,6 @@ public class BowAggregator implements Aggregator {
         this.codebooks = codebooks;
 
         this.normalize = normalize;
-
-        power = new PowerNormalizer();
-        euclidean = new EuclideanNormalizer();
     }
 
     /**
@@ -85,8 +74,8 @@ public class BowAggregator implements Aggregator {
 
             // Normalize using Power and Euclidean l2 norms
             if (normalize) {
-                power.normalize(subvector);
-                euclidean.normalize(subvector);
+                Normalizer.power(subvector, 0.5);
+                Normalizer.euclidean(subvector);
             }
 
             // Concatenate the subvector
@@ -96,7 +85,7 @@ public class BowAggregator implements Aggregator {
 
         // Normalizing final vector only in case of multiple vocabularies
         if (codebooks.length > 1 && normalize) {
-            euclidean.normalize(bow);
+            Normalizer.euclidean(bow);
         }
 
         return bow;

@@ -2,7 +2,7 @@ package me.aggregation;
 
 /**
  * A vocabulary codebook of centroids extracted after applying clustering on a
- * given dataset of vectors.
+ * given dataset of local descriptors.
  *
  * This class is a modification of a class written by Elefterios
  * Spyromitros-Xioufis, please see <a href="https://goo.gl/6wNxoM">more</a>.
@@ -34,7 +34,8 @@ public class Codebook {
     }
 
     /**
-     * A method returns the size of the centroid vectors.
+     * A method returns the width of the codebook as the size of the centroid
+     * vectors.
      *
      * @return the size of the centroid vectors.
      */
@@ -88,7 +89,7 @@ public class Codebook {
         for (int i = 0; i < centroids.length; i++) {
             double distance = 0;
 
-            for (int j = 0; j < centroids[0].length; j++) {
+            for (int j = 0; j < descriptor.length; j++) {
                 distance += Math.pow(centroids[i][j] - descriptor[j], 2);
 
                 // Breaking inner loop when distance exceeds minimum
@@ -119,7 +120,7 @@ public class Codebook {
     public double getDistance(double[] descriptor, int index) {
         double distance = 0;
 
-        for (int j = 0; j < centroids[0].length; j++) {
+        for (int j = 0; j < descriptor.length; j++) {
             distance += Math.pow(centroids[index][j] - descriptor[j], 2);
         }
 

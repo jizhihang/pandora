@@ -1,14 +1,12 @@
 package me.aggregation;
 
-import me.math.EuclideanNormalizer;
 import me.math.Normalizer;
-import me.math.PowerNormalizer;
 
 /**
  * An aggregator implementing the vlat method to produce a fixed size normalized
  * (power, l2) vector given a variant number of local descriptors extracted from
  * a media item, supporting single or multiple vocabulary vectorization. In case
- * of multiple vocabularies each sub bow vector generated independently from
+ * of multiple vocabularies each sub vlat vector generated independently from
  * each vocabulary and then concatenated in a single vector.
  *
  * See more about vlat method:<br/>
@@ -30,12 +28,6 @@ public class VlatAggregator implements Aggregator {
     // Normalization
     private boolean normalize = true;
 
-    // Power normalizer
-    Normalizer power;
-
-    // Euclidean normalizer
-    Normalizer euclidean;
-
     /**
      * A constructor initiating the vocabulary codebooks of centroid words plus
      * the normalization option.
@@ -47,9 +39,6 @@ public class VlatAggregator implements Aggregator {
         this.codebooks = codebooks;
 
         this.normalize = normalize;
-
-        power = new PowerNormalizer();
-        euclidean = new EuclideanNormalizer();
     }
 
     /**
@@ -112,8 +101,8 @@ public class VlatAggregator implements Aggregator {
 
             // Normalize using Power and Euclidean l2 norms
             if (normalize) {
-                power.normalize(vlat);
-                euclidean.normalize(vlat);
+                Normalizer.power(vlat, 0.5);
+                Normalizer.euclidean(vlat);
             }
 
             // Concatenate the subvector
@@ -123,7 +112,7 @@ public class VlatAggregator implements Aggregator {
 
         // Normalizing final vector only in case of multiple vocabularies
         if (codebooks.length > 1 && normalize) {
-            euclidean.normalize(vlat);
+            Normalizer.euclidean(vlat);
         }
 
         return vlat;
