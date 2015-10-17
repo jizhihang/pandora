@@ -35,20 +35,20 @@ public class SurfDetector implements Detector {
     // Minimum feature intensity
     private float threshold;
 
-    // Number of features, le to 0 returns all features finds
-    private int features;
+    // Maximum number of returned features per scale, le to 0 returns all features finds
+    private int maxFeaturesPerScale;
 
     // How often pixels are sampled in the first octave
-    private int rate;
+    private int initialSampleRate;
 
     // Width of the smallest feature/kernel in the lowest octave
-    private int size;
+    private int initialSize;
 
     // How many different feature sizes are considered in a single octave
-    private int scales;
+    private int numberScalesPerOctave;
 
     // How many different octaves are considered
-    private int octaves;
+    private int numberOfOctaves;
 
     /**
      * A constructor initiating the default parameters.
@@ -56,11 +56,11 @@ public class SurfDetector implements Detector {
     public SurfDetector() {
         this.radius = 1;
         this.threshold = 0F;
-        this.features = -1;
-        this.rate = 1;
-        this.size = 9;
-        this.scales = 4;
-        this.octaves = 4;
+        this.maxFeaturesPerScale = -1;
+        this.initialSampleRate = 2;
+        this.initialSize = 9;
+        this.numberScalesPerOctave = 4;
+        this.numberOfOctaves = 4;
     }
 
     /**
@@ -68,20 +68,24 @@ public class SurfDetector implements Detector {
      *
      * @param radius radius of the non-maximum region.
      * @param threshold minimum feature intensity.
-     * @param features number of features.
-     * @param rate how often pixels are sampled in the first octave.
-     * @param size width of the smallest feature/kernel in the lowest octave.
-     * @param scales different feature sizes are considered in a single octave.
-     * @param octaves how many different octaves are considered.
+     * @param maxFeaturesPerScale the maximum number of returned features per
+     * scale, less equal to 0 returns all features finds.
+     * @param initialSampleRate how often pixels are sampled in the first
+     * octave.
+     * @param initialSize width of the smallest feature/kernel in the lowest
+     * octave.
+     * @param numberScalesPerOctave different feature sizes are considered in a
+     * single octave.
+     * @param numberOfOctaves how many different octaves are considered.
      */
-    public SurfDetector(int radius, float threshold, int features, int rate, int size, int scales, int octaves) {
+    public SurfDetector(int radius, float threshold, int maxFeaturesPerScale, int initialSampleRate, int initialSize, int numberScalesPerOctave, int numberOfOctaves) {
         this.radius = radius;
         this.threshold = threshold;
-        this.features = features;
-        this.rate = rate;
-        this.size = size;
-        this.scales = scales;
-        this.octaves = octaves;
+        this.maxFeaturesPerScale = maxFeaturesPerScale;
+        this.initialSampleRate = initialSampleRate;
+        this.initialSize = initialSize;
+        this.numberScalesPerOctave = numberScalesPerOctave;
+        this.numberOfOctaves = numberOfOctaves;
     }
 
     /**
@@ -103,7 +107,7 @@ public class SurfDetector implements Detector {
         ConfigExtract ce = new ConfigExtract(radius, threshold, 5, true);
         NonMaxSuppression extractor = FactoryFeatureExtractor.nonmax(ce);
 
-        FastHessianFeatureDetector<ImageSingleBand> detector = new FastHessianFeatureDetector<ImageSingleBand>(extractor, features, rate, size, scales, octaves);
+        FastHessianFeatureDetector<ImageSingleBand> detector = new FastHessianFeatureDetector<ImageSingleBand>(extractor, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves);
 
         // Setting up a sliding ii estimator algorithm for orientation
         OrientationIntegral<ImageSingleBand> orientator = FactoryOrientationAlgs.sliding_ii(null, integralType);
