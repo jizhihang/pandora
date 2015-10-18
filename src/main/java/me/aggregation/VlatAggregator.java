@@ -99,10 +99,10 @@ public class VlatAggregator implements Aggregator {
                 }
             }
 
-            // Normalize using Power and Euclidean l2 norms
+            // Normalize subvector using Power and Euclidean l2 norms
             if (normalize) {
-                Normalizer.power(vlat, 0.5);
-                Normalizer.euclidean(vlat);
+                Normalizer.power(subvector, 0.5);
+                Normalizer.euclidean(subvector);
             }
 
             // Concatenate the subvector
