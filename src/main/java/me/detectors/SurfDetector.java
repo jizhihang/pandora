@@ -100,14 +100,14 @@ public class SurfDetector implements Detector {
         // Setting up image representation
         ImageFloat32 grayscale = ConvertBufferedImage.convertFromSingle(image, null, ImageFloat32.class);
 
-        // Working off of integral images
-        Class<ImageSingleBand> integralType = GIntegralImageOps.getIntegralType(ImageFloat32.class);
-
         // Defining a fast hessian feature detection algorithm
         ConfigExtract ce = new ConfigExtract(radius, threshold, 5, true);
         NonMaxSuppression extractor = FactoryFeatureExtractor.nonmax(ce);
 
         FastHessianFeatureDetector<ImageSingleBand> detector = new FastHessianFeatureDetector<ImageSingleBand>(extractor, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves);
+        
+        // Working off of integral images
+        Class<ImageSingleBand> integralType = GIntegralImageOps.getIntegralType(ImageFloat32.class);
 
         // Setting up a sliding ii estimator algorithm for orientation
         OrientationIntegral<ImageSingleBand> orientator = FactoryOrientationAlgs.sliding_ii(null, integralType);
