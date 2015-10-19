@@ -21,30 +21,19 @@ import me.math.Normalizer;
 public class SiftDetector implements Detector {
 
     // Feature size used to detect the corners
-    private int extractRadius;
+    private int extractRadius = 2;
 
     // Minimum corner intensity required
-    private float detectThreshold;
+    private float detectThreshold = 1;
 
     // Max detected features per scale
-    private int maxFeaturesPerScale;
+    private int maxFeaturesPerScale = -1;
 
     // Edge filtering threshold
-    private double edgeThreshold;
+    private double edgeThreshold = 5;
 
     // Normalization option
-    private boolean normalize;
-
-    /**
-     * A constructor initiating the default parameters.
-     */
-    public SiftDetector() {
-        this.extractRadius = 2;
-        this.detectThreshold = 1;
-        this.maxFeaturesPerScale = -1;
-        this.edgeThreshold = 5;
-        this.normalize = false;
-    }
+    private boolean normalize = false;
 
     /**
      * A constructor initiating the given parameters.

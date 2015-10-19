@@ -14,26 +14,16 @@ import java.util.List;
 public class OpenSurfDetector implements Detector {
 
     // Hessian balance value 
-    private float balance;
+    private float balance = 0.81F;
 
     // Hessian threshold
-    private float threshold;
+    private float threshold = 0.0004F;
 
     // Hessian octaves
-    private int octaves;
+    private int octaves = 5;
 
     // Points orientation option
-    private boolean oriented;
-
-    /**
-     * A constructor initiating the default parameters.
-     */
-    public OpenSurfDetector() {
-        this.balance = 0.81F;
-        this.threshold = 0.0004F;
-        this.octaves = 5;
-        this.oriented = false;
-    }
+    private boolean oriented = false;
 
     /**
      * A constructor initiating the given parameters.

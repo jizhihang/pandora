@@ -30,38 +30,25 @@ import java.util.List;
 public class SurfDetector implements Detector {
 
     // Radius of the non-maximum region
-    private int radius;
+    private int radius = 1;
 
     // Minimum feature intensity
-    private float threshold;
+    private float threshold = 0F;
 
     // Maximum number of returned features per scale, le to 0 returns all features finds
-    private int maxFeaturesPerScale;
+    private int maxFeaturesPerScale = -1;
 
     // How often pixels are sampled in the first octave
-    private int initialSampleRate;
+    private int initialSampleRate = 2;
 
     // Width of the smallest feature/kernel in the lowest octave
-    private int initialSize;
+    private int initialSize = 9;
 
     // How many different feature sizes are considered in a single octave
-    private int numberScalesPerOctave;
+    private int numberScalesPerOctave = 4;
 
     // How many different octaves are considered
-    private int numberOfOctaves;
-
-    /**
-     * A constructor initiating the default parameters.
-     */
-    public SurfDetector() {
-        this.radius = 1;
-        this.threshold = 0F;
-        this.maxFeaturesPerScale = -1;
-        this.initialSampleRate = 2;
-        this.initialSize = 9;
-        this.numberScalesPerOctave = 4;
-        this.numberOfOctaves = 4;
-    }
+    private int numberOfOctaves = 4;
 
     /**
      * A constructor initiating the given parameters.
