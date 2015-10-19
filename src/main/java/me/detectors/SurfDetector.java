@@ -19,8 +19,8 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 /**
- * A detector extracting stable SURF local descriptors given an image using the
- * BoofCV library.
+ * A detector extracting stable grayscale SURF local descriptors given an image
+ * using the BoofCV library.
  *
  * This class is a modification of a class written by Peter Abeles, please see
  * <a href="https://goo.gl/dtrW7I">more</a>.
@@ -98,7 +98,7 @@ public class SurfDetector implements Detector {
     @Override
     public double[][] detect(BufferedImage image) throws Exception {
         // Setting up image representation
-        ImageFloat32 img = ConvertBufferedImage.convertFromSingle(image, null, ImageFloat32.class);
+        ImageFloat32 grayscale = ConvertBufferedImage.convertFromSingle(image, null, ImageFloat32.class);
 
         // Working off of integral images
         Class<ImageSingleBand> integralType = GIntegralImageOps.getIntegralType(ImageFloat32.class);
@@ -116,10 +116,10 @@ public class SurfDetector implements Detector {
         DescribePointSurf<ImageSingleBand> describer = FactoryDescribePointAlgs.<ImageSingleBand>surfStability(null, integralType);
 
         // Computing the integral image of the image
-        ImageSingleBand integral = GeneralizedImageOps.createSingleBand(integralType, img.width, img.height);
+        ImageSingleBand integral = GeneralizedImageOps.createSingleBand(integralType, grayscale.width, grayscale.height);
 
         // Transforming image into integral
-        GIntegralImageOps.transform(img, integral);
+        GIntegralImageOps.transform(grayscale, integral);
 
         // Detecting fast hessian features
         detector.detect(integral);

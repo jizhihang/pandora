@@ -10,8 +10,8 @@ import java.awt.image.BufferedImage;
 import me.math.Normalizer;
 
 /**
- * A detector extracting SIFT local descriptors given an image using the BoofCV
- * library.
+ * A detector extracting SIFT grayscale local descriptors given an image using
+ * the BoofCV library.
  *
  * This class is a modification of a class written by Eleftherios
  * Spyromitros-Xioufis, please see <a href="https://goo.gl/c4vwMo">more</a>.
@@ -73,14 +73,14 @@ public class SiftDetector implements Detector {
     @Override
     public double[][] detect(BufferedImage image) throws Exception {
         // Setting up image representation
-        ImageFloat32 img = ConvertBufferedImage.convertFromSingle(image, null, ImageFloat32.class);
+        ImageFloat32 grayscale = ConvertBufferedImage.convertFromSingle(image, null, ImageFloat32.class);
 
         // Creating the SIFT detector
         ConfigSiftDetector csd = new ConfigSiftDetector(extractRadius, detectThreshold, maxFeaturesPerScale, edgeThreshold);
         DetectDescribePoint<ImageFloat32, SurfFeature> describer = FactoryDetectDescribe.sift(null, csd, null, null);
 
         // Detecting local descriptors
-        describer.detect(img);
+        describer.detect(grayscale);
 
         int numPoints = describer.getNumberOfFeatures();
 
