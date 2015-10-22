@@ -21,12 +21,6 @@
         </dependency>
         
         <dependency>
-            <groupId>com.sangupta</groupId>
-            <artifactId>jopensurf</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        
-        <dependency>
             <groupId>org.boofcv</groupId>
             <artifactId>all</artifactId>
             <version>0.19</version>
