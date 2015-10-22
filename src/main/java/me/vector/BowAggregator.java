@@ -1,4 +1,4 @@
-package me.aggregation;
+package me.vector;
 
 import me.math.Normalizer;
 

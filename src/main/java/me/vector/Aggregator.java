@@ -1,4 +1,4 @@
-package me.aggregation;
+package me.vector;
 
 /**
  * An interface to aggregate local descriptors extracted from a media item into

@@ -1,4 +1,4 @@
-package me.aggregation;
+package me.vector;
 
 /**
  * A vocabulary codebook of centroids extracted after applying clustering on a
