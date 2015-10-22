@@ -1,4 +1,4 @@
-package me.detectors;
+package me.image;
 
 import boofcv.abst.feature.detdesc.DetectDescribePoint;
 import boofcv.abst.feature.detect.interest.ConfigSiftDetector;

@@ -1,4 +1,4 @@
-package me.detectors;
+package me.image;
 
 import java.awt.image.BufferedImage;
 
