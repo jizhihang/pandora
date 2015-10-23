@@ -9,7 +9,7 @@ import me.image.Detector;
 import me.image.SiftDetector;
 import me.image.SurfDetector;
 import me.io.FileManager;
-import me.io.ImageFilenameFilter;
+import me.io.MultipleFilenameFilter;
 import org.apache.log4j.Logger;
 
 /**
@@ -44,7 +44,7 @@ public class Extractor {
 
             // Loading image files
             File dirin = new File(inpath);
-            String[] filenames = dirin.list(new ImageFilenameFilter());
+            String[] filenames = dirin.list(new MultipleFilenameFilter("jpg"));
 
             // Setting up the detector
             Detector detector = null;
