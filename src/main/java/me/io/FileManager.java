@@ -115,7 +115,7 @@ public final class FileManager {
 
         try {
             // Opening a write output stream
-            writer = new BufferedWriter(new FileWriter(filepath));
+            writer = new BufferedWriter(new FileWriter(filepath, append));
 
             if (append) {
                 writer.newLine();
@@ -152,7 +152,7 @@ public final class FileManager {
 
         try {
             // Opening a file output stream
-            writer = new BufferedWriter(new FileWriter(filename));
+            writer = new BufferedWriter(new FileWriter(filename, append));
 
             if (append) {
                 writer.newLine();
