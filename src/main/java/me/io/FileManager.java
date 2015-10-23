@@ -107,14 +107,19 @@ public final class FileManager {
      *
      * @param vector the vector.
      * @param filepath the absolute path to the file.
+     * @param append if true the vector will be appended in the file.
      * @throws IOException an unknown exception.
      */
-    public static void writeVector(double[] vector, String filepath) throws IOException {
+    public static void writeVector(double[] vector, String filepath, boolean append) throws IOException {
         BufferedWriter writer = null;
 
         try {
             // Opening a write output stream
             writer = new BufferedWriter(new FileWriter(filepath));
+
+            if (append) {
+                writer.newLine();
+            }
 
             // Writing components in comma separated form
             for (int j = 0; j < vector.length; j++) {
@@ -139,14 +144,19 @@ public final class FileManager {
      *
      * @param matrix the matrix.
      * @param filename the absolute path to the file.
+     * @param append if true the matrix will be appended in the file.
      * @throws IOException an unknown exception.
      */
-    public static void writeMatrix(double[][] matrix, String filename) throws IOException {
+    public static void writeMatrix(double[][] matrix, String filename, boolean append) throws IOException {
         BufferedWriter writer = null;
 
         try {
             // Opening a file output stream
             writer = new BufferedWriter(new FileWriter(filename));
+
+            if (append) {
+                writer.newLine();
+            }
 
             // Writing line-byline each row
             for (int i = 0; i < matrix.length; i++) {
