@@ -1,9 +1,11 @@
 package me.exec;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.Properties;
 import me.io.FileManager;
 import me.math.RandomPermutation;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
 
 /**
@@ -11,16 +13,20 @@ import org.apache.log4j.Logger;
  * indices.
  *
  * Run as: mvn exec:java -Dexec.mainClass="me.exec.Sampler" -Dexec.args="path/to/config.properties"
- * Log as: tail -f /tmp/pandora-box.log
  *
  * @author Akis Papadopoulos
  */
 public class Sampler {
-
-    // Logger
-    private static final Logger logger = Logger.getLogger(Sampler.class);
+    
+    // Statistics
+    private static DescriptiveStatistics stats = new DescriptiveStatistics();
+    
+    // Formater
+    private static DecimalFormat formater = new DecimalFormat("#.#");
 
     public static void main(String[] args) {
+        Logger logger = null;
+        
         try {
             // Loading configuration properties
             Properties props = new Properties();
@@ -30,6 +36,14 @@ public class Sampler {
             double ratio = Double.parseDouble(props.getProperty("random.permutation.ratio", "1.0"));
             int seed = Integer.parseInt(props.getProperty("random.permutation.seed", "1"));
             String outpath = props.getProperty("sample.file.absolute.path");
+            String logfile = props.getProperty("log.file.path");
+            
+            // Setting log file path
+            System.setProperty("log.file", logfile);
+            System.out.print("See logs as: tail -f -n 100 " + logfile);
+            
+            // Setting up the logger
+            logger = Logger.getLogger(Sampler.class);
 
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);
@@ -45,12 +59,14 @@ public class Sampler {
             logger.info("Process started");
 
             // Sampling local descriptors per image
-            int total = 0;
+            int sampled = 0;
 
             for (int i = 0; i < filenames.length; i++) {
                 try {
                     // Loading the local descriptors of the next image
                     double[][] descriptors = FileManager.readMatrix(dirin.getPath() + "/" + filenames[i]);
+                    
+                    stats.addValue(descriptors.length);
 
                     // Creating random permutations regarding total number of descriptors
                     RandomPermutation permutations = new RandomPermutation(descriptors.length, seed);
@@ -71,7 +87,7 @@ public class Sampler {
 
                         FileManager.writeVector(descriptors[index], outpath, append);
 
-                        total++;
+                        sampled++;
                     }
 
                     // Writing indexed local descriptors in the sample file
@@ -86,8 +102,11 @@ public class Sampler {
 
             logger.info("100%");
             logger.info("Process completed successfuly");
-            logger.info("Local Descriptors: " + filenames.length);
-            logger.info("Sampled Descriptors: " + total);
+            logger.info("Images: " + stats.getN());
+            logger.info("Descriptors: " + stats.getSum());
+            logger.info("Mean: " + formater.format(stats.getMean()) + " (" + formater.format(stats.getGeometricMean()) + ")");
+            logger.info("MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
+            logger.info("Sampled: " + sampled);
         } catch (Exception exc) {
             logger.error("An unknown error occurred sampling local descriptors", exc);
         }
