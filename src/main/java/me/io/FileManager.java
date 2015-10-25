@@ -188,4 +188,34 @@ public final class FileManager {
             }
         }
     }
+
+    /**
+     * A method writing a given content in a binary file.
+     *
+     * @param content the content to be written.
+     * @param filename the absolute path to the file.
+     * @param append if true the matrix will be appended in the file.
+     * @throws IOException an unknown exception.
+     */
+    public static void write(String content, String filename, boolean append) throws IOException {
+        BufferedWriter writer = null;
+
+        try {
+            // Opening a file output stream
+            writer = new BufferedWriter(new FileWriter(filename, append));
+
+            if (append) {
+                writer.newLine();
+            }
+
+            writer.write(content);
+        } catch (IOException exc) {
+            throw exc;
+        } finally {
+            if (writer != null) {
+                writer.flush();
+                writer.close();
+            }
+        }
+    }
 }
