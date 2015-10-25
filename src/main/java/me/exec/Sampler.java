@@ -46,10 +46,10 @@ public class Sampler {
 
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);
-            logger.info("Inpath: " + inpath);
+            logger.info("Descriptors: " + inpath);
             logger.info("Ratio: " + ratio);
             logger.info("Seed: " + seed);
-            logger.info("Outpath: " + outpath);
+            logger.info("Sample: " + outpath);
 
             // Loading local descriptor files
             File dirin = new File(inpath);

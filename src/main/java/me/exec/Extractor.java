@@ -51,7 +51,7 @@ public class Extractor {
 
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);
-            logger.info("Inpath: " + inpath);
+            logger.info("Images: " + inpath);
             logger.info("Detector: " + method);
 
             // Loading image files
@@ -115,7 +115,7 @@ public class Extractor {
                 detector = new SiftDetector(extractRadius, detectThreshold, maxFeaturesPerScale, edgeThreshold, normalize);
             }
             
-            logger.info("Outpath: " + outpath);
+            logger.info("Descriptors: " + outpath);
             
             logger.info("Process started");
 
