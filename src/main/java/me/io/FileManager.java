@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import weka.core.Instance;
+import weka.core.Instances;
 
 /**
  * A singleton system file manager.
@@ -209,6 +211,56 @@ public final class FileManager {
             }
 
             writer.write(content);
+        } catch (IOException exc) {
+            throw exc;
+        } finally {
+            if (writer != null) {
+                writer.flush();
+                writer.close();
+            }
+        }
+    }
+
+    /**
+     * A method writing the given vector instances into a binary file.
+     *
+     * @param instances the instances to be written.
+     * @param filename the absolute path to the file.
+     * @param append if true the matrix will be appended in the file.
+     * @throws IOException an unknown exception.
+     */
+    public static void write(Instances instances, String filename, boolean append) throws IOException {
+        BufferedWriter writer = null;
+
+        try {
+            // Opening a file output stream
+            writer = new BufferedWriter(new FileWriter(filename, append));
+
+            if (append) {
+                writer.newLine();
+            }
+
+            // Writing each instance vector line by line
+            for (int i = 0; i < instances.numInstances(); i++) {
+                Instance instance = instances.instance(i);
+
+                // Building each row in a comma separated line
+                StringBuilder line = new StringBuilder();
+
+                for (int j = 0; j < instance.numAttributes(); j++) {
+                    line.append(instance.value(j));
+
+                    if (j < instance.numAttributes() - 1) {
+                        line.append(",");
+                    }
+                }
+
+                writer.write(line.toString());
+
+                if (i < instances.numInstances() - 1) {
+                    writer.newLine();
+                }
+            }
         } catch (IOException exc) {
             throw exc;
         } finally {
