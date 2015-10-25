@@ -133,7 +133,7 @@ public class Extractor {
                     String filename = filenames[i].substring(0, filenames[i].lastIndexOf("."));
 
                     // Saving descriptor in the outpath
-                    FileManager.writeMatrix(descriptors, dirout.getPath() + "/" + filename + "." + method, false);
+                    FileManager.write(descriptors, dirout.getPath() + "/" + filename + "." + method, false);
 
                     if (i % 100 == 0) {
                         int progress = (i * 100) / filenames.length;

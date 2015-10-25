@@ -84,7 +84,7 @@ public class Sampler {
                             append = false;
                         }
 
-                        FileManager.writeVector(descriptors[index], outpath, append);
+                        FileManager.write(descriptors[index], outpath, append);
 
                         sampled++;
                     }

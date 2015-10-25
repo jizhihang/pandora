@@ -112,7 +112,7 @@ public final class FileManager {
      * @param append if true the vector will be appended in the file.
      * @throws IOException an unknown exception.
      */
-    public static void writeVector(double[] vector, String filepath, boolean append) throws IOException {
+    public static void write(double[] vector, String filepath, boolean append) throws IOException {
         BufferedWriter writer = null;
 
         try {
@@ -149,7 +149,7 @@ public final class FileManager {
      * @param append if true the matrix will be appended in the file.
      * @throws IOException an unknown exception.
      */
-    public static void writeMatrix(double[][] matrix, String filename, boolean append) throws IOException {
+    public static void write(double[][] matrix, String filename, boolean append) throws IOException {
         BufferedWriter writer = null;
 
         try {
