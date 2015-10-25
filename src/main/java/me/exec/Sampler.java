@@ -108,7 +108,11 @@ public class Sampler {
             logger.info("MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
             logger.info("Sampled: " + sampled);
         } catch (Exception exc) {
-            logger.error("An unknown error occurred sampling local descriptors", exc);
+            if (logger != null) {
+                logger.error("An unknown error occurred sampling local descriptors", exc);
+            } else {
+                exc.printStackTrace();
+            }
         }
     }
 }

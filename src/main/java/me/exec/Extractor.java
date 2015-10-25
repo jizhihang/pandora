@@ -152,7 +152,11 @@ public class Extractor {
             logger.info("Mean: " + formater.format(stats.getMean()) + " (" + formater.format(stats.getGeometricMean()) + ")");
             logger.info("MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
         } catch (Exception exc) {
-            logger.error("An unknown error occurred extracting local descriptors", exc);
+            if (logger != null) {
+                logger.error("An unknown error occurred extracting local descriptors", exc);
+            } else {
+                exc.printStackTrace();
+            }
         }
     }
 }
