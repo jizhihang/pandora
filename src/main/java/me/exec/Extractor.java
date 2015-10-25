@@ -43,12 +43,11 @@ public class Extractor {
             String outpath = props.getProperty("local.descriptors.output.path");
             String logfile = props.getProperty("log.file.path");
             
-            // Setting log file path
-            System.setProperty("log.file", logfile);
-            System.out.print("See logs as: tail -f -n 100 " + logfile);
-            
             // Setting up the logger
+            System.setProperty("log.file", logfile);
             logger = Logger.getLogger(Extractor.class);
+            
+            System.out.print("See logs as: tail -f -n 100 " + logfile);
 
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);
