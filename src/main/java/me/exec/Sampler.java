@@ -22,7 +22,7 @@ public class Sampler {
     private static DescriptiveStatistics stats = new DescriptiveStatistics();
     
     // Formater
-    private static DecimalFormat formater = new DecimalFormat("#.#");
+    private static DecimalFormat formater = new DecimalFormat("#.###");
 
     public static void main(String[] args) {
         Logger logger = null;

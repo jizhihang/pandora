@@ -28,7 +28,7 @@ public class Extractor {
     private static DescriptiveStatistics stats = new DescriptiveStatistics();
     
     // Formater
-    private static DecimalFormat formater = new DecimalFormat("#.#");
+    private static DecimalFormat formater = new DecimalFormat("#.###");
 
     public static void main(String[] args) {
         Logger logger = null;
@@ -140,7 +140,7 @@ public class Extractor {
                         logger.info(progress + "%...");
                     }
                 } catch (Exception exc) {
-                    logger.error("An unknown error occurred extracting local descriptors.", exc);
+                    logger.error("An unknown error occurred extracting local descriptors for image " + filenames[i], exc);
                 }
             }
 
