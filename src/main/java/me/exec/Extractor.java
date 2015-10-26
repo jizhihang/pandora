@@ -128,10 +128,10 @@ public class Extractor {
 
                     stats.addValue(descriptors.length);
 
+                    // Saving descriptor with an identical name
                     int pos = filenames[i].lastIndexOf(".");
                     String filepath = outpath + "/" + filenames[i].substring(0, pos) + "." + method;
-
-                    // Saving descriptor in the outpath
+                    
                     FileManager.write(descriptors, filepath, false);
 
                     if (i % 100 == 0) {
