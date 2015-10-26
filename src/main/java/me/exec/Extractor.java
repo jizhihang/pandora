@@ -117,8 +117,6 @@ public class Extractor {
                 detector = new SiftDetector(extractRadius, detectThreshold, maxFeaturesPerScale, edgeThreshold, normalize);
             }
             
-            logger.info("Descriptors: " + outpath);
-            
             logger.info("Process started");
 
             // Extracting local descriptors per image
@@ -152,6 +150,7 @@ public class Extractor {
             logger.info("Descriptors: " + stats.getSum());
             logger.info("Mean: " + formater.format(stats.getMean()) + " (" + formater.format(stats.getGeometricMean()) + ")");
             logger.info("MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
+            logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {
                 logger.error("An unknown error occurred extracting local descriptors", exc);

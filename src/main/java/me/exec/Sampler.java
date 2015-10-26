@@ -52,7 +52,6 @@ public class Sampler {
             logger.info("Type: " + extension);
             logger.info("Ratio: " + ratio);
             logger.info("Seed: " + seed);
-            logger.info("Sample: " + outpath);
 
             // Loading local descriptor files
             File dirin = new File(inpath);
@@ -91,8 +90,7 @@ public class Sampler {
 
                         sampled++;
                     }
-
-                    // Writing indexed local descriptors in the sample file
+                    
                     if (i % 100 == 0) {
                         int progress = (i * 100) / filenames.length;
                         logger.info(progress + "%...");
@@ -109,6 +107,7 @@ public class Sampler {
             logger.info("Mean: " + formater.format(stats.getMean()) + " (" + formater.format(stats.getGeometricMean()) + ")");
             logger.info("MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
             logger.info("Sampled: " + sampled);
+            logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {
                 logger.error("An unknown error occurred sampling local descriptors", exc);

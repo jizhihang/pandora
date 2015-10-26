@@ -51,7 +51,6 @@ public class Clusterer {
             logger.info("Fast Distance: " + fast);
             logger.info("Seed: " + seed);
             logger.info("Slots: " + slots);
-            logger.info("Centroids: " + outpath);
 
             // Loading sample data
             CSVLoader loader = new CSVLoader();
@@ -92,6 +91,7 @@ public class Clusterer {
             logger.info("Centroids: " + centroids.numInstances());
             logger.info("Centroid Size: " + data.numAttributes());
             logger.info("Squared Error: " + clusterer.getSquaredError());
+            logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {
                 logger.error("An unknown error occurred building clusters", exc);
