@@ -120,8 +120,6 @@ public class Extractor {
             logger.info("Process started");
 
             // Extracting local descriptors per image
-            File dirout = new File(outpath);
-
             for (int i = 0; i < filenames.length; i++) {
                 try {
                     BufferedImage image = UtilImageIO.loadImage(dirin.getPath() + "/" + filenames[i]);
@@ -130,10 +128,11 @@ public class Extractor {
 
                     stats.addValue(descriptors.length);
 
-                    String filename = filenames[i].substring(0, filenames[i].lastIndexOf("."));
+                    int pos = filenames[i].lastIndexOf(".");
+                    String filepath = outpath + "/" + filenames[i].substring(0, pos) + "." + method;
 
                     // Saving descriptor in the outpath
-                    FileManager.write(descriptors, dirout.getPath() + "/" + filename + "." + method, false);
+                    FileManager.write(descriptors, filepath, false);
 
                     if (i % 100 == 0) {
                         int progress = (i * 100) / filenames.length;
