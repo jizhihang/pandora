@@ -49,6 +49,7 @@ public class Sampler {
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);
             logger.info("Descriptors: " + inpath);
+            logger.info("Type: " + extension);
             logger.info("Ratio: " + ratio);
             logger.info("Seed: " + seed);
             logger.info("Sample: " + outpath);

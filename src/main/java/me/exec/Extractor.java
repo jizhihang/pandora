@@ -39,6 +39,7 @@ public class Extractor {
             props.load(new FileInputStream(args[0]));
 
             String inpath = props.getProperty("dataset.images.input.path");
+            String extension = props.getProperty("dataset.image.file.extension");
             String method = props.getProperty("descriptors.detection.method");
             String outpath = props.getProperty("local.descriptors.output.path");
             String logfile = props.getProperty("log.file.path");
@@ -52,11 +53,12 @@ public class Extractor {
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);
             logger.info("Images: " + inpath);
+            logger.info("Type: " + extension);
             logger.info("Detector: " + method);
 
             // Loading image files
             File dirin = new File(inpath);
-            String[] filenames = dirin.list(new MultipleFilenameFilter("jpg"));
+            String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
 
             // Setting up the detector
             Detector detector = null;
