@@ -30,7 +30,7 @@ public class VlatAggregator implements Aggregator {
 
     /**
      * A constructor initiating the vocabulary codebooks of centroid words plus
-     * the normalization option.
+     * the normalization option. Be aware codebooks order matters.
      *
      * @param codebooks the vocabulary codebooks.
      * @param normalize the option to normalize.
