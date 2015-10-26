@@ -4,6 +4,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.Properties;
 import me.io.FileManager;
+import me.io.MultipleFilenameFilter;
 import me.math.RandomPermutation;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
@@ -33,6 +34,7 @@ public class Sampler {
             props.load(new FileInputStream(args[0]));
 
             String inpath = props.getProperty("local.descriptors.input.path");
+            String extension = props.getProperty("local.descriptors.file.extension");
             double ratio = Double.parseDouble(props.getProperty("random.permutation.ratio", "1.0"));
             int seed = Integer.parseInt(props.getProperty("random.permutation.seed", "1"));
             String outpath = props.getProperty("sample.file.absolute.path");
@@ -53,7 +55,7 @@ public class Sampler {
 
             // Loading local descriptor files
             File dirin = new File(inpath);
-            String[] filenames = dirin.list();
+            String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
 
             logger.info("Process started");
 
