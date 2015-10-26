@@ -1,138 +1,137 @@
 package me.exec;
 
-import me.io.MultipleFileFilter;
 import java.io.*;
-import java.util.Date;
+import java.text.DecimalFormat;
+import java.util.List;
 import me.vector.Aggregator;
 import me.vector.BowAggregator;
 import me.vector.Codebook;
 import me.vector.VladAggregator;
 import me.vector.VlatAggregator;
 import me.io.FileManager;
+import me.io.MultipleFilenameFilter;
+import me.util.SmartProperties;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
 
 /**
- * A builder aggregates local descriptors into a fixed size descriptor per
- * image.
+ * A builder aggregates local descriptors per image into a fixed size vector
+ * using single/multiple visual word vocabularies.
+ *
+ * Run as: mvn exec:java -Dexec.mainClass="me.exec.Builder" -Dexec.args="path/to/config.properties"
  *
  * @author Akis Papadopoulos
  */
 public class Builder {
-    
-    private static final Logger logger = Logger.getLogger(Builder.class);
 
-    /**
-     * A method implements the aggregation process to compute the fixed-length
-     * descriptor according the BOW, VLAT or VLAD method. Takes as input
-     * parameters, the input path of the image local descriptors files, the
-     * output path where the fixed-length descriptors stored, the codebook file
-     * path, the descriptors type to be aggregated, the aggregation method will
-     * be used and the normalization option, e.g. java -jar builder.jar <inpath>
-     * <outpath> <codebook> <type> <method> <norm> or using maven mvn exec:java
-     * -Dexec.mainClass="me.scripts.Builder" -Dexec.args="inpath outpath
-     * codebook type method".
-     *
-     * @param args the command line arguments.
-     */
+    // Statistics
+    private static DescriptiveStatistics stats = new DescriptiveStatistics();
+
+    // Formater
+    private static DecimalFormat formater = new DecimalFormat("#.###");
+
     public static void main(String[] args) {
-        try {
-            // Printing report message, help messages
-            if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
-                System.out.println("Builder - Help\n");
-                System.out.println("mvn exec:java -Dexec.mainClass=\"me.scripts.Builder\" -Dexec.args=\"inpath outpath vocabs method\"\n");
-                System.out.println("inpath: path to local descriptors");
-                System.out.println("outpath: path to final descriptors");
-                System.out.println("vocabs: path to codebooks files");
-                System.out.println("<type> descriptors type to be aggregated, e.g. surfm.");
-                System.out.println("<method> which aggregation method will be used, e.g. vlad.");
+        Logger logger = null;
 
-                System.exit(0);
+        try {
+            // Loading configuration properties
+            SmartProperties props = new SmartProperties();
+            props.load(new FileInputStream(args[0]));
+
+            String inpath = props.getProperty("local.descriptors.input.path");
+            String extension = props.getProperty("local.descriptors.file.extension");
+            String method = props.getProperty("building.aggregation.method");
+            boolean normalize = Boolean.parseBoolean(props.getProperty("building.vector.normalization", "true"));
+            List<String> vocabs = props.matchProperties("building.vocabulary.\\d+");
+            String outpath = props.getProperty("building.vectors.output.path");
+            String logfile = props.getProperty("log.file.path");
+
+            // Setting up the logger
+            System.setProperty("log.file", logfile);
+            logger = Logger.getLogger(Clusterer.class);
+
+            System.out.print("See logs as: tail -f -n 100 " + logfile);
+
+            logger.info("Configuration loaded");
+            logger.info("File: " + args[0]);
+            logger.info("Descriptors: " + inpath);
+            logger.info("Type: " + extension);
+            logger.info("Method: " + method);
+            logger.info("Normalization: " + normalize);
+
+            // Loading local descriptor files
+            File dirin = new File(inpath);
+            String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
+
+            // Loading up vocabularies given each file path in restricted order
+            Codebook[] codebooks = new Codebook[vocabs.size()];
+
+            // Be aware order matters
+            for (int i = 0; i < vocabs.size(); i++) {
+                String vocab = vocabs.get(i);
+
+                double[][] centroids = FileManager.readMatrix(vocab);
+
+                Codebook codebook = new Codebook(centroids);
+
+                codebooks[i] = codebook;
+
+                logger.info("Vocabulary #" + (i + 1) + ": " + vocab);
             }
 
-            System.out.println("Process started at " + new Date() + ".");
-
-            String inpath = args[0];
-            String outpath = args[1];
-            String codebookPath = args[2];
-            String type = args[3];
-            String method = args[4];
-
-            // Printing report message, input parameters
-            System.out.println("Inpath: " + inpath);
-            System.out.println("Outpath: " + outpath);
-            System.out.println("Codebook: " + codebookPath);
-            System.out.println("Descriptors: " + type.toLowerCase());
-            System.out.println("Aggregator: " + method.toLowerCase());
-
-            // Printing a report message, progress
-            System.out.println("Loading codebook...");
-
-            // Reading the codebooks
-            Codebook[] codebooks = new Codebook[1];
-            double[][] codebook = FileManager.readMatrix(codebookPath);
-            codebooks[0] = new Codebook(codebook);
-
-            // Setting up the aggregator, user defined method
+            // Setting up the aggregator
             Aggregator aggregator = null;
-            String extension = null;
 
             if (method.equalsIgnoreCase("bow")) {
-                aggregator = new BowAggregator(codebooks, true);
-                extension = "bow";
+                aggregator = new BowAggregator(codebooks, normalize);
             } else if (method.equalsIgnoreCase("vlad")) {
-                aggregator = new VladAggregator(codebooks, true);
-                extension = "vlad";
+                aggregator = new VladAggregator(codebooks, normalize);
             } else if (method.equalsIgnoreCase("vlat")) {
-                aggregator = new VlatAggregator(codebooks, true);
-                extension = "vlat";
-            } else {
-                throw new IllegalArgumentException("aggregation method '" + method + "' not supported.");
+                aggregator = new VlatAggregator(codebooks, normalize);
             }
 
-            // Opening the output directory
-            File dirout = new File(outpath);
+            logger.info("Process started");
 
-            if (!dirout.exists()) {
-                dirout.mkdir();
-            }
+            // Aggregating local descriptors per image
+            int vectorSize = 0;
 
-            // Opening the input directory
-            File dirin = new File(inpath);
-            File[] files = dirin.listFiles(new MultipleFileFilter(type));
+            for (int i = 0; i < filenames.length; i++) {
+                // Loading local descriptor
+                double[][] descriptors = FileManager.readMatrix(dirin.getPath() + "/" + filenames[i]);
 
-            if (files.length == 0) {
-                throw new Exception("descriptor type '" + type.toLowerCase() + "' not exists.");
-            }
+                stats.addValue(descriptors.length);
 
-            System.out.println("Starting aggregation...");
-            System.out.print("Progress:  ");
+                // Vectorizing descriptors
+                double[] vector = aggregator.aggregate(descriptors);
 
-            // Iterating through the files
-            for (int i = 0; i < files.length; i++) {
-                double[][] descriptors = FileManager.readMatrix(files[i].getPath());
+                vectorSize = vector.length;
 
-                double[] descriptor = aggregator.aggregate(descriptors);
+                // Saving vector with an identical filename
+                int pos = filenames[i].lastIndexOf(".");
+                String filepath = outpath + "/" + filenames[i].substring(0, pos) + "." + method;
 
-                int pos = files[i].getName().lastIndexOf(".");
-                String name = files[i].getName().substring(0, pos);
-
-                FileManager.write(descriptor, dirout.getPath() + "/" + name + "." + extension, false);
+                FileManager.write(vector, filepath, false);
 
                 if (i % 100 == 0) {
-                    int progress = (i * 100) / files.length;
-                    System.out.print(progress + "%\b\b\b");
+                    int progress = (i * 100) / filenames.length;
+                    logger.info(progress + "%...");
                 }
             }
 
-            System.out.println("100%");
-            System.out.println("Images examined: " + files.length);
-            System.out.println("Aggregation method: " + method.toLowerCase());
-
-            System.out.println("Process finished at " + new Date() + ".");
+            logger.info("100%");
+            logger.info("Process completed successfuly");
+            logger.info("Images: " + stats.getN());
+            logger.info("Descriptors: " + stats.getSum());
+            logger.info("Mean: " + formater.format(stats.getMean()) + " (" + formater.format(stats.getGeometricMean()) + ")");
+            logger.info("MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
+            logger.info("Vector Size: " + vectorSize);
+            logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
-            System.err.println("[" + new Date() + "] " + exc);
-            exc.printStackTrace(System.err);
-            System.out.println("...Process aborted at " + new Date() + ".");
+            if (logger != null) {
+                logger.error("An unknown error occurred building fixed size vectors", exc);
+            } else {
+                exc.printStackTrace();
+            }
         }
     }
 }
