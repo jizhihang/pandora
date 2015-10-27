@@ -3,7 +3,8 @@ package me.exec;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.Properties;
-import me.io.FileManager;
+import me.io.Writer;
+import me.io.Reader;
 import me.io.MultipleFilenameFilter;
 import me.math.RandomPermutation;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -65,7 +66,7 @@ public class Sampler {
             for (int i = 0; i < filenames.length; i++) {
                 try {
                     // Loading the local descriptors of the next image
-                    double[][] descriptors = FileManager.readMatrix(dirin.getPath() + "/" + filenames[i]);
+                    double[][] descriptors = Reader.read(dirin.getPath() + "/" + filenames[i]);
                     
                     stats.addValue(descriptors.length);
 
@@ -86,7 +87,7 @@ public class Sampler {
                             append = false;
                         }
 
-                        FileManager.write(descriptors[index], outpath, append);
+                        Writer.write(descriptors[index], outpath, append);
 
                         sampled++;
                     }

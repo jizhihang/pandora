@@ -9,7 +9,7 @@ import me.image.ColorSurfDetector;
 import me.image.Detector;
 import me.image.SiftDetector;
 import me.image.SurfDetector;
-import me.io.FileManager;
+import me.io.Writer;
 import me.io.MultipleFilenameFilter;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
@@ -132,7 +132,7 @@ public class Extractor {
                     int pos = filenames[i].lastIndexOf(".");
                     String filepath = outpath + "/" + filenames[i].substring(0, pos) + "." + method;
                     
-                    FileManager.write(descriptors, filepath, false);
+                    Writer.write(descriptors, filepath, false);
 
                     if (i % 100 == 0) {
                         int progress = (i * 100) / filenames.length;

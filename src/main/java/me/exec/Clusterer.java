@@ -2,7 +2,7 @@ package me.exec;
 
 import java.io.*;
 import java.util.Properties;
-import me.io.FileManager;
+import me.io.Writer;
 import org.apache.log4j.Logger;
 import weka.clusterers.SimpleKMeans;
 import weka.core.Instances;
@@ -84,7 +84,7 @@ public class Clusterer {
             // Writing clusters in output file
             Instances centroids = clusterer.getClusterCentroids();
 
-            FileManager.write(centroids, outpath, false);
+            Writer.write(centroids, outpath, false);
 
             logger.info("Process completed successfuly");
             logger.info("Instances: " + data.numInstances());

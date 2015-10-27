@@ -8,7 +8,8 @@ import me.vector.BowAggregator;
 import me.vector.Codebook;
 import me.vector.VladAggregator;
 import me.vector.VlatAggregator;
-import me.io.FileManager;
+import me.io.Writer;
+import me.io.Reader;
 import me.io.MultipleFilenameFilter;
 import me.util.SmartProperties;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -70,7 +71,7 @@ public class Builder {
             for (int i = 0; i < vocabs.size(); i++) {
                 String vocab = vocabs.get(i);
 
-                double[][] centroids = FileManager.readMatrix(vocab);
+                double[][] centroids = Reader.read(vocab);
 
                 Codebook codebook = new Codebook(centroids);
 
@@ -97,7 +98,7 @@ public class Builder {
 
             for (int i = 0; i < filenames.length; i++) {
                 // Loading local descriptor
-                double[][] descriptors = FileManager.readMatrix(dirin.getPath() + "/" + filenames[i]);
+                double[][] descriptors = Reader.read(dirin.getPath() + "/" + filenames[i]);
 
                 stats.addValue(descriptors.length);
 
@@ -110,7 +111,7 @@ public class Builder {
                 int pos = filenames[i].lastIndexOf(".");
                 String filepath = outpath + "/" + filenames[i].substring(0, pos) + "." + method;
 
-                FileManager.write(vector, filepath, false);
+                Writer.write(vector, filepath, false);
 
                 if (i % 100 == 0) {
                     int progress = (i * 100) / filenames.length;
