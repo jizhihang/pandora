@@ -1,12 +1,8 @@
 package me.math;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.factory.DecompositionFactory;
 import org.ejml.interfaces.decomposition.SingularValueDecomposition;
-import org.ejml.ops.CommonOps;
 import org.ejml.ops.SingularOps;
 
 /**
@@ -65,51 +61,43 @@ public class PrincipalComponentAnalyzer implements ComponentAnalyzer {
      */
     @Override
     public double[][] analyze(double[][] data) throws Exception {
-        if (data == null || data.length < 1) {
-            throw new IllegalArgumentException("Invalid data values null or empty, analysis failed.");
+        // Building random permutations regarding total number of data items
+        RandomPermutation permutations = new RandomPermutation(data.length, seed);
+
+        // Sampling permutation indexed items regarding ratio
+        int[] indices = permutations.sample(ratio);
+
+        double[][] sample = new double[indices.length][];
+
+        for (int j = 0; j < indices.length; j++) {
+            int index = indices[j];
+
+            sample[j] = data[index];
         }
 
-        // Sampling on the dataset using seed
-        Random gen = new Random(seed);
+        DenseMatrix64F A = new DenseMatrix64F(data);
 
-        List<double[]> list = new ArrayList<double[]>();
+        // Calculating the adjustment mean vector
+        double[] mean = new double[A.numCols];
 
-        for (int i = 0; i < data.length; i++) {
-            if (gen.nextDouble() <= ratio) {
-                list.add(data[i]);
+        for (int i = 0; i < A.getNumRows(); i++) {
+            for (int j = 0; j < mean.length; j++) {
+                mean[j] += A.get(i, j);
             }
         }
 
-        // Converting list to 2d double array
-        double[][] sample = new double[list.size()][];
-
-        for (int i = 0; i < sample.length; i++) {
-            sample[i] = list.get(i);
+        for (int j = 0; j < mean.length; j++) {
+            mean[j] /= A.getNumRows();
         }
 
-        // Setting up and feeding the raw data holder with the sample
-        DenseMatrix64F A = new DenseMatrix64F(sample);
-
-        // Compute the component's mean across all the samples
-        DenseMatrix64F mean = new DenseMatrix64F(1, A.numCols);
-        CommonOps.sumCols(A, mean);
-        CommonOps.divide(A.numRows, mean);
-
-        // Adjusting raw data, subtracted by each component's mean
+        // Adjusting by subtracting each component by component's mean
         for (int i = 0; i < A.numRows; i++) {
             for (int j = 0; j < A.numCols; j++) {
-                A.set(i, j, A.get(i, j) - mean.get(0, j));
+                A.set(i, j, A.get(i, j) - mean[j]);
             }
         }
 
-        // Copying mean vector to 1d double array, adjustment vector
-        double[] adjustment = new double[mean.numCols];
-
-        for (int i = 0; i < mean.numCols; i++) {
-            adjustment[i] = mean.get(0, i);
-        }
-
-        // Applying PCA on adjusted raw data using SVD
+        // Applying PCA on adjusted data using SVD
         SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(A.numRows, A.numCols, false, true, true);
 
         // Decomposing the original data matrix
@@ -142,7 +130,7 @@ public class PrincipalComponentAnalyzer implements ComponentAnalyzer {
         double[][] map = new double[projection.length + 1][];
 
         // Adding the adjustment vector, first row
-        map[0] = adjustment;
+        map[0] = mean;
 
         // Adding the projection matrix, rest rows
         for (int i = 1; i < map.length; i++) {
