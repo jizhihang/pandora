@@ -21,7 +21,7 @@ public class RandomPermutation {
      * @param size the size of indices to permute.
      * @param seed the seed number.
      */
-    public RandomPermutation(int size, int seed) {
+    public RandomPermutation(int size, long seed) {
         indices = new int[size];
 
         // Listing indices

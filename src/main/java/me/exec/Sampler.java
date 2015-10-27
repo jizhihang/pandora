@@ -37,7 +37,7 @@ public class Sampler {
             String inpath = props.getProperty("local.descriptors.input.path");
             String extension = props.getProperty("local.descriptors.file.extension");
             double ratio = Double.parseDouble(props.getProperty("random.permutation.ratio", "1.0"));
-            int seed = Integer.parseInt(props.getProperty("random.permutation.seed", "1"));
+            long seed = Long.parseLong(props.getProperty("random.permutation.seed", "1"));
             String outpath = props.getProperty("sample.file.absolute.path");
             String logfile = props.getProperty("log.file.path");
             
