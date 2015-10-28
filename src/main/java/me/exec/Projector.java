@@ -5,13 +5,13 @@ import java.util.Properties;
 import me.io.Writer;
 import me.io.Reader;
 import me.io.MultipleFilenameFilter;
-import me.math.ComponentAnalyzer;
-import me.math.PrincipalComponentAnalyzer;
+import me.math.ProjectionSpace;
+import me.math.RandomPermutation;
 import org.apache.log4j.Logger;
 
 /**
- * A projection analyzer applies PCA on a list of vectors using singular value
- * decomposition.
+ * An executable creating the projection principal component space given a list
+ * of vectors using singular value decomposition.
  *
  * Run as: mvn exec:java -Dexec.mainClass="me.exec.Projector" -Dexec.args="path/to/config.properties"
  *
@@ -31,7 +31,7 @@ public class Projector {
             String extension = props.getProperty("vectors.file.extension");
             double ratio = Double.parseDouble(props.getProperty("vectors.sample.ratio", "1.0"));
             long seed = Long.parseLong(props.getProperty("sample.seed.number", "1"));
-            String outpath = props.getProperty("projection.matrix.output.path");
+            String outpath = props.getProperty("projection.space.output.path");
             String logfile = props.getProperty("log.file.path");
 
             // Setting up the logger
@@ -47,36 +47,46 @@ public class Projector {
             logger.info("Sample Ratio: " + ratio);
             logger.info("Seed: " + seed);
 
-            // Loading the vectors
+            // Loading vectors
             File dirin = new File(inpath);
             String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
 
-            double[][] vectors = new double[filenames.length][];
-
-            for (int i = 0; i < filenames.length; i++) {
-                vectors[i] = Reader.read(dirin.getPath() + "/" + filenames[i], 1);
-            }
-
             logger.info("Process started...");
 
-            // Setting up the component analyzer
-            ComponentAnalyzer analyzer = new PrincipalComponentAnalyzer(ratio, seed);
+            // Sampling vectors using random permutation indices
+            RandomPermutation permutation = new RandomPermutation(filenames.length, seed);
 
-            // Applying principal component analysis to the given vector set
-            double[][] matrix = analyzer.analyze(vectors);
+            int[] indices = permutation.sample(ratio);
 
-            // Writing projection matrix line-by-line preceded by the adjustment vector
-            Writer.write(matrix, outpath, false);
+            // Collecting only premutation indexed vectors
+            double[][] vectors = new double[indices.length][];
+
+            for (int i = 0; i < indices.length; i++) {
+                int index = indices[i];
+
+                vectors[i] = Reader.read(dirin.getPath() + "/" + filenames[index], 1);
+            }
+
+            // Creating the projection space upon the sampled vectors
+            ProjectionSpace projection = new ProjectionSpace(vectors);
+
+            // Saving the projection space into a file
+            double[] mean = projection.getMean();
+            double[][] space = projection.getSpace();
+
+            // Writing line-by-line where adjustment vector comes first
+            Writer.write(mean, outpath, false);
+            Writer.write(space, outpath, true);
 
             logger.info("Process completed successfuly");
             logger.info("Vectors: " + vectors.length);
             logger.info("Vector Size: " + vectors[0].length);
-            logger.info("Eigenvectors: " + matrix[1].length);
+            logger.info("Eigen Vaules: " + space.length);
             logger.info("Order: desc");
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {
-                logger.error("An unknown error occurred applying projection analysis", exc);
+                logger.error("An unknown error occurred creating projection space", exc);
             } else {
                 exc.printStackTrace();
             }
