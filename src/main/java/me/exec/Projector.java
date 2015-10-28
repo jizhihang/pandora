@@ -81,7 +81,7 @@ public class Projector {
             logger.info("Process completed successfuly");
             logger.info("Vectors: " + vectors.length);
             logger.info("Vector Size: " + vectors[0].length);
-            logger.info("Eigen Vaules: " + space.length);
+            logger.info("Eigen Values: " + space.length);
             logger.info("Order: desc");
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
