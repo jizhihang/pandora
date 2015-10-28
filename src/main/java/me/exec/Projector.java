@@ -31,6 +31,7 @@ public class Projector {
             String extension = props.getProperty("vectors.file.extension");
             double ratio = Double.parseDouble(props.getProperty("vectors.sample.ratio", "1.0"));
             long seed = Long.parseLong(props.getProperty("sample.seed.number", "1"));
+            boolean compact = Boolean.parseBoolean(props.getProperty("projection.space.compact.form", "false"));
             String outpath = props.getProperty("projection.space.output.path");
             String logfile = props.getProperty("log.file.path");
 
@@ -46,6 +47,7 @@ public class Projector {
             logger.info("Type: " + extension);
             logger.info("Sample Ratio: " + ratio);
             logger.info("Seed: " + seed);
+            logger.info("Compact: " + compact);
 
             // Loading vectors
             File dirin = new File(inpath);
@@ -68,7 +70,7 @@ public class Projector {
             }
 
             // Creating the projection space upon the sampled vectors
-            ProjectionSpace projection = new ProjectionSpace(vectors);
+            ProjectionSpace projection = new ProjectionSpace(vectors, compact);
 
             // Saving the projection space into a file
             double[] mean = projection.getMean();

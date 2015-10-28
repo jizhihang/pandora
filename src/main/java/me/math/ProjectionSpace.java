@@ -25,11 +25,13 @@ public class ProjectionSpace {
     /**
      * A constructor creating a projection space of eigen values given the
      * original data. Eigen values are ordered descending indicating the most
-     * dominant principal components come first.
+     * dominant principal components come first. Using compact form means the
+     * eigen values will be stripped off equal to the number of the data items.
      *
      * @param data the original data.
+     * @param compact true to create space in compact form.
      */
-    public ProjectionSpace(double[][] data) {
+    public ProjectionSpace(double[][] data, boolean compact) {
         // Loading original data
         DenseMatrix64F A = new DenseMatrix64F(data);
 
@@ -54,7 +56,7 @@ public class ProjectionSpace {
         }
 
         // Computing SVD and saving time by not computing U
-        SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(A.numRows, A.numCols, false, true, false);
+        SingularValueDecomposition<DenseMatrix64F> svd = DecompositionFactory.svd(A.numRows, A.numCols, false, true, compact);
 
         if (!svd.decompose(A)) {
             throw new RuntimeException("Singular value decomposition process failed");
@@ -134,6 +136,7 @@ public class ProjectionSpace {
      * @return a projection sub-space to the most dominant components.
      */
     public double[][] getBasis(int size) {
+        // TODO: Implement a more memory wised matrix copy
         DenseMatrix64F B_t = new DenseMatrix64F(V_t);
 
         // Striping off unneeded components retaining the most dominant
