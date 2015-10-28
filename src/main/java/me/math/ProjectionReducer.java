@@ -14,7 +14,7 @@ import org.ejml.ops.CommonOps;
  *
  * @author Akis Papadopoulos
  */
-public class DeltaProjectionReducer implements ComponentReducer {
+public class ProjectionReducer implements ComponentReducer {
 
     // Most dominant principal component eigen value sub-space
     private DenseMatrix64F B_t;
@@ -30,7 +30,7 @@ public class DeltaProjectionReducer implements ComponentReducer {
      * @param subspace the principal component eigen values sub-space.
      * @param mean the adjustment mean vector.
      */
-    public DeltaProjectionReducer(double[][] subspace, double[] mean) {
+    public ProjectionReducer(double[][] subspace, double[] mean) {
         B_t = new DenseMatrix64F(subspace);
 
         m = DenseMatrix64F.wrap(mean.length, 1, mean);
@@ -44,7 +44,7 @@ public class DeltaProjectionReducer implements ComponentReducer {
      * @param filepath the absolute path to the projection sub-space file.
      * @throws IOException unknown IO exceptions.
      */
-    public DeltaProjectionReducer(String filepath) throws IOException {
+    public ProjectionReducer(String filepath) throws IOException {
         double[][] lines = Reader.read(filepath);
 
         // Loading 1st line as the mean adjustment vector
