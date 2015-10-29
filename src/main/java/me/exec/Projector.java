@@ -39,7 +39,7 @@ public class Projector {
             System.setProperty("log.file", logfile);
             logger = Logger.getLogger(Projector.class);
 
-            System.out.print("See logs as: tail -f -n 100 " + logfile);
+            System.out.println("See logs as: tail -f -n 100 " + logfile);
 
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);
