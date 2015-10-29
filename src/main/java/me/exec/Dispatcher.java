@@ -41,7 +41,7 @@ public class Dispatcher {
                 System.out.println("Please run available entries as: ");
 
                 for (String key : entries.keySet()) {
-                    System.out.println(" java -jar pandora-box.jar " + key + " config-file");
+                    System.out.println(" java -jar pandora-box.jar " + key + " configs/file");
                 }
 
                 System.exit(1);
@@ -51,7 +51,7 @@ public class Dispatcher {
             System.out.println("Please run available entries as: ");
 
             for (String key : entries.keySet()) {
-                System.out.println(" java -jar pandora-box.jar " + key + " config-file");
+                System.out.println(" java -jar pandora-box.jar " + key + " configs/file");
             }
 
             System.exit(1);
