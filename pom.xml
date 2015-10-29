@@ -10,19 +10,25 @@
 
     <properties>
         <encoding>UTF-8</encoding>
-        <jdk-version>1.7</jdk-version>
+        <jdk.version>1.7</jdk.version>
     </properties>
   
     <dependencies>
         <dependency>
             <groupId>org.ejml</groupId>
-            <artifactId>all</artifactId>
+            <artifactId>dense64</artifactId>
             <version>0.28</version>
         </dependency>
         
         <dependency>
             <groupId>org.boofcv</groupId>
-            <artifactId>all</artifactId>
+            <artifactId>feature</artifactId>
+            <version>0.19</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.boofcv</groupId>
+            <artifactId>io</artifactId>
             <version>0.19</version>
         </dependency>
         
@@ -60,12 +66,11 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <debug>false</debug>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
                 </configuration>
             </plugin>
-                        
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
