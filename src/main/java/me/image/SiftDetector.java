@@ -10,15 +10,15 @@ import java.awt.image.BufferedImage;
 import me.math.Normalizer;
 
 /**
- * A detector extracting SIFT grayscale local descriptors given an image using
- * the BoofCV library.
+ * A local detector extracting SIFT grayscale local descriptors given an image
+ * using the BoofCV library.
  *
  * This class is a modification of a class written by Eleftherios
  * Spyromitros-Xioufis, please see <a href="https://goo.gl/c4vwMo">more</a>.
  *
  * @author Akis Papadopoulos
  */
-public class SiftDetector implements Detector {
+public class SiftDetector implements LocalDetector {
 
     // Feature size used to detect the corners
     private int extractRadius = 2;
@@ -72,6 +72,11 @@ public class SiftDetector implements Detector {
         describer.detect(grayscale);
 
         int numPoints = describer.getNumberOfFeatures();
+
+        // Checking if no interest points detected within image
+        if (numPoints <= 0) {
+            throw new Exception("No local SIFT descriptors detected for the given image");
+        }
 
         double[][] descriptors = new double[numPoints][];
 

@@ -23,15 +23,15 @@ import java.util.List;
 import me.math.Normalizer;
 
 /**
- * A detector extracting stable colorful SURF local descriptors given an image
- * using the BoofCV library.
+ * A local detector extracting stable colorful SURF local descriptors given an
+ * image using the BoofCV library.
  *
  * This class is a modification of a class written by Eleftherios
  * Spyromitros-Xioufis, please see <a href="https://goo.gl/HSl3JG">more</a>.
  *
  * @author Akis Papadopoulos
  */
-public class ColorSurfDetector implements Detector {
+public class ColorSurfDetector implements LocalDetector {
 
     // Radius of the non-maximum region
     private int radius = 1;
@@ -127,6 +127,11 @@ public class ColorSurfDetector implements Detector {
 
         // Computing the orientation angles for each point
         List<ScalePoint> points = detector.getFoundPoints();
+
+        // Checking if no interest points detected within image
+        if (points.isEmpty()) {
+            throw new Exception("No local colorful SURF descriptors detected for the given image");
+        }
 
         double[] angles = new double[points.size()];
 

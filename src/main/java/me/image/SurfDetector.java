@@ -19,15 +19,15 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 /**
- * A detector extracting stable grayscale SURF local descriptors given an image
- * using the BoofCV library.
+ * A local detector extracting stable grayscale SURF local descriptors given an
+ * image using the BoofCV library.
  *
  * This class is a modification of a class written by Peter Abeles, please see
  * <a href="https://goo.gl/dtrW7I">more</a>.
  *
  * @author Akis Papadopoulos
  */
-public class SurfDetector implements Detector {
+public class SurfDetector implements LocalDetector {
 
     // Radius of the non-maximum region
     private int radius = 1;
@@ -92,7 +92,7 @@ public class SurfDetector implements Detector {
         NonMaxSuppression extractor = FactoryFeatureExtractor.nonmax(ce);
 
         FastHessianFeatureDetector<ImageSingleBand> detector = new FastHessianFeatureDetector<ImageSingleBand>(extractor, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves);
-        
+
         // Working off of integral images
         Class<ImageSingleBand> integralType = GIntegralImageOps.getIntegralType(ImageFloat32.class);
 
@@ -120,7 +120,7 @@ public class SurfDetector implements Detector {
 
         // Checking if no interest points detected within image
         if (points.isEmpty()) {
-            throw new Exception("No local stable SURF descriptors detected given an image.");
+            throw new Exception("No local grayscale SURF descriptors detected for the given image");
         }
 
         // Extracting descriptors iterating through scale points

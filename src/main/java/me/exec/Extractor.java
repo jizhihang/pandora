@@ -6,7 +6,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.Properties;
 import me.image.ColorSurfDetector;
-import me.image.Detector;
+import me.image.LocalDetector;
 import me.image.SiftDetector;
 import me.image.SurfDetector;
 import me.io.Writer;
@@ -61,7 +61,7 @@ public class Extractor {
             String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
 
             // Setting up the detector
-            Detector detector = null;
+            LocalDetector detector = null;
 
             if (method.equalsIgnoreCase("surf")) {
                 int radius = Integer.parseInt(props.getProperty("detector.surf.radius", "1"));
