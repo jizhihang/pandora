@@ -33,6 +33,7 @@ public class Reducer {
             String projectionFile = props.getProperty("projection.space.file.path");
             int size = Integer.parseInt(props.getProperty("most.dominant.components", "1"));
             String outpath = props.getProperty("reduced.vectors.output.path");
+            String subspaceFile = props.getProperty("reduced.vectors.subspace.output.path");
             String logfile = props.getProperty("log.file.path");
 
             // Setting up the logger
@@ -55,7 +56,14 @@ public class Reducer {
             // Setting up the component reducer regarding the projection space
             ProjectionSpace ps = new ProjectionSpace(projectionFile);
 
-            ComponentReducer reducer = new ProjectionReducer(ps.getBasis(size), ps.getMean());
+            double[] mean = ps.getMean();
+            double[][] subspace = ps.getBasis(size);
+
+            // Saving the sub-space projection
+            Writer.write(mean, subspaceFile, false);
+            Writer.write(subspace, subspaceFile, true);
+
+            ComponentReducer reducer = new ProjectionReducer(subspace, mean);
 
             logger.info("Process started...");
 
@@ -79,6 +87,7 @@ public class Reducer {
             logger.info("Process completed successfuly");
             logger.info("Reduced Vectors: " + filenames.length);
             logger.info("Outpath: " + outpath);
+            logger.info("Sub-space Projection: " + subspaceFile);
         } catch (Exception exc) {
             if (logger != null) {
                 logger.error("An unknown error occurred projecting vectors", exc);
