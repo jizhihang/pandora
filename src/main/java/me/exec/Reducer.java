@@ -14,11 +14,11 @@ import org.apache.log4j.Logger;
  * An executable reducing the components of vectors to the most principal
  * components given the eigen value projection space.
  *
- * Run as: mvn exec:java -Dexec.mainClass="me.exec.Shrinker" -Dexec.args="path/to/config.properties"
+ * Run as: mvn exec:java -Dexec.mainClass="me.exec.Reducer" -Dexec.args="path/to/config.properties"
  *
  * @author Akis Papadopoulos
  */
-public class Shrinker {
+public class Reducer {
 
     public static void main(String[] args) {
         Logger logger = null;
@@ -37,7 +37,7 @@ public class Shrinker {
 
             // Setting up the logger
             System.setProperty("log.file", logfile);
-            logger = Logger.getLogger(Shrinker.class);
+            logger = Logger.getLogger(Reducer.class);
 
             System.out.print("See logs as: tail -f -n 100 " + logfile);
 
