@@ -12,6 +12,9 @@ import org.ejml.ops.SingularOps;
  * based on singular value decomposition, where most dominant principal
  * components are ordered in descending order.
  *
+ * This class is a modification of a class written by Peter Abeles, please see
+ * <a href="https://goo.gl/sdBCiC">more</a>.
+ *
  * @author Akis Papadopoulos
  */
 public class ProjectionSpace {
