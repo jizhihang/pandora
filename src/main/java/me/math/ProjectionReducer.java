@@ -37,9 +37,9 @@ public class ProjectionReducer implements ComponentReducer {
 
     /**
      * A constructor creating a projection reducer given the file containing in
-     * the first line the adjustment mean vector in the second line the
-     * eigenvalues followed in the subsequent lines by the most dominant
-     * principal eigenvectors in descending eigenvalues order.
+     * the first line the adjustment mean vector followed in the subsequent
+     * lines by the most dominant principal eigenvectors in descending
+     * eigenvalues order.
      *
      * @param filepath the absolute path to the projection sub-space file.
      * @throws IOException unknown IO exceptions.
@@ -52,12 +52,12 @@ public class ProjectionReducer implements ComponentReducer {
 
         m = DenseMatrix64F.wrap(mean.length, 1, mean);
 
-        // Loading the most dominant eigenvectors ignoring the eigenvalues line
-        B_t = new DenseMatrix64F(lines.length - 2, lines[2].length);
+        // Loading the most dominant eigenvectors
+        B_t = new DenseMatrix64F(lines.length - 1, lines[1].length);
 
-        for (int i = 2; i < lines.length; i++) {
+        for (int i = 1; i < lines.length; i++) {
             for (int j = 0; j < lines[i].length; j++) {
-                B_t.set(i - 2, j, lines[i][j]);
+                B_t.set(i - 1, j, lines[i][j]);
             }
         }
     }
