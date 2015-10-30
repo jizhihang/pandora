@@ -179,8 +179,8 @@ public class ColorSurfDetector implements LocalDetector {
         }
 
         // Normalizing the final local descriptors
-        for (int i = 0; i < descriptors.length; i++) {
-            if (normalize) {
+        if (normalize) {
+            for (int i = 0; i < descriptors.length; i++) {
                 Normalizer.euclidean(descriptors[i]);
             }
         }
