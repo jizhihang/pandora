@@ -191,9 +191,10 @@ public class ProjectionSpace {
      * @return the eigenvalues of the projection space.
      */
     public double[] getEigenvalues() {
-        double[] eigenvalues = new double[W.numRows];
-
-        for (int i = 0; i < W.numRows; i++) {
+        double[] eigenvalues = new double[W.numCols];
+        
+        // Eigenvalues matrix is diagonal but has more rows than columns
+        for (int i = 0; i < W.numCols; i++) {
             eigenvalues[i] = W.get(i, i);
         }
 
