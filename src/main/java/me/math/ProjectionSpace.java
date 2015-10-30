@@ -22,6 +22,9 @@ public class ProjectionSpace {
     // Principal component eigenvectors
     private DenseMatrix64F V_t;
 
+    // Eigenvalues diagonal matrix
+    private DenseMatrix64F W;
+
     // Adjustment mean vector
     private DenseMatrix64F m;
 
@@ -52,6 +55,8 @@ public class ProjectionSpace {
             mean[j] /= A.getNumRows();
         }
 
+        m = DenseMatrix64F.wrap(mean.length, 1, mean);
+
         // Subtracting the mean from the original data
         for (int i = 0; i < A.numRows; i++) {
             for (int j = 0; j < A.numCols; j++) {
@@ -70,31 +75,39 @@ public class ProjectionSpace {
         V_t = svd.getV(null, true);
 
         // Compunting the eigenvalues corresponding to the eigenvectors
-        DenseMatrix64F W = svd.getW(null);
+        W = svd.getW(null);
 
         // Ordering singular eigenvalues and vectors in desceding order
         SingularOps.descendingOrder(null, false, W, V_t, true);
-
-        m = DenseMatrix64F.wrap(mean.length, 1, mean);
     }
 
     /**
      * A constructor creating a projection space given the eigenvectors in
-     * descending eigenvalues order and the adjustment mean vector.
+     * descending eigenvalues order, the eigenvalues and the adjustment mean
+     * vector.
      *
-     * @param space the eigenvectors matrix.
+     * @param space the eigenvectors of the projections space.
+     * @param eigenvalues the eigenvalues of the projection space.
      * @param mean the adjustment mean vector.
      */
-    public ProjectionSpace(double[][] space, double[] mean) {
+    public ProjectionSpace(double[][] space, double[] eigenvalues, double[] mean) {
         V_t = new DenseMatrix64F(space);
+
+        // Loading eigenvalues in a diagonal matrix
+        W = new DenseMatrix64F(eigenvalues.length, eigenvalues.length);
+
+        for (int i = 0; i < eigenvalues.length; i++) {
+            W.set(i, i, eigenvalues[i]);
+        }
 
         m = DenseMatrix64F.wrap(mean.length, 1, mean);
     }
 
     /**
      * A constructor creating a projection space given the file containing in
-     * the first line the adjustment mean vector followed in the subsequent
-     * lines by the eigenvectors in descending eigenvalues order.
+     * the first line the adjustment mean vector, in the second line the
+     * eigenvalues followed in the subsequent lines by the eigenvectors in
+     * descending eigenvalues order.
      *
      * @param filepath the absolute path to the projection space file.
      * @throws IOException unknown IO exceptions.
@@ -107,12 +120,21 @@ public class ProjectionSpace {
 
         m = DenseMatrix64F.wrap(mean.length, 1, mean);
 
-        // Loading the eigenvectors matrix
-        V_t = new DenseMatrix64F(lines.length - 1, lines[1].length);
+        // Loading eigenvalues to a diagonal matrix
+        double[] eigenvalues = lines[1];
 
-        for (int i = 1; i < lines.length; i++) {
+        W = new DenseMatrix64F(eigenvalues.length, eigenvalues.length);
+
+        for (int i = 0; i < eigenvalues.length; i++) {
+            W.set(i, i, eigenvalues[i]);
+        }
+
+        // Loading the eigenvectors matrix
+        V_t = new DenseMatrix64F(lines.length - 2, lines[2].length);
+
+        for (int i = 2; i < lines.length; i++) {
             for (int j = 0; j < lines[i].length; j++) {
-                V_t.set(i - 1, j, lines[i][j]);
+                V_t.set(i - 2, j, lines[i][j]);
             }
         }
     }
@@ -160,6 +182,22 @@ public class ProjectionSpace {
         }
 
         return basis;
+    }
+
+    /**
+     * A method returning the eigenvalues of the projection space in descending
+     * order.
+     *
+     * @return the eigenvalues of the projection space.
+     */
+    public double[] getEigenvalues() {
+        double[] eigenvalues = new double[W.numRows];
+
+        for (int i = 0; i < W.numRows; i++) {
+            eigenvalues[i] = W.get(i, i);
+        }
+
+        return eigenvalues;
     }
 
     /**
