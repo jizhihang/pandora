@@ -74,16 +74,19 @@ public class Projector {
 
             // Saving the projection space into a file
             double[] mean = projection.getMean();
+            double[] eigenvalues = projection.getEigenvalues();
             double[][] space = projection.getSpace();
 
             // Writing line-by-line where adjustment vector comes first
             Writer.write(mean, outpath, false);
+            Writer.write(eigenvalues, outpath, true);
             Writer.write(space, outpath, true);
 
             logger.info("Process completed successfuly");
             logger.info("Vectors: " + vectors.length);
             logger.info("Vector Size: " + vectors[0].length);
-            logger.info("Eigen Values: " + space.length);
+            logger.info("Eigenvectors: " + space.length);
+            logger.info("Eigenvalues: " + eigenvalues.length);
             logger.info("Order: desc");
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {

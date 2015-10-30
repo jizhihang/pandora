@@ -57,10 +57,12 @@ public class Reducer {
             ProjectionSpace ps = new ProjectionSpace(projectionFile);
 
             double[] mean = ps.getMean();
+            double[] eigenvalues = ps.getEigenvalues();
             double[][] subspace = ps.getBasis(size);
 
             // Saving the sub-space projection
             Writer.write(mean, subspaceFile, false);
+            Writer.write(eigenvalues, subspaceFile, true);
             Writer.write(subspace, subspaceFile, true);
 
             ComponentReducer reducer = new ProjectionReducer(subspace, mean);
