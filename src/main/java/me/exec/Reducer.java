@@ -31,6 +31,7 @@ public class Reducer {
             String inpath = props.getProperty("vectors.input.path");
             String extension = props.getProperty("vectors.file.extension");
             String projectionFile = props.getProperty("projection.space.file.path");
+            boolean whiten = Boolean.parseBoolean(props.getProperty("projection.space.whitening", "false"));
             int size = Integer.parseInt(props.getProperty("most.dominant.components", "1"));
             String outpath = props.getProperty("reduced.vectors.output.path");
             String subspaceFile = props.getProperty("reduced.vectors.subspace.output.path");
@@ -47,6 +48,7 @@ public class Reducer {
             logger.info("Vectors: " + inpath);
             logger.info("Type: " + extension);
             logger.info("Projection: " + projectionFile);
+            logger.info("Whitening: " + whiten);
             logger.info("Components: " + size);
 
             // Loading the vectors
@@ -64,7 +66,7 @@ public class Reducer {
             Writer.write(mean, subspaceFile, false);
             Writer.write(subspace, subspaceFile, true);
 
-            ComponentReducer reducer = new ProjectionReducer(subspace, mean);
+            ComponentReducer reducer = new ProjectionReducer(subspace, mean, whiten);
 
             logger.info("Process started...");
 

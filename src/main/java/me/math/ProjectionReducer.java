@@ -22,17 +22,23 @@ public class ProjectionReducer implements ComponentReducer {
     // Adjustment mean component vector
     private DenseMatrix64F m;
 
+    // Projection space whitening applied
+    private boolean whiten;
+
     /**
      * A constructor creating a projection reducer given the principal component
      * sub-space to the most dominant components and the adjustment mean vector.
      *
      * @param subspace the principal component sub-space.
      * @param mean the adjustment mean vector.
+     * @param whiten true if projection whitening is applied.
      */
-    public ProjectionReducer(double[][] subspace, double[] mean) {
+    public ProjectionReducer(double[][] subspace, double[] mean, boolean whiten) {
         B_t = new DenseMatrix64F(subspace);
 
         m = DenseMatrix64F.wrap(mean.length, 1, mean);
+
+        this.whiten = whiten;
     }
 
     /**
@@ -42,9 +48,10 @@ public class ProjectionReducer implements ComponentReducer {
      * eigenvalues order.
      *
      * @param filepath the absolute path to the projection sub-space file.
+     * @param whiten true if projection whitening is applied.
      * @throws IOException unknown IO exceptions.
      */
-    public ProjectionReducer(String filepath) throws IOException {
+    public ProjectionReducer(String filepath, boolean whiten) throws IOException {
         double[][] lines = Reader.read(filepath);
 
         // Loading the mean adjustment vector
@@ -60,6 +67,8 @@ public class ProjectionReducer implements ComponentReducer {
                 B_t.set(i - 1, j, lines[i][j]);
             }
         }
+
+        this.whiten = whiten;
     }
 
     /**
@@ -80,6 +89,13 @@ public class ProjectionReducer implements ComponentReducer {
 
         CommonOps.mult(B_t, v, r);
 
-        return r.data;
+        double[] reduced = r.data;
+
+        // Normalizing if whitening is applied
+        if (whiten) {
+            Normalizer.euclidean(reduced);
+        }
+
+        return reduced;
     }
 }
