@@ -6,6 +6,9 @@ import java.util.Map;
 
 /**
  * An entry executable classes dispatcher.
+ * 
+ * Run as: mvn exec:java -Dexec.mainClass="me.exec.Dispatcher" -Dexec.args="entry path/to/config.properties"
+ * Run as: java -jar pandora-box.jar entry configs/file.properties
  *
  * @author Akis Papadopoulos
  */
@@ -37,7 +40,7 @@ public class Dispatcher {
                 // Making sure all entries implement a main static method
                 entry.getMethod("main", String[].class).invoke(null, arguments);
             } else {
-                System.out.println("Unable to run, entry " + args[0] + " not found");
+                System.out.println("Unable to run, entry '" + args[0] + "' not found");
                 System.out.println("Please run available entries as: ");
 
                 for (String key : entries.keySet()) {
