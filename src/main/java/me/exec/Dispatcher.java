@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * An entry executable classes dispatcher.
- * 
+ *
  * Run as: mvn exec:java -Dexec.mainClass="me.exec.Dispatcher" -Dexec.args="entry path/to/config.properties"
  * Run as: java -jar pandora-box.jar entry configs/file.properties
  *
@@ -30,7 +30,16 @@ public class Dispatcher {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length == 2) {
+        if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
+            System.out.println("Pandora Box Help");
+            System.out.println("Please run available entries as: ");
+
+            for (String key : entries.keySet()) {
+                System.out.println(" java -jar pandora-box.jar '" + key + "' 'configs/file'");
+            }
+
+            System.exit(1);
+        } else if (args.length == 2) {
             final Class<?> entry = entries.get(args[0]);
 
             if (entry != null) {
@@ -41,21 +50,15 @@ public class Dispatcher {
                 entry.getMethod("main", String[].class).invoke(null, arguments);
             } else {
                 System.out.println("Unable to run, entry '" + args[0] + "' not found");
-                System.out.println("Please run available entries as: ");
-
-                for (String key : entries.keySet()) {
-                    System.out.println(" java -jar pandora-box.jar " + key + " configs/file");
-                }
+                System.out.println("Please run help as: ");
+                System.out.println(" java -jar pandora-box.jar help");
 
                 System.exit(1);
             }
         } else {
             System.out.println("Unable to run, no or too many arguments found");
-            System.out.println("Please run available entries as: ");
-
-            for (String key : entries.keySet()) {
-                System.out.println(" java -jar pandora-box.jar " + key + " configs/file");
-            }
+            System.out.println("Please run help as: ");
+            System.out.println(" java -jar pandora-box.jar help");
 
             System.exit(1);
         }
