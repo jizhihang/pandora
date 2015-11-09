@@ -27,6 +27,7 @@ public class Dispatcher {
         entries.put("build", Builder.class);
         entries.put("project", Projector.class);
         entries.put("reduce", Reducer.class);
+        entries.put("index", Indexer.class);
     }
 
     public static void main(String[] args) throws Exception {
