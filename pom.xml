@@ -5,7 +5,7 @@
     <artifactId>pandora-box</artifactId>
     <name>pandora-box</name>
     <url>https://bitbucket.org/tz3ik/pandora-box</url>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -126,6 +126,7 @@
                                 <exclude>**/builder.properties</exclude>
                                 <exclude>**/projector.properties</exclude>
                                 <exclude>**/reducer.properties</exclude>
+                                <exclude>**/indexer.properties</exclude>
                             </excludes>
                             <archive>
                                 <manifest>
