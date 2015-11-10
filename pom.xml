@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.ext.libs</groupId>
-    <artifactId>pandora-box</artifactId>
-    <name>pandora-box</name>
-    <url>https://bitbucket.org/tz3ik/pandora-box</url>
-    <version>1.0.1-SNAPSHOT</version>
+    <artifactId>pandora</artifactId>
+    <name>pandora</name>
+    <url>https://bitbucket.org/tz3ik/pandora</url>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -72,7 +72,7 @@
             </activation>
             
             <build>
-                <finalName>pandora-box</finalName>
+                <finalName>pandora</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -90,7 +90,7 @@
                         <version>2.6</version>
                         <configuration>
                             <excludes>
-                                <exclude>**/me/exec/</exclude>
+                                <exclude>**/me/pandora/exec/</exclude>
                                 <exclude>**/*.properties</exclude>
                             </excludes>
                         </configuration>
@@ -102,7 +102,7 @@
         <profile>
             <id>exec</id>
             <build>
-                <finalName>pandora-box</finalName>
+                <finalName>pandora</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -131,7 +131,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath>true</addClasspath>
-                                    <mainClass>me.exec.Dispatcher</mainClass>
+                                    <mainClass>me.pandora.exec.Dispatcher</mainClass>
                                     <classpathPrefix>libs/</classpathPrefix>
                                 </manifest>
                             </archive>
