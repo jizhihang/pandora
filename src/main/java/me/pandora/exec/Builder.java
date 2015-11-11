@@ -43,7 +43,7 @@ public class Builder {
             String extension = props.getProperty("local.descriptors.file.extension");
             String method = props.getProperty("building.aggregation.method");
             boolean normalize = Boolean.parseBoolean(props.getProperty("building.vector.normalization", "true"));
-            List<String> vocabs = props.matchProperties("building.vocabulary.\\d+");
+            List<String> vocabs = props.matchProperties("building.vocab.\\d+");
             String outpath = props.getProperty("building.vectors.output.path");
             String logfile = props.getProperty("log.file.path");
 
