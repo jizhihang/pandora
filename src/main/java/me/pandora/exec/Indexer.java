@@ -2,6 +2,7 @@ package me.pandora.exec;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,8 +10,8 @@ import java.sql.Statement;
 import java.util.List;
 import me.pandora.io.MultipleFilenameFilter;
 import me.pandora.io.Reader;
+import me.pandora.util.ArrayOps;
 import me.pandora.util.SmartProperties;
-import me.pandora.util.VectorTokenizer;
 import org.apache.log4j.Logger;
 
 /**
@@ -38,22 +39,11 @@ public class Indexer {
             String dbname = props.getProperty("index.db.name");
             String username = props.getProperty("index.db.username");
             String password = props.getProperty("index.db.password");
-
-            String descriptorsInpath = props.getProperty("index.descriptors.input.path");
-            String descriptorExtension = props.getProperty("index.descriptor.file.extension");
-            String descriptorsTable = props.getProperty("index.descriptors.db.table");
-            String descriptorColumn = props.getProperty("index.descriptor.db.table.column");
-
+            String inpath = props.getProperty("index.descriptors.input.path");
+            String extension = props.getProperty("index.descriptors.file.extension");
             List<String> vocabs = props.matchProperties("index.vocab.\\d+");
-            String vocabsTable = props.getProperty("index.vocabs.db.table");
-            String codebookColumn = props.getProperty("index.vocab.codebook.db.table.column");
-
-            String projectionFilepath = props.getProperty("index.projection.file.path");
-            boolean whitening = Boolean.parseBoolean(props.getProperty("index.projection.space.whitening"));
-            String projectionTable = props.getProperty("index.projection.db.table");
-            String spaceColumn = props.getProperty("index.projection.space.db.table.column");
-            String meanColumn = props.getProperty("index.projection.mean.db.table.column");
-            String whiteningColumn = props.getProperty("index.projection.space.whitening.db.table.column");
+            String projection = props.getProperty("index.projection.file.path");
+            boolean whitening = Boolean.parseBoolean(props.getProperty("index.projection.whitening"));
 
             String logfile = props.getProperty("log.file.path");
 
@@ -67,19 +57,15 @@ public class Indexer {
             logger.info("File: " + args[0]);
             logger.info("Host: " + host);
             logger.info("Database: " + dbname);
-
-            logger.info("Descriptors: " + descriptorsInpath);
-            logger.info("Type: " + descriptorExtension);
-            logger.info("Index: " + descriptorsTable + "." + descriptorColumn);
+            logger.info("Descriptors: " + inpath);
+            logger.info("Type: " + extension);
 
             for (int i = 0; i < vocabs.size(); i++) {
                 logger.info("Vocabulary #" + (i + 1) + ": " + vocabs.get(i));
             }
-            logger.info("Index: " + vocabsTable + "." + codebookColumn);
 
-            logger.info("Projection: " + projectionFilepath);
-            logger.info("Whiten: " + whitening);
-            logger.info("Index: " + projectionTable + "." + spaceColumn + ":" + meanColumn + ":" + whiteningColumn);
+            logger.info("Projection: " + projection);
+            logger.info("Whitening: " + whitening);
 
             // Opening a database connection
             Class.forName(driver);
@@ -87,25 +73,27 @@ public class Indexer {
             connection = DriverManager.getConnection(host + "/" + dbname, username, password);
 
             // Indexing descriptors into the database
-            File dirin = new File(descriptorsInpath);
-            MultipleFilenameFilter filter = new MultipleFilenameFilter(descriptorExtension);
+            File dirin = new File(inpath);
+            MultipleFilenameFilter filter = new MultipleFilenameFilter(extension);
             String[] filenames = dirin.list(filter);
 
             logger.info("Process started");
 
-            int indexed = 0;
+            // Indexing decriptors
+            int descriptorsIndexed = 0;
 
             for (int i = 0; i < filenames.length; i++) {
                 // Reading the descriptor
                 double[] vector = Reader.read(dirin.getPath() + "/" + filenames[i], 1);
 
-                VectorTokenizer tokenizer = new VectorTokenizer(",");
-
-                String descriptor = tokenizer.vectorize(vector);
+                Array descriptor = connection.createArrayOf("numeric", ArrayOps.toObject(vector));
 
                 // Extracting the file name used as identifier
                 int pos = filenames[i].lastIndexOf(".");
                 String id = filenames[i].substring(0, pos);
+
+                // TMP
+                id += ".jpg";
 
                 try {
                     // Indexing the descriptor given the image id
@@ -113,13 +101,13 @@ public class Indexer {
 
                     StringBuilder query = new StringBuilder();
 
-                    query.append("UPDATE ").append(descriptorsTable)
-                            .append(" SET ").append(descriptorColumn).append(" = '{").append(descriptor).append("}'")
-                            .append(" WHERE id = '").append(id).append("'");
+                    query.append("UPDATE images ")
+                            .append("SET descriptor = '").append(descriptor).append("' ")
+                            .append("WHERE id = '").append(id).append("'");
 
-                    indexed += statement.executeUpdate(query.toString());
+                    descriptorsIndexed += statement.executeUpdate(query.toString());
                 } catch (SQLException exc) {
-                    logger.error("An error occurred indexing descriptor '" + filenames[i], exc);
+                    logger.error("An error occurred indexing descriptor '" + filenames[i] + "'", exc);
                 } finally {
                     if (statement != null) {
                         statement.close();
@@ -132,13 +120,107 @@ public class Indexer {
                 }
             }
 
+            // Truncating already stored vocabularies
+            try {
+                statement = connection.createStatement();
+
+                StringBuilder query = new StringBuilder();
+
+                query.append("TRUNCATE TABLE ONLY codebooks");
+
+                statement.executeUpdate(query.toString());
+            } catch (SQLException exc) {
+                logger.error("An error occurred truncating vocabularies", exc);
+            } finally {
+                if (statement != null) {
+                    statement.close();
+                }
+            }
+
+            // Indexing vocabularies
+            int vocabsIndexed = 0;
+
+            for (int i = 0; i < vocabs.size(); i++) {
+                // Reading vocabulary codebook
+                double[][] matrix = Reader.read(vocabs.get(i));
+
+                Array centroids = connection.createArrayOf("numeric", ArrayOps.toObject(matrix));
+
+                try {
+                    statement = connection.createStatement();
+
+                    StringBuilder query = new StringBuilder();
+
+                    query.append("INSERT INTO codebooks (id, centroids) ")
+                            .append("VALUES (").append(i + 1).append(", '")
+                            .append(centroids).append("')");
+
+                    vocabsIndexed += statement.executeUpdate(query.toString());
+                } catch (SQLException exc) {
+                    logger.error("An error occurred indexing vocabulary codebook '" + vocabs.get(i) + "'", exc);
+                } finally {
+                    if (statement != null) {
+                        statement.close();
+                    }
+                }
+            }
+
+            // Truncating already stored projection reducers
+            try {
+                statement = connection.createStatement();
+
+                StringBuilder query = new StringBuilder();
+
+                query.append("TRUNCATE TABLE ONLY reducers");
+
+                statement.executeUpdate(query.toString());
+            } catch (SQLException exc) {
+                logger.error("An error occurred truncating projection reducers", exc);
+            } finally {
+                if (statement != null) {
+                    statement.close();
+                }
+            }
+
+            // Indexing the projection reducer
+            double[][] matrix = Reader.read(projection);
+
+            // Extracting the projection mean vector
+            Array mean = connection.createArrayOf("numeric", ArrayOps.toObject(matrix[0]));
+
+            // Extracting the projection subspace eigenvectors
+            double[][] eigenvectors = ArrayOps.copy(matrix, 1);
+
+            Array subspace = connection.createArrayOf("numeric", ArrayOps.toObject(eigenvectors));
+
+            try {
+                statement = connection.createStatement();
+
+                StringBuilder query = new StringBuilder();
+
+                query.append("INSERT INTO reducers (id, subspace, mean, whiten) ")
+                        .append("VALUES (").append(1).append(", '")
+                        .append(subspace).append("', '")
+                        .append(mean).append("', ")
+                        .append(whitening).append(")");
+
+                statement.executeUpdate(query.toString());
+            } catch (SQLException exc) {
+                logger.error("An error occurred indexing projection reducer '" + projection + "'", exc);
+            } finally {
+                if (statement != null) {
+                    statement.close();
+                }
+            }
+
             logger.info("100%");
             logger.info("Process completed successfuly");
-            logger.info("Descriptors: " + filenames.length);
-            logger.info("Indexed: " + indexed);
+            logger.info("Descriptors: " + filenames.length + "[" + descriptorsIndexed + "]");
+            logger.info("Vocabs: " + vocabs.size() + "[" + vocabsIndexed + "]");
+            logger.info("Projections: 1[1]");
         } catch (Exception exc) {
             if (logger != null) {
-                logger.error("An unknown error occurred indexing image descriptors, vocabularies and projection space", exc);
+                logger.error("An unknown error occurred indexing image descriptors, vocabularies and projection reducer", exc);
             } else {
                 exc.printStackTrace();
             }
