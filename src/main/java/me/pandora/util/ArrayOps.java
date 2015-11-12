@@ -5,7 +5,7 @@ package me.pandora.util;
  *
  * @author Akis Papadopoulos
  */
-public final class Array {
+public final class ArrayOps {
 
     /**
      * A method converts an array of primitive doubles to objects.
@@ -97,6 +97,34 @@ public final class Array {
 
             for (int j = 0; j < array[i].length; j++) {
                 result[i][j] = array[i][j].doubleValue();
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * A method copying the given array starting from the given row up to the
+     * end.
+     *
+     * @param array the array to be copied.
+     * @param row the row where the copy starts.
+     * @return an array of double primitives.
+     */
+    public static double[][] copy(final double[][] array, int row) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new double[0][];
+        }
+
+        double[][] result = new double[array.length - row][];
+
+        for (int i = 0; i < result.length; i++) {
+            result[i] = new double[array[row + i].length];
+
+            for (int j = 0; j < result[i].length; j++) {
+                result[i][j] = array[row + i][j];
             }
         }
 
