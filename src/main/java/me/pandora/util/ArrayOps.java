@@ -1,5 +1,7 @@
 package me.pandora.util;
 
+import java.math.BigDecimal;
+
 /**
  * A utility to manage various array operations.
  *
@@ -84,6 +86,58 @@ public final class ArrayOps {
      * @return a 2-d array of double primitive.
      */
     public static double[][] toPrimitive(final Double[][] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new double[0][];
+        }
+
+        final double[][] result = new double[array.length][];
+
+        for (int i = 0; i < array.length; i++) {
+            result[i] = new double[array[i].length];
+
+            for (int j = 0; j < array[i].length; j++) {
+                result[i][j] = array[i][j].doubleValue();
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * A method converts an array of big decimal objects to primitive doubles.
+     * Note that even when the converted value is finite, this conversion can
+     * lose information about the precision of the BigDecimal value.
+     *
+     * @param array an array of big decimal objects.
+     * @return an array of primitive doubles.
+     */
+    public static double[] toPrimitive(final BigDecimal[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new double[0];
+        }
+
+        final double[] result = new double[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i].doubleValue();
+        }
+
+        return result;
+    }
+
+    /**
+     * A method converts a 2d array of big decimal objects to primitive doubles.
+     * Note that even when the converted value is finite, this conversion can
+     * lose information about the precision of the BigDecimal value.
+     *
+     * @param array an array of big decimal objects.
+     * @return an array of primitive doubles.
+     */
+    public static double[][] toPrimitive(final BigDecimal[][] array) {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
