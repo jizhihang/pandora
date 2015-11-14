@@ -221,7 +221,7 @@ public final class ArrayOps {
      * @param b an array of doubles.
      * @return true if the arrays are equal otherwise false.
      */
-    public static boolean equal(double[] a, double[] b) {
+    public static boolean equal(final double[] a, final double[] b) {
         if (a.length != b.length) {
             return false;
         } else {
@@ -242,7 +242,7 @@ public final class ArrayOps {
      * @param b an array of doubles.
      * @return true if the arrays are equal otherwise false.
      */
-    public static boolean equal(double[][] a, double[][] b) {
+    public static boolean equal(final double[][] a, final double[][] b) {
         if (a.length != b.length) {
             return false;
         } else {
