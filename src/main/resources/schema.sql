@@ -18,8 +18,8 @@ CREATE TABLE images (
   subtitle character varying,
   latitude numeric,
   longitude numeric,
-  width integer NOT NULL,
-  height integer NOT NULL,
+  width smallint NOT NULL,
+  height smallint NOT NULL,
   descriptor numeric[] NOT NULL,
   copyright character varying,
   CONSTRAINT image_id_pk PRIMARY KEY (id)
