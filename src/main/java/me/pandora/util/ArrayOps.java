@@ -32,10 +32,10 @@ public final class ArrayOps {
     }
 
     /**
-     * A method converts a 2-d array of primitive doubles to objects.
+     * A method converts a 2d array of primitive doubles to objects.
      *
-     * @param array a 2-d array of primitive doubles.
-     * @return a 2-d array of Double objects.
+     * @param array an array of primitive doubles.
+     * @return an array of Double objects.
      */
     public static Double[][] toObject(final double[][] array) {
         if (array == null) {
@@ -80,10 +80,10 @@ public final class ArrayOps {
     }
 
     /**
-     * A method converts a 2-d array of object doubles to primitives.
+     * A method converts a 2d array of object doubles to primitives.
      *
-     * @param array a 2-d array of object doubles.
-     * @return a 2-d array of double primitive.
+     * @param array an array of object doubles.
+     * @return an array of double primitive.
      */
     public static double[][] toPrimitive(final Double[][] array) {
         if (array == null) {
@@ -158,11 +158,11 @@ public final class ArrayOps {
     }
 
     /**
-     * A method copying the given array starting from the given row up to the
-     * end.
+     * A method copying the given array starting from the given row index up to
+     * the end.
      *
      * @param array the array to be copied.
-     * @param row the row where the copy starts.
+     * @param row the row index where the copy starts.
      * @return an array of double primitives.
      */
     public static double[][] copy(final double[][] array, int row) {
@@ -179,6 +179,35 @@ public final class ArrayOps {
 
             for (int j = 0; j < result[i].length; j++) {
                 result[i][j] = array[row + i][j];
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * A method copying the given array starting from the given row up to the
+     * given end row index, end row inclusive.
+     *
+     * @param array the array to be copied.
+     * @param start the row index where the copy starts.
+     * @param end the row index where the copy ends.
+     * @return an array of double primitives.
+     */
+    public static double[][] copy(final double[][] array, int start, int end) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new double[0][];
+        }
+
+        double[][] result = new double[end - start + 1][];
+
+        for (int i = 0; i < result.length; i++) {
+            result[i] = new double[array[start + i].length];
+
+            for (int j = 0; j < result[i].length; j++) {
+                result[i][j] = array[start + i][j];
             }
         }
 
