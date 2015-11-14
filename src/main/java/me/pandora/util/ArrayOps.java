@@ -213,4 +213,52 @@ public final class ArrayOps {
 
         return result;
     }
+
+    /**
+     * A method checking if the given arrays are equal.
+     *
+     * @param a an array of doubles.
+     * @param b an array of doubles.
+     * @return true if the arrays are equal otherwise false.
+     */
+    public boolean equal(double[] a, double[] b) {
+        if (a.length != b.length) {
+            return false;
+        } else {
+            for (int i = 0; i < a.length; i++) {
+                if (a[i] != b[i]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    /**
+     * A method checking if the given 2d arrays are equal.
+     *
+     * @param a an array of doubles.
+     * @param b an array of doubles.
+     * @return true if the arrays are equal otherwise false.
+     */
+    public boolean equal(double[][] a, double[][] b) {
+        if (a.length != b.length) {
+            return false;
+        } else {
+            for (int i = 0; i < a.length; i++) {
+                if (a[i].length != b[i].length) {
+                    return false;
+                } else {
+                    for (int j = 0; j < a[i].length; j++) {
+                        if (a[i][j] != b[i][j]) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
 }
