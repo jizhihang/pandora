@@ -71,6 +71,7 @@ public class Extractor {
                 int initialSize = Integer.parseInt(props.getProperty("detector.surf.initial.size", "9"));
                 int numberScalesPerOctave = Integer.parseInt(props.getProperty("detector.surf.number.scales.per.octave", "4"));
                 int numberOfOctaves = Integer.parseInt(props.getProperty("detector.surf.number.of.octaves", "4"));
+                boolean slided = Boolean.parseBoolean(props.getProperty("detector.surf.slided.orientation", "false"));
                 
                 logger.info("Radius: " + radius);
                 logger.info("Threshold: " + threshold);
@@ -79,8 +80,9 @@ public class Extractor {
                 logger.info("Initial Size: " + initialSize);
                 logger.info("Number Scales Per Octave: " + numberScalesPerOctave);
                 logger.info("Number Of Octaves: " + numberOfOctaves);
+                logger.info("Sliding Orientation: " + slided);
 
-                detector = new SurfDetector(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves);
+                detector = new SurfDetector(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided);
             } else if (method.equalsIgnoreCase("csurf")) {
                 int radius = Integer.parseInt(props.getProperty("detector.csurf.radius", "1"));
                 float threshold = Float.parseFloat(props.getProperty("detector.csurf.threshold", "0F"));
@@ -89,6 +91,7 @@ public class Extractor {
                 int initialSize = Integer.parseInt(props.getProperty("detector.csurf.initial.size", "9"));
                 int numberScalesPerOctave = Integer.parseInt(props.getProperty("detector.csurf.number.scales.per.octave", "4"));
                 int numberOfOctaves = Integer.parseInt(props.getProperty("detector.csurf.number.of.octaves", "4"));
+                boolean slided = Boolean.parseBoolean(props.getProperty("detector.csurf.slided.orientation", "false"));
                 boolean normalize = Boolean.parseBoolean(props.getProperty("detector.csurf.normalize", "false"));
                 
                 logger.info("Radius: " + radius);
@@ -98,9 +101,10 @@ public class Extractor {
                 logger.info("Initial Size: " + initialSize);
                 logger.info("Number Scales Per Octave: " + numberScalesPerOctave);
                 logger.info("Number Of Octaves: " + numberOfOctaves);
+                logger.info("Sliding Orientation: " + slided);
                 logger.info("Normalize: " + normalize);
 
-                detector = new ColorSurfDetector(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, normalize);
+                detector = new ColorSurfDetector(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided, normalize);
             } else if (method.equalsIgnoreCase("sift")) {
                 int extractRadius = Integer.parseInt(props.getProperty("detector.sift.extract.radius", "2"));
                 float detectThreshold = Float.parseFloat(props.getProperty("detector.sift.detect.threshold", "1"));

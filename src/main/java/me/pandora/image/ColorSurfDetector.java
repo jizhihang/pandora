@@ -2,6 +2,7 @@ package me.pandora.image;
 
 import boofcv.abst.feature.detect.extract.ConfigExtract;
 import boofcv.abst.feature.detect.extract.NonMaxSuppression;
+import boofcv.abst.feature.orientation.ConfigSlidingIntegral;
 import boofcv.abst.feature.orientation.OrientationIntegral;
 import boofcv.alg.feature.describe.DescribePointSurf;
 import boofcv.alg.feature.detect.interest.FastHessianFeatureDetector;
@@ -54,6 +55,9 @@ public class ColorSurfDetector implements LocalDetector {
     // How many different octaves are considered
     private int numberOfOctaves = 4;
 
+    // Sliding orientation estimator mode
+    private boolean slided = false;
+
     // Normalization option
     private boolean normalize = false;
 
@@ -71,9 +75,11 @@ public class ColorSurfDetector implements LocalDetector {
      * @param numberScalesPerOctave different feature sizes are considered in a
      * single octave.
      * @param numberOfOctaves how many different octaves are considered.
+     * @param slided true to enable sliding orientation estimator otherwise
+     * false.
      * @param normalize the normalization option.
      */
-    public ColorSurfDetector(int radius, float threshold, int maxFeaturesPerScale, int initialSampleRate, int initialSize, int numberScalesPerOctave, int numberOfOctaves, boolean normalize) {
+    public ColorSurfDetector(int radius, float threshold, int maxFeaturesPerScale, int initialSampleRate, int initialSize, int numberScalesPerOctave, int numberOfOctaves, boolean slided, boolean normalize) {
         this.radius = radius;
         this.threshold = threshold;
         this.maxFeaturesPerScale = maxFeaturesPerScale;
@@ -81,6 +87,7 @@ public class ColorSurfDetector implements LocalDetector {
         this.initialSize = initialSize;
         this.numberScalesPerOctave = numberScalesPerOctave;
         this.numberOfOctaves = numberOfOctaves;
+        this.slided = slided;
         this.normalize = normalize;
     }
 
@@ -106,6 +113,12 @@ public class ColorSurfDetector implements LocalDetector {
         Class<ImageSingleBand> integralType = GIntegralImageOps.getIntegralType(ImageFloat32.class);
 
         // Setting up a sliding ii estimator algorithm for orientation
+        ConfigSlidingIntegral csi = null;
+
+        if (slided) {
+            csi = new ConfigSlidingIntegral(0.65, Math.PI / 3.0, 8, -1, 6);
+        }
+
         OrientationIntegral<ImageSingleBand> orientator = FactoryOrientationAlgs.sliding_ii(null, integralType);
 
         DescribePointSurf<ImageSingleBand> describer = FactoryDescribePointAlgs.<ImageSingleBand>surfStability(null, integralType);
