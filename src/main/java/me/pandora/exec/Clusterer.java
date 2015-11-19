@@ -51,6 +51,8 @@ public class Clusterer {
             logger.info("Fast Distance: " + fast);
             logger.info("Seed: " + seed);
             logger.info("Slots: " + slots);
+            
+            logger.info("Process started...");
 
             // Loading sample data
             CSVLoader loader = new CSVLoader();
@@ -75,8 +77,6 @@ public class Clusterer {
             clusterer.setMaxIterations(iterations);
             clusterer.setNumExecutionSlots(slots);
             clusterer.setFastDistanceCalc(fast);
-
-            logger.info("Process started...");
 
             // Building clusters
             clusterer.buildClusterer(data);
