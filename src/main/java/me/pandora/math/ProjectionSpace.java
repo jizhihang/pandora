@@ -36,8 +36,14 @@ public class ProjectionSpace {
      * @param data the original data.
      * @param whiten true to apply whitening.
      * @param compact true to save in compact form.
+     * @throws Exception an unknown exception.
      */
-    public ProjectionSpace(double[][] data, boolean whiten, boolean compact) {
+    public ProjectionSpace(double[][] data, boolean whiten, boolean compact) throws Exception {
+        // Applicable data must have size greater or equal to the vector size
+        if (data.length < data[0].length && whiten) {
+            throw new Exception("Data size must be greater or equal to vector size: " + data.length + " <> " + data[0].length);
+        }
+        
         // Loading original data
         DenseMatrix64F A = new DenseMatrix64F(data);
 
