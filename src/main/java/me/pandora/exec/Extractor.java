@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.util.Properties;
 import me.pandora.image.FeatureDetector;
 import me.pandora.image.global.Cedd;
+import me.pandora.image.global.ColorLayout;
 import me.pandora.image.local.ColorSurf;
 import me.pandora.image.local.Sift;
 import me.pandora.image.local.Surf;
@@ -134,6 +135,8 @@ public class Extractor {
                 logger.info("Compact: " + compact);
 
                 detector = new Cedd(t0, t1, t2, t3, compact);
+            } else if (method.equalsIgnoreCase("col")) {
+                detector = new ColorLayout();
             }
 
             logger.info("Process started");
@@ -149,7 +152,7 @@ public class Extractor {
 
                     // Saving descriptor with an identical name
                     int pos = filenames[i].lastIndexOf(".");
-                    String filepath = outpath + "/" + filenames[i].substring(0, pos) + "." + method;
+                    String filepath = outpath + "/" + filenames[i].substring(0, pos) + "." + method.toLowerCase();
 
                     Writer.write(descriptors, filepath, false);
 
