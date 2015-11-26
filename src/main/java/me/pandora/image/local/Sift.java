@@ -1,4 +1,4 @@
-package me.pandora.image;
+package me.pandora.image.local;
 
 import boofcv.abst.feature.detdesc.DetectDescribePoint;
 import boofcv.abst.feature.detect.interest.ConfigSiftDetector;
@@ -7,6 +7,8 @@ import boofcv.io.image.ConvertBufferedImage;
 import boofcv.struct.feature.SurfFeature;
 import boofcv.struct.image.ImageFloat32;
 import java.awt.image.BufferedImage;
+import me.pandora.image.Description;
+import me.pandora.image.FeatureDetector;
 import me.pandora.math.Normalizer;
 
 /**
@@ -18,7 +20,7 @@ import me.pandora.math.Normalizer;
  *
  * @author Akis Papadopoulos
  */
-public class SiftDetector implements LocalDetector {
+public class Sift implements FeatureDetector {
 
     // Feature size used to detect the corners
     private int extractRadius = 2;
@@ -44,7 +46,7 @@ public class SiftDetector implements LocalDetector {
      * @param edgeThreshold the edge filtering threshold.
      * @param normalize the normalization option.
      */
-    public SiftDetector(int extractRadius, float detectThreshold, int maxFeaturesPerScale, double edgeThreshold, boolean normalize) {
+    public Sift(int extractRadius, float detectThreshold, int maxFeaturesPerScale, double edgeThreshold, boolean normalize) {
         this.extractRadius = extractRadius;
         this.detectThreshold = detectThreshold;
         this.maxFeaturesPerScale = maxFeaturesPerScale;
@@ -53,14 +55,14 @@ public class SiftDetector implements LocalDetector {
     }
 
     /**
-     * A method detecting visual descriptors given an image item.
+     * A method detecting a visual description given an image item.
      *
      * @param image the image item.
-     * @return the list of visual descriptors detected.
+     * @return the visual description detected.
      * @throws Exception throws unknown error exceptions.
      */
     @Override
-    public double[][] detect(BufferedImage image) throws Exception {
+    public Description extract(BufferedImage image) throws Exception {
         // Setting up image representation
         ImageFloat32 grayscale = ConvertBufferedImage.convertFromSingle(image, null, ImageFloat32.class);
 
@@ -92,6 +94,6 @@ public class SiftDetector implements LocalDetector {
             descriptors[i] = descriptor;
         }
 
-        return descriptors;
+        return new Description(descriptors);
     }
 }

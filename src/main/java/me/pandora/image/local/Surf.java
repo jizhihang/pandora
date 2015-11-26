@@ -1,4 +1,4 @@
-package me.pandora.image;
+package me.pandora.image.local;
 
 import boofcv.abst.feature.detect.extract.ConfigExtract;
 import boofcv.abst.feature.detect.extract.NonMaxSuppression;
@@ -7,7 +7,6 @@ import boofcv.abst.feature.orientation.OrientationIntegral;
 import boofcv.alg.feature.describe.DescribePointSurf;
 import boofcv.alg.feature.detect.interest.FastHessianFeatureDetector;
 import boofcv.alg.transform.ii.GIntegralImageOps;
-import boofcv.core.image.ConvertImage;
 import boofcv.core.image.GeneralizedImageOps;
 import boofcv.factory.feature.describe.FactoryDescribePointAlgs;
 import boofcv.factory.feature.detect.extract.FactoryFeatureExtractor;
@@ -15,24 +14,23 @@ import boofcv.factory.feature.orientation.FactoryOrientationAlgs;
 import boofcv.io.image.ConvertBufferedImage;
 import boofcv.struct.feature.ScalePoint;
 import boofcv.struct.feature.SurfFeature;
-import boofcv.struct.feature.TupleDesc_F64;
 import boofcv.struct.image.ImageFloat32;
 import boofcv.struct.image.ImageSingleBand;
-import boofcv.struct.image.MultiSpectral;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import me.pandora.math.Normalizer;
+import me.pandora.image.Description;
+import me.pandora.image.FeatureDetector;
 
 /**
- * A local detector extracting stable colorful SURF local descriptors given an
+ * A local detector extracting stable grayscale SURF local descriptors given an
  * image using the BoofCV library.
  *
- * This class is a modification of a class written by Eleftherios
- * Spyromitros-Xioufis, please see <a href="https://goo.gl/HSl3JG">more</a>.
+ * This class is a modification of a class written by Peter Abeles, please see
+ * <a href="https://goo.gl/dtrW7I">more</a>.
  *
  * @author Akis Papadopoulos
  */
-public class ColorSurfDetector implements LocalDetector {
+public class Surf implements FeatureDetector {
 
     // Radius of the non-maximum region
     private int radius = 1;
@@ -58,9 +56,6 @@ public class ColorSurfDetector implements LocalDetector {
     // Sliding orientation estimator mode
     private boolean slided = false;
 
-    // Normalization option
-    private boolean normalize = false;
-
     /**
      * A constructor initiating the given parameters.
      *
@@ -77,9 +72,8 @@ public class ColorSurfDetector implements LocalDetector {
      * @param numberOfOctaves how many different octaves are considered.
      * @param slided true to enable sliding orientation estimator otherwise
      * false.
-     * @param normalize the normalization option.
      */
-    public ColorSurfDetector(int radius, float threshold, int maxFeaturesPerScale, int initialSampleRate, int initialSize, int numberScalesPerOctave, int numberOfOctaves, boolean slided, boolean normalize) {
+    public Surf(int radius, float threshold, int maxFeaturesPerScale, int initialSampleRate, int initialSize, int numberScalesPerOctave, int numberOfOctaves, boolean slided) {
         this.radius = radius;
         this.threshold = threshold;
         this.maxFeaturesPerScale = maxFeaturesPerScale;
@@ -88,20 +82,19 @@ public class ColorSurfDetector implements LocalDetector {
         this.numberScalesPerOctave = numberScalesPerOctave;
         this.numberOfOctaves = numberOfOctaves;
         this.slided = slided;
-        this.normalize = normalize;
     }
 
     /**
-     * A method detecting visual descriptors given an image item.
+     * A method detecting a visual description given an image item.
      *
      * @param image the image item.
-     * @return the list of visual descriptors detected.
+     * @return the visual description detected.
      * @throws Exception throws unknown error exceptions.
      */
     @Override
-    public double[][] detect(BufferedImage image) throws Exception {
+    public Description extract(BufferedImage image) throws Exception {
         // Setting up image representation
-        MultiSpectral<ImageFloat32> colorful = ConvertBufferedImage.convertFromMulti(image, null, true, ImageFloat32.class);
+        ImageFloat32 grayscale = ConvertBufferedImage.convertFromSingle(image, null, ImageFloat32.class);
 
         // Defining a fast hessian feature detection algorithm
         ConfigExtract ce = new ConfigExtract(radius, threshold, 5, true);
@@ -121,83 +114,47 @@ public class ColorSurfDetector implements LocalDetector {
 
         OrientationIntegral<ImageSingleBand> orientator = FactoryOrientationAlgs.sliding_ii(null, integralType);
 
+        // Setting up stability SURF feature describer algorithm
         DescribePointSurf<ImageSingleBand> describer = FactoryDescribePointAlgs.<ImageSingleBand>surfStability(null, integralType);
 
-        // Convert the colorful image to greyscale
-        ImageFloat32 grayscale = ConvertImage.average((MultiSpectral<ImageFloat32>) colorful, null);
+        // Computing the integral image of the image
+        ImageSingleBand integral = GeneralizedImageOps.createSingleBand(integralType, grayscale.width, grayscale.height);
 
-        // Computing the integral image of the grayscale image
-        ImageSingleBand integralGrayscale = GeneralizedImageOps.createSingleBand(integralType, grayscale.width, grayscale.height);
-
-        // Transforming grayscale image into integral
-        GIntegralImageOps.transform(grayscale, integralGrayscale);
+        // Transforming image into integral
+        GIntegralImageOps.transform(grayscale, integral);
 
         // Detecting fast hessian features
-        detector.detect(integralGrayscale);
+        detector.detect(integral);
 
         // Telling algorithms which image to process
-        orientator.setImage(integralGrayscale);
+        orientator.setImage(integral);
+        describer.setImage(integral);
 
-        // Computing the orientation angles for each point
+        // Finding the interest points
         List<ScalePoint> points = detector.getFoundPoints();
 
         // Checking if no interest points detected within image
         if (points.isEmpty()) {
-            throw new Exception("No local colorful SURF descriptors detected for the given image");
+            throw new Exception("No local grayscale SURF descriptors detected for the given image");
         }
 
-        double[] angles = new double[points.size()];
+        // Extracting descriptors iterating through scale points
+        double[][] descriptors = new double[points.size()][];
 
         for (int i = 0; i < points.size(); i++) {
+            // Estimating orientation of the next point
             ScalePoint p = points.get(i);
 
             orientator.setScale(p.scale);
-            angles[i] = orientator.compute(p.x, p.y);
+            double angle = orientator.compute(p.x, p.y);
+
+            // Extracting next descriptor for this region
+            SurfFeature descriptor = describer.createDescription();
+            describer.describe(p.x, p.y, angle, p.scale, descriptor);
+
+            descriptors[i] = descriptor.value;
         }
 
-        double[][] descriptors = new double[points.size()][3 * describer.getDescriptionLength()];
-
-        // Computing for each color band regarding rgb
-        for (int i = 0; i < 3; i++) {
-            // Setting the next band
-            ImageFloat32 band = null;
-
-            if (colorful.getNumBands() == 1) {
-                band = colorful.getBand(0);
-            } else {
-                band = colorful.getBand(i);
-            }
-
-            // Computing integral colorful image of the next band
-            ImageSingleBand integralBand = GeneralizedImageOps.createSingleBand(integralType, band.width, band.height);
-            GIntegralImageOps.transform(band, integralBand);
-
-            // Telling algorithms which image to process
-            describer.setImage(integralBand);
-
-            // Extracting local descriptors for each point
-            for (int j = 0; j < points.size(); j++) {
-                ScalePoint p = points.get(j);
-
-                SurfFeature descriptor = describer.createDescription();
-
-                describer.describe(p.x, p.y, angles[j], p.scale, (TupleDesc_F64) descriptor);
-
-                double[] bandDescriptor = descriptor.getValue();
-
-                for (int k = 0; k < bandDescriptor.length; k++) {
-                    descriptors[j][i * bandDescriptor.length + k] = bandDescriptor[k];
-                }
-            }
-        }
-
-        // Normalizing the final local descriptors
-        if (normalize) {
-            for (int i = 0; i < descriptors.length; i++) {
-                Normalizer.euclidean(descriptors[i]);
-            }
-        }
-
-        return descriptors;
+        return new Description(descriptors);
     }
 }

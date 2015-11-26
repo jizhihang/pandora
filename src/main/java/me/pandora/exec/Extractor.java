@@ -5,10 +5,10 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.Properties;
-import me.pandora.image.ColorSurfDetector;
-import me.pandora.image.LocalDetector;
-import me.pandora.image.SiftDetector;
-import me.pandora.image.SurfDetector;
+import me.pandora.image.FeatureDetector;
+import me.pandora.image.local.ColorSurf;
+import me.pandora.image.local.Sift;
+import me.pandora.image.local.Surf;
 import me.pandora.io.Writer;
 import me.pandora.io.MultipleFilenameFilter;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -23,16 +23,16 @@ import org.apache.log4j.Logger;
  * @author Akis Papadopoulos
  */
 public class Extractor {
-    
+
     // Statistics
     private static DescriptiveStatistics stats = new DescriptiveStatistics();
-    
+
     // Formater
     private static DecimalFormat formater = new DecimalFormat("#.###");
 
     public static void main(String[] args) {
         Logger logger = null;
-        
+
         try {
             // Loading configuration properties
             Properties props = new Properties();
@@ -43,11 +43,11 @@ public class Extractor {
             String method = props.getProperty("descriptors.detection.method");
             String outpath = props.getProperty("local.descriptors.output.path");
             String logfile = props.getProperty("log.file.path");
-            
+
             // Setting up the logger
             System.setProperty("log.file", logfile);
             logger = Logger.getLogger(Extractor.class);
-            
+
             System.out.println("See logs as: tail -f -n 100 " + logfile);
 
             logger.info("Configuration loaded");
@@ -61,7 +61,7 @@ public class Extractor {
             String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
 
             // Setting up the detector
-            LocalDetector detector = null;
+            FeatureDetector detector = null;
 
             if (method.equalsIgnoreCase("surf")) {
                 int radius = Integer.parseInt(props.getProperty("detector.surf.radius", "1"));
@@ -72,7 +72,7 @@ public class Extractor {
                 int numberScalesPerOctave = Integer.parseInt(props.getProperty("detector.surf.number.scales.per.octave", "4"));
                 int numberOfOctaves = Integer.parseInt(props.getProperty("detector.surf.number.of.octaves", "4"));
                 boolean slided = Boolean.parseBoolean(props.getProperty("detector.surf.slided.orientation", "false"));
-                
+
                 logger.info("Radius: " + radius);
                 logger.info("Threshold: " + threshold);
                 logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
@@ -82,7 +82,7 @@ public class Extractor {
                 logger.info("Number Of Octaves: " + numberOfOctaves);
                 logger.info("Sliding Orientation: " + slided);
 
-                detector = new SurfDetector(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided);
+                detector = new Surf(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided);
             } else if (method.equalsIgnoreCase("csurf")) {
                 int radius = Integer.parseInt(props.getProperty("detector.csurf.radius", "1"));
                 float threshold = Float.parseFloat(props.getProperty("detector.csurf.threshold", "0F"));
@@ -93,7 +93,7 @@ public class Extractor {
                 int numberOfOctaves = Integer.parseInt(props.getProperty("detector.csurf.number.of.octaves", "4"));
                 boolean slided = Boolean.parseBoolean(props.getProperty("detector.csurf.slided.orientation", "false"));
                 boolean normalize = Boolean.parseBoolean(props.getProperty("detector.csurf.normalize", "false"));
-                
+
                 logger.info("Radius: " + radius);
                 logger.info("Threshold: " + threshold);
                 logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
@@ -104,23 +104,23 @@ public class Extractor {
                 logger.info("Sliding Orientation: " + slided);
                 logger.info("Normalize: " + normalize);
 
-                detector = new ColorSurfDetector(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided, normalize);
+                detector = new ColorSurf(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided, normalize);
             } else if (method.equalsIgnoreCase("sift")) {
                 int extractRadius = Integer.parseInt(props.getProperty("detector.sift.extract.radius", "2"));
                 float detectThreshold = Float.parseFloat(props.getProperty("detector.sift.detect.threshold", "1"));
                 int maxFeaturesPerScale = Integer.parseInt(props.getProperty("detector.sift.max.features.per.scale", "-1"));
                 double edgeThreshold = Double.parseDouble(props.getProperty("detector.sift.edge.threshold", "5"));
                 boolean normalize = Boolean.parseBoolean(props.getProperty("detector.sift.normalize", "false"));
-                
+
                 logger.info("Extract Radius: " + extractRadius);
                 logger.info("Detect Threshold: " + detectThreshold);
                 logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
                 logger.info("Edge Threshold: " + edgeThreshold);
                 logger.info("Normalize: " + normalize);
 
-                detector = new SiftDetector(extractRadius, detectThreshold, maxFeaturesPerScale, edgeThreshold, normalize);
+                detector = new Sift(extractRadius, detectThreshold, maxFeaturesPerScale, edgeThreshold, normalize);
             }
-            
+
             logger.info("Process started");
 
             // Extracting local descriptors per image
@@ -128,14 +128,14 @@ public class Extractor {
                 try {
                     BufferedImage image = UtilImageIO.loadImage(dirin.getPath() + "/" + filenames[i]);
 
-                    double[][] descriptors = detector.detect(image);
+                    double[][] descriptors = detector.extract(image).getDescriptors();
 
                     stats.addValue(descriptors.length);
 
                     // Saving descriptor with an identical name
                     int pos = filenames[i].lastIndexOf(".");
                     String filepath = outpath + "/" + filenames[i].substring(0, pos) + "." + method;
-                    
+
                     Writer.write(descriptors, filepath, false);
 
                     if (i % 100 == 0) {
