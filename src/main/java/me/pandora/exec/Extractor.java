@@ -6,6 +6,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.Properties;
 import me.pandora.image.FeatureDetector;
+import me.pandora.image.global.Cedd;
 import me.pandora.image.local.ColorSurf;
 import me.pandora.image.local.Sift;
 import me.pandora.image.local.Surf;
@@ -15,7 +16,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
 
 /**
- * A detector extracting local descriptors given the dataset of images plus a
+ * A detector extracting visual descriptions given the dataset of images plus a
  * detection configuration file.
  *
  * Run as: mvn exec:java -Dexec.mainClass="me.pandora.exec.Extractor" -Dexec.args="path/to/config.properties"
@@ -40,8 +41,8 @@ public class Extractor {
 
             String inpath = props.getProperty("dataset.images.input.path");
             String extension = props.getProperty("dataset.image.file.extension");
-            String method = props.getProperty("descriptors.detection.method");
-            String outpath = props.getProperty("local.descriptors.output.path");
+            String method = props.getProperty("descriptions.detection.method");
+            String outpath = props.getProperty("descriptions.output.path");
             String logfile = props.getProperty("log.file.path");
 
             // Setting up the logger
@@ -119,11 +120,25 @@ public class Extractor {
                 logger.info("Normalize: " + normalize);
 
                 detector = new Sift(extractRadius, detectThreshold, maxFeaturesPerScale, edgeThreshold, normalize);
+            } else if (method.equalsIgnoreCase("cedd")) {
+                double t0 = Double.parseDouble(props.getProperty("detector.cedd.threshold.0", "14d"));
+                double t1 = Double.parseDouble(props.getProperty("detector.cedd.threshold.1", "0.68d"));
+                double t2 = Double.parseDouble(props.getProperty("detector.cedd.threshold.2", "0.98d"));
+                double t3 = Double.parseDouble(props.getProperty("detector.cedd.threshold.3", "0.98d"));
+                boolean compact = Boolean.parseBoolean(props.getProperty("detector.cedd.compact.form", "false"));
+
+                logger.info("Threshold 0: " + t0);
+                logger.info("Threshold 1: " + t1);
+                logger.info("Threshold 2: " + t2);
+                logger.info("Threshold 3: " + t3);
+                logger.info("Compact: " + compact);
+
+                detector = new Cedd(t0, t1, t2, t3, compact);
             }
 
             logger.info("Process started");
 
-            // Extracting local descriptors per image
+            // Extracting descriptors per image
             for (int i = 0; i < filenames.length; i++) {
                 try {
                     BufferedImage image = UtilImageIO.loadImage(dirin.getPath() + "/" + filenames[i]);
@@ -143,7 +158,7 @@ public class Extractor {
                         logger.info(progress + "%...");
                     }
                 } catch (Exception exc) {
-                    logger.error("An unknown error occurred extracting local descriptors for image " + filenames[i], exc);
+                    logger.error("An unknown error occurred extracting visual description for image " + filenames[i], exc);
                 }
             }
 
@@ -156,7 +171,7 @@ public class Extractor {
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {
-                logger.error("An unknown error occurred extracting local descriptors", exc);
+                logger.error("An unknown error occurred extracting visual descriptions", exc);
             } else {
                 exc.printStackTrace();
             }
