@@ -60,4 +60,9 @@ public class Cedd implements FeatureDetector {
 
         return new Description(descriptor);
     }
+    
+    @Override
+    public String toString() {
+        return "Cedd:144";
+    }
 }

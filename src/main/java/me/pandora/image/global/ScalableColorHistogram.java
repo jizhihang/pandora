@@ -30,4 +30,9 @@ public class ScalableColorHistogram implements FeatureDetector {
 
         return new Description(descriptor);
     }
+    
+    @Override
+    public String toString() {
+        return "ScalableColor:256";
+    }
 }

@@ -57,7 +57,6 @@ public class Extractor {
             logger.info("File: " + args[0]);
             logger.info("Images: " + inpath);
             logger.info("Type: " + extension);
-            logger.info("Detector: " + method);
 
             // Loading image files
             File dirin = new File(inpath);
@@ -76,6 +75,9 @@ public class Extractor {
                 int numberOfOctaves = Integer.parseInt(props.getProperty("detector.surf.number.of.octaves", "4"));
                 boolean slided = Boolean.parseBoolean(props.getProperty("detector.surf.slided.orientation", "false"));
 
+                detector = new Surf(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided);
+                
+                logger.info("Detector: " + detector);
                 logger.info("Radius: " + radius);
                 logger.info("Threshold: " + threshold);
                 logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
@@ -84,8 +86,6 @@ public class Extractor {
                 logger.info("Number Scales Per Octave: " + numberScalesPerOctave);
                 logger.info("Number Of Octaves: " + numberOfOctaves);
                 logger.info("Sliding Orientation: " + slided);
-
-                detector = new Surf(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided);
             } else if (method.equalsIgnoreCase("csurf")) {
                 int radius = Integer.parseInt(props.getProperty("detector.csurf.radius", "1"));
                 float threshold = Float.parseFloat(props.getProperty("detector.csurf.threshold", "0F"));
@@ -97,6 +97,9 @@ public class Extractor {
                 boolean slided = Boolean.parseBoolean(props.getProperty("detector.csurf.slided.orientation", "false"));
                 boolean normalize = Boolean.parseBoolean(props.getProperty("detector.csurf.normalize", "false"));
 
+                detector = new ColorSurf(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided, normalize);
+                
+                logger.info("Detector: " + detector);
                 logger.info("Radius: " + radius);
                 logger.info("Threshold: " + threshold);
                 logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
@@ -106,8 +109,6 @@ public class Extractor {
                 logger.info("Number Of Octaves: " + numberOfOctaves);
                 logger.info("Sliding Orientation: " + slided);
                 logger.info("Normalize: " + normalize);
-
-                detector = new ColorSurf(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided, normalize);
             } else if (method.equalsIgnoreCase("sift")) {
                 int extractRadius = Integer.parseInt(props.getProperty("detector.sift.extract.radius", "2"));
                 float detectThreshold = Float.parseFloat(props.getProperty("detector.sift.detect.threshold", "1"));
@@ -115,13 +116,14 @@ public class Extractor {
                 double edgeThreshold = Double.parseDouble(props.getProperty("detector.sift.edge.threshold", "5"));
                 boolean normalize = Boolean.parseBoolean(props.getProperty("detector.sift.normalize", "false"));
 
+                detector = new Sift(extractRadius, detectThreshold, maxFeaturesPerScale, edgeThreshold, normalize);
+                
+                logger.info("Detector: " + detector);
                 logger.info("Extract Radius: " + extractRadius);
                 logger.info("Detect Threshold: " + detectThreshold);
                 logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
                 logger.info("Edge Threshold: " + edgeThreshold);
                 logger.info("Normalize: " + normalize);
-
-                detector = new Sift(extractRadius, detectThreshold, maxFeaturesPerScale, edgeThreshold, normalize);
             } else if (method.equalsIgnoreCase("cedd")) {
                 double t0 = Double.parseDouble(props.getProperty("detector.cedd.threshold.0", "14d"));
                 double t1 = Double.parseDouble(props.getProperty("detector.cedd.threshold.1", "0.68d"));
@@ -129,17 +131,22 @@ public class Extractor {
                 double t3 = Double.parseDouble(props.getProperty("detector.cedd.threshold.3", "0.98d"));
                 boolean compact = Boolean.parseBoolean(props.getProperty("detector.cedd.compact.form", "false"));
 
+                detector = new Cedd(t0, t1, t2, t3, compact);
+                
+                logger.info("Detector: " + detector);
                 logger.info("Threshold 0: " + t0);
                 logger.info("Threshold 1: " + t1);
                 logger.info("Threshold 2: " + t2);
                 logger.info("Threshold 3: " + t3);
                 logger.info("Compact: " + compact);
-
-                detector = new Cedd(t0, t1, t2, t3, compact);
             } else if (method.equalsIgnoreCase("clh")) {
                 detector = new ColorLayoutHistogram();
+                
+                logger.info("Detector: " + detector);
             } else if (method.equalsIgnoreCase("sch")) {
                 detector = new ScalableColorHistogram();
+                
+                logger.info("Detector: " + detector);
             }
 
             logger.info("Process started");

@@ -30,4 +30,9 @@ public class ColorLayoutHistogram implements FeatureDetector {
 
         return new Description(descriptor);
     }
+    
+    @Override
+    public String toString() {
+        return "ColorLayout:33";
+    }
 }
