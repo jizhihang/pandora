@@ -35,7 +35,7 @@ public class Description {
     }
 
     public double[] getDescriptor(int index) {
-        if (index > 0 && index < descriptors.length) {
+        if (index >= 0 && index < descriptors.length) {
             return descriptors[index];
         } else {
             return null;
