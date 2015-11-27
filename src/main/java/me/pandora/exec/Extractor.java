@@ -9,6 +9,7 @@ import me.pandora.image.FeatureDetector;
 import me.pandora.image.global.Cedd;
 import me.pandora.image.global.ColorLayoutHistogram;
 import me.pandora.image.global.Edge;
+import me.pandora.image.global.Phog;
 import me.pandora.image.global.ScalableColorHistogram;
 import me.pandora.image.local.ColorSurf;
 import me.pandora.image.local.Sift;
@@ -150,6 +151,10 @@ public class Extractor {
                 logger.info("Detector: " + detector);
             } else if (method.equalsIgnoreCase("edge")) {
                 detector = new Edge();
+                
+                logger.info("Detector: " + detector);
+            } else if (method.equalsIgnoreCase("phog")) {
+                detector = new Phog();
                 
                 logger.info("Detector: " + detector);
             }
