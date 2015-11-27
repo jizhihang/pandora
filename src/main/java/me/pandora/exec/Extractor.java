@@ -8,6 +8,7 @@ import java.util.Properties;
 import me.pandora.image.FeatureDetector;
 import me.pandora.image.global.Cedd;
 import me.pandora.image.global.ColorLayoutHistogram;
+import me.pandora.image.global.ScalableColorHistogram;
 import me.pandora.image.local.ColorSurf;
 import me.pandora.image.local.Sift;
 import me.pandora.image.local.Surf;
@@ -137,6 +138,8 @@ public class Extractor {
                 detector = new Cedd(t0, t1, t2, t3, compact);
             } else if (method.equalsIgnoreCase("clh")) {
                 detector = new ColorLayoutHistogram();
+            } else if (method.equalsIgnoreCase("sch")) {
+                detector = new ScalableColorHistogram();
             }
 
             logger.info("Process started");

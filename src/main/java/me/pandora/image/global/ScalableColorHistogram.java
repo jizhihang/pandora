@@ -3,15 +3,15 @@ package me.pandora.image.global;
 import java.awt.image.BufferedImage;
 import me.pandora.image.Description;
 import me.pandora.image.FeatureDetector;
-import net.semanticmetadata.lire.imageanalysis.ColorLayout;
+import net.semanticmetadata.lire.imageanalysis.ScalableColor;
 
 /**
- * A global detector extracting the MPEG-7 color layout descriptor given an
+ * A global detector extracting the MPEG-7 scalable color descriptor given an
  * image using the Lire library.
  *
  * @author Akis Papadopoulos
  */
-public class ColorLayoutHistogram implements FeatureDetector {
+public class ScalableColorHistogram implements FeatureDetector {
 
     /**
      * A method detecting a visual description given an image item.
@@ -22,7 +22,7 @@ public class ColorLayoutHistogram implements FeatureDetector {
      */
     @Override
     public Description extract(BufferedImage image) throws Exception {
-        ColorLayout detector = new ColorLayout();
+        ScalableColor detector = new ScalableColor();
 
         detector.extract(image);
 
