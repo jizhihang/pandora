@@ -3,6 +3,7 @@ package me.pandora.image.global;
 import java.awt.image.BufferedImage;
 import me.pandora.image.Description;
 import me.pandora.image.FeatureDetector;
+import net.semanticmetadata.lire.imageanalysis.ColorLayout;
 
 /**
  * A global detector extracting the color layout descriptor given an image using
@@ -10,7 +11,7 @@ import me.pandora.image.FeatureDetector;
  *
  * @author Akis Papadopoulos
  */
-public class ColorLayout implements FeatureDetector {
+public class ColorLayoutHistogram implements FeatureDetector {
 
     /**
      * A method detecting a visual description given an image item.
@@ -21,7 +22,7 @@ public class ColorLayout implements FeatureDetector {
      */
     @Override
     public Description extract(BufferedImage image) throws Exception {
-        net.semanticmetadata.lire.imageanalysis.ColorLayout detector = new net.semanticmetadata.lire.imageanalysis.ColorLayout();
+        ColorLayout detector = new ColorLayout();
 
         detector.extract(image);
 
