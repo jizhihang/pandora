@@ -17,7 +17,8 @@ import org.apache.log4j.Logger;
 /**
  * An image descriptor indexing loader.
  *
- * Run as: mvn exec:java -Dexec.mainClass="me.pandora.exec.Indexer" -Dexec.args="path/to/config.properties"
+ * Run as: mvn exec:java -Dexec.mainClass="me.pandora.exec.Indexer"
+ * -Dexec.args="path/to/config.properties"
  *
  * @author Akis Papadopoulos
  */
@@ -60,12 +61,16 @@ public class Indexer {
             logger.info("Descriptors: " + inpath);
             logger.info("Type: " + extension);
 
-            for (int i = 0; i < vocabs.size(); i++) {
-                logger.info("Vocabulary #" + (i + 1) + ": " + vocabs.get(i));
+            if (!vocabs.isEmpty()) {
+                for (int i = 0; i < vocabs.size(); i++) {
+                    logger.info("Vocabulary #" + (i + 1) + ": " + vocabs.get(i));
+                }
             }
 
-            logger.info("Projection: " + projection);
-            logger.info("Whitening: " + whitening);
+            if (!projection.isEmpty()) {
+                logger.info("Projection: " + projection);
+                logger.info("Whitening: " + whitening);
+            }
 
             // Opening a database connection
             Class.forName(driver);
@@ -78,6 +83,7 @@ public class Indexer {
             String[] filenames = dirin.list(filter);
 
             logger.info("Process started");
+            logger.info("Indexing descriptors...");
 
             // Indexing decriptors
             int descriptorsIndexed = 0;
@@ -119,105 +125,114 @@ public class Indexer {
                     logger.info(progress + "%...");
                 }
             }
+            
+            logger.info("100%");
 
-            // Truncating already stored vocabularies
-            try {
-                statement = connection.createStatement();
+            int vocabsIndexed = 0;
 
-                StringBuilder query = new StringBuilder();
+            if (!vocabs.isEmpty()) {
+                logger.info("Indexing vocabularies...");
+                
+                try {
+                    // Truncating already stored vocabularies
+                    statement = connection.createStatement();
 
-                query.append("TRUNCATE TABLE ONLY codebooks");
+                    StringBuilder query = new StringBuilder();
 
-                statement.executeUpdate(query.toString());
-            } catch (SQLException exc) {
-                logger.error("An error occurred truncating vocabularies", exc);
-            } finally {
-                if (statement != null) {
-                    statement.close();
+                    query.append("TRUNCATE TABLE ONLY codebooks");
+
+                    statement.executeUpdate(query.toString());
+                } catch (SQLException exc) {
+                    logger.error("An error occurred truncating vocabularies", exc);
+                } finally {
+                    if (statement != null) {
+                        statement.close();
+                    }
+                }
+
+                // Indexing vocabularies
+                for (int i = 0; i < vocabs.size(); i++) {
+                    // Reading vocabulary codebook
+                    double[][] matrix = Reader.read(vocabs.get(i));
+
+                    Array centroids = connection.createArrayOf("numeric", ArrayOps.toObject(matrix));
+
+                    try {
+                        statement = connection.createStatement();
+
+                        StringBuilder query = new StringBuilder();
+
+                        query.append("INSERT INTO codebooks (id, centroids) ")
+                                .append("VALUES (").append(i + 1).append(", '")
+                                .append(centroids).append("')");
+
+                        vocabsIndexed += statement.executeUpdate(query.toString());
+                    } catch (SQLException exc) {
+                        logger.error("An error occurred indexing vocabulary codebook '" + vocabs.get(i) + "'", exc);
+                    } finally {
+                        if (statement != null) {
+                            statement.close();
+                        }
+                    }
                 }
             }
 
-            // Indexing vocabularies
-            int vocabsIndexed = 0;
+            if (!projection.isEmpty()) {
+                logger.info("Indexing projection...");
+                
+                try {
+                    // Truncating already stored projection reducers
+                    statement = connection.createStatement();
 
-            for (int i = 0; i < vocabs.size(); i++) {
-                // Reading vocabulary codebook
-                double[][] matrix = Reader.read(vocabs.get(i));
+                    StringBuilder query = new StringBuilder();
 
-                Array centroids = connection.createArrayOf("numeric", ArrayOps.toObject(matrix));
+                    query.append("TRUNCATE TABLE ONLY reducers");
+
+                    statement.executeUpdate(query.toString());
+                } catch (SQLException exc) {
+                    logger.error("An error occurred truncating projection reducers", exc);
+                } finally {
+                    if (statement != null) {
+                        statement.close();
+                    }
+                }
+
+                // Indexing the projection reducer
+                double[][] matrix = Reader.read(projection);
+
+                // Extracting the projection mean vector
+                Array mean = connection.createArrayOf("numeric", ArrayOps.toObject(matrix[0]));
+
+                // Extracting the projection subspace eigenvectors
+                double[][] eigenvectors = ArrayOps.copy(matrix, 1);
+
+                Array subspace = connection.createArrayOf("numeric", ArrayOps.toObject(eigenvectors));
 
                 try {
                     statement = connection.createStatement();
 
                     StringBuilder query = new StringBuilder();
 
-                    query.append("INSERT INTO codebooks (id, centroids) ")
-                            .append("VALUES (").append(i + 1).append(", '")
-                            .append(centroids).append("')");
+                    query.append("INSERT INTO reducers (id, subspace, mean, whiten) ")
+                            .append("VALUES (").append(1).append(", '")
+                            .append(subspace).append("', '")
+                            .append(mean).append("', ")
+                            .append(whitening).append(")");
 
-                    vocabsIndexed += statement.executeUpdate(query.toString());
+                    statement.executeUpdate(query.toString());
                 } catch (SQLException exc) {
-                    logger.error("An error occurred indexing vocabulary codebook '" + vocabs.get(i) + "'", exc);
+                    logger.error("An error occurred indexing projection reducer '" + projection + "'", exc);
                 } finally {
                     if (statement != null) {
                         statement.close();
                     }
                 }
             }
-
-            // Truncating already stored projection reducers
-            try {
-                statement = connection.createStatement();
-
-                StringBuilder query = new StringBuilder();
-
-                query.append("TRUNCATE TABLE ONLY reducers");
-
-                statement.executeUpdate(query.toString());
-            } catch (SQLException exc) {
-                logger.error("An error occurred truncating projection reducers", exc);
-            } finally {
-                if (statement != null) {
-                    statement.close();
-                }
-            }
-
-            // Indexing the projection reducer
-            double[][] matrix = Reader.read(projection);
-
-            // Extracting the projection mean vector
-            Array mean = connection.createArrayOf("numeric", ArrayOps.toObject(matrix[0]));
-
-            // Extracting the projection subspace eigenvectors
-            double[][] eigenvectors = ArrayOps.copy(matrix, 1);
-
-            Array subspace = connection.createArrayOf("numeric", ArrayOps.toObject(eigenvectors));
-
-            try {
-                statement = connection.createStatement();
-
-                StringBuilder query = new StringBuilder();
-
-                query.append("INSERT INTO reducers (id, subspace, mean, whiten) ")
-                        .append("VALUES (").append(1).append(", '")
-                        .append(subspace).append("', '")
-                        .append(mean).append("', ")
-                        .append(whitening).append(")");
-
-                statement.executeUpdate(query.toString());
-            } catch (SQLException exc) {
-                logger.error("An error occurred indexing projection reducer '" + projection + "'", exc);
-            } finally {
-                if (statement != null) {
-                    statement.close();
-                }
-            }
-
-            logger.info("100%");
+            
             logger.info("Process completed successfuly");
             logger.info("Descriptors: " + filenames.length + "[" + descriptorsIndexed + "]");
             logger.info("Vocabs: " + vocabs.size() + "[" + vocabsIndexed + "]");
-            logger.info("Projections: 1[1]");
+            logger.info("Projections: " + (projection.isEmpty() ? "0" : "1"));
         } catch (Exception exc) {
             if (logger != null) {
                 logger.error("An unknown error occurred indexing image descriptors, vocabularies and projection reducer", exc);

@@ -31,7 +31,9 @@ public class SmartProperties extends Properties {
         }
 
         // Sorting alphabetically because order is important
-        Collections.sort(matched);
+        if (!matched.isEmpty()) {
+            Collections.sort(matched);
+        }
 
         List<String> values = new ArrayList<String>();
 
