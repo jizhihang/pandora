@@ -37,8 +37,8 @@ public class GlobalDetectorsTest {
     }
 
     @Test
-    public void testHistogram() throws Exception {
-        TamuraHistogram detector = new TamuraHistogram(false);
+    public void testTamuraHistogram() throws Exception {
+        TamuraHistogram detector = new TamuraHistogram(true);
 
         double[] descriptor = detector.extract(image).getDescriptor(0);
 
