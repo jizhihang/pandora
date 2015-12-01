@@ -3,6 +3,7 @@ package me.pandora.image.global;
 import java.awt.image.BufferedImage;
 import me.pandora.image.Description;
 import me.pandora.image.FeatureDetector;
+import me.pandora.math.Normalizer;
 import net.semanticmetadata.lire.imageanalysis.Tamura;
 
 /**
@@ -12,6 +13,18 @@ import net.semanticmetadata.lire.imageanalysis.Tamura;
  * @author Akis Papadopoulos
  */
 public class TamuraHistogram implements FeatureDetector {
+
+    // Normalization
+    private boolean normalize;
+
+    /**
+     * A constructor creating a tamura histogram feature detector.
+     *
+     * @param normalize true to normalize otherwise false.
+     */
+    public TamuraHistogram(boolean normalize) {
+        this.normalize = normalize;
+    }
 
     /**
      * A method detecting a visual description given an image item.
@@ -27,6 +40,10 @@ public class TamuraHistogram implements FeatureDetector {
         detector.extract(image);
 
         double[] descriptor = detector.getDoubleHistogram();
+
+        if (normalize) {
+            Normalizer.euclidean(descriptor);
+        }
 
         return new Description(descriptor);
     }

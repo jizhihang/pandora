@@ -3,6 +3,7 @@ package me.pandora.image.global;
 import java.awt.image.BufferedImage;
 import me.pandora.image.Description;
 import me.pandora.image.FeatureDetector;
+import me.pandora.math.Normalizer;
 import net.semanticmetadata.lire.imageanalysis.ColorLayout;
 
 /**
@@ -12,6 +13,18 @@ import net.semanticmetadata.lire.imageanalysis.ColorLayout;
  * @author Akis Papadopoulos
  */
 public class ColorLayoutHistogram implements FeatureDetector {
+
+    // Normalization
+    private boolean normalize;
+
+    /**
+     * A constructor creating a color layout histogram feature detector.
+     *
+     * @param normalize true to normalize otherwise false.
+     */
+    public ColorLayoutHistogram(boolean normalize) {
+        this.normalize = normalize;
+    }
 
     /**
      * A method detecting a visual description given an image item.
@@ -28,9 +41,13 @@ public class ColorLayoutHistogram implements FeatureDetector {
 
         double[] descriptor = detector.getDoubleHistogram();
 
+        if (normalize) {
+            Normalizer.euclidean(descriptor);
+        }
+
         return new Description(descriptor);
     }
-    
+
     @Override
     public String toString() {
         return "ColorLayout:33";
