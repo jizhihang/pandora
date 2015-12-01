@@ -11,6 +11,7 @@ import me.pandora.image.global.ColorLayoutHistogram;
 import me.pandora.image.global.Edge;
 import me.pandora.image.global.Phog;
 import me.pandora.image.global.ScalableColorHistogram;
+import me.pandora.image.global.TamuraHistogram;
 import me.pandora.image.local.ColorSurf;
 import me.pandora.image.local.Sift;
 import me.pandora.image.local.Surf;
@@ -132,8 +133,9 @@ public class Extractor {
                 double t2 = Double.parseDouble(props.getProperty("detector.cedd.threshold.2", "0.98d"));
                 double t3 = Double.parseDouble(props.getProperty("detector.cedd.threshold.3", "0.98d"));
                 boolean compact = Boolean.parseBoolean(props.getProperty("detector.cedd.compact.form", "false"));
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.cedd.normalize", "false"));
 
-                detector = new Cedd(t0, t1, t2, t3, compact);
+                detector = new Cedd(t0, t1, t2, t3, compact, normalize);
                 
                 logger.info("Detector: " + detector);
                 logger.info("Threshold 0: " + t0);
@@ -141,22 +143,42 @@ public class Extractor {
                 logger.info("Threshold 2: " + t2);
                 logger.info("Threshold 3: " + t3);
                 logger.info("Compact: " + compact);
+                logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("clh")) {
-                detector = new ColorLayoutHistogram();
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.clh.normalize", "false"));
+                
+                detector = new ColorLayoutHistogram(normalize);
                 
                 logger.info("Detector: " + detector);
+                logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("sch")) {
-                detector = new ScalableColorHistogram();
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.sch.normalize", "false"));
+                
+                detector = new ScalableColorHistogram(normalize);
                 
                 logger.info("Detector: " + detector);
+                logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("edge")) {
-                detector = new Edge();
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.edge.normalize", "false"));
+                
+                detector = new Edge(normalize);
                 
                 logger.info("Detector: " + detector);
+                logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("phog")) {
-                detector = new Phog();
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.phog.normalize", "false"));
+                
+                detector = new Phog(normalize);
                 
                 logger.info("Detector: " + detector);
+                logger.info("Normalize: " + normalize);
+            } else if (method.equalsIgnoreCase("tam")) {
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.tam.normalize", "false"));
+                
+                detector = new TamuraHistogram(normalize);
+                
+                logger.info("Detector: " + detector);
+                logger.info("Normalize: " + normalize);
             }
 
             logger.info("Process started");
