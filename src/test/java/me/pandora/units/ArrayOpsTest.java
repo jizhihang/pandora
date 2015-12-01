@@ -1,25 +1,18 @@
 package me.pandora.units;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import me.pandora.util.ArrayOps;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * A test case for the ArrayOps class.
  *
  * @author Akis Papadopoulos
  */
-public class ArrayOpsTest extends TestCase {
+public class ArrayOpsTest {
 
-    public ArrayOpsTest(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(ArrayOpsTest.class);
-    }
-
+    @Test
     public void testCopy() {
         double[][] a = {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
 
@@ -60,6 +53,7 @@ public class ArrayOpsTest extends TestCase {
         assertTrue(ArrayOps.equal(l, m));
     }
 
+    @Test
     public void testEqual() {
         double[] a = {1, 2, 3};
         double[] b = {1, 2, 3};
