@@ -10,6 +10,7 @@ import me.pandora.image.global.Cedd;
 import me.pandora.image.global.ColorHistogram;
 import me.pandora.image.global.ColorLayoutHistogram;
 import me.pandora.image.global.Edge;
+import me.pandora.image.global.Hog;
 import me.pandora.image.global.Phog;
 import me.pandora.image.global.ScalableColorHistogram;
 import me.pandora.image.global.SpatialGist;
@@ -197,6 +198,15 @@ public class Extractor {
                 
                 logger.info("Detector: " + detector);
                 logger.info("Normalize: " + normalize);
+            } else if (method.equalsIgnoreCase("hog")) {
+                int xBlocks = Integer.parseInt(props.getProperty("detector.hog.x.blocks", "3"));
+                int yBlocks = Integer.parseInt(props.getProperty("detector.hog.y.blocks", "3"));
+                
+                detector = new Hog(xBlocks, yBlocks);
+                
+                logger.info("Detector: " + detector);
+                logger.info("X Blocks: " + xBlocks);
+                logger.info("Y Blocks: " + yBlocks);
             }
 
             logger.info("Process started");
