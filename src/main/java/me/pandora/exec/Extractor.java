@@ -12,6 +12,7 @@ import me.pandora.image.global.ColorLayoutHistogram;
 import me.pandora.image.global.Edge;
 import me.pandora.image.global.Phog;
 import me.pandora.image.global.ScalableColorHistogram;
+import me.pandora.image.global.SpatialGist;
 import me.pandora.image.global.TamuraHistogram;
 import me.pandora.image.local.ColorSurf;
 import me.pandora.image.local.Sift;
@@ -188,6 +189,13 @@ public class Extractor {
                 
                 logger.info("Detector: " + detector);
                 logger.info("Bins: " + bins);
+                logger.info("Normalize: " + normalize);
+            } else if (method.equalsIgnoreCase("gist")) {
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.gist.normalize", "false"));
+                
+                detector = new SpatialGist(normalize);
+                
+                logger.info("Detector: " + detector);
                 logger.info("Normalize: " + normalize);
             }
 
