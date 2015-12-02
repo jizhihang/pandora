@@ -1,10 +1,15 @@
 package me.pandora.units;
 
 import java.awt.image.BufferedImage;
+import me.pandora.image.global.ColorHistogram;
+import me.pandora.image.global.Hog;
+import me.pandora.image.global.Phog2;
+import me.pandora.image.global.SpatialGist;
 import me.pandora.image.global.TamuraHistogram;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openimaj.image.processing.convolution.FImageGradients;
 
 /**
  * A test case for various global feature detectors.
@@ -17,8 +22,8 @@ public class GlobalDetectorsTest {
 
     @BeforeClass
     public static void setUp() {
-        int width = 800;
-        int height = 640;
+        int width = 420;
+        int height = 240;
 
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
@@ -43,5 +48,49 @@ public class GlobalDetectorsTest {
         double[] descriptor = detector.extract(image).getDescriptor(0);
 
         assertEquals(descriptor.length, 18);
+    }
+
+    @Test
+    public void testColorHistogram() throws Exception {
+        int bins = 4;
+
+        ColorHistogram detector = new ColorHistogram(bins, false);
+
+        double[] descriptor = detector.extract(image).getDescriptor(0);
+
+        assertEquals(bins * bins * bins, descriptor.length);
+    }
+
+    @Test
+    public void testSpatialGist() throws Exception {
+        SpatialGist detector = new SpatialGist(false);
+
+        double[] descriptor = detector.extract(image).getDescriptor(0);
+
+        assertEquals(descriptor.length, 2048);
+    }
+
+    @Test
+    public void testHog() throws Exception {
+        int xBlocks = 4;
+        int yBlocks = 4;
+
+        Hog detector = new Hog(xBlocks, yBlocks);
+
+        double[] descriptor = detector.extract(image).getDescriptor(0);
+
+        assertEquals(descriptor.length, 9 * xBlocks * yBlocks);
+    }
+
+    @Test
+    public void testPhog2() throws Exception {
+        int levels = 2;
+        int bins = 1;
+
+        Phog2 detector = new Phog2(levels, bins, true);
+
+        double[] descriptor = detector.extract(image).getDescriptor(0);
+
+        assertEquals(descriptor.length, descriptor.length);
     }
 }
