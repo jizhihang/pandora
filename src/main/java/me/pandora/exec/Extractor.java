@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import java.util.Properties;
 import me.pandora.image.FeatureDetector;
 import me.pandora.image.global.Cedd;
+import me.pandora.image.global.ColorHistogram;
 import me.pandora.image.global.ColorLayoutHistogram;
 import me.pandora.image.global.Edge;
 import me.pandora.image.global.Phog;
@@ -178,6 +179,15 @@ public class Extractor {
                 detector = new TamuraHistogram(normalize);
                 
                 logger.info("Detector: " + detector);
+                logger.info("Normalize: " + normalize);
+            } else if (method.equalsIgnoreCase("col")) {
+                int bins = Integer.parseInt(props.getProperty("detector.col.bins", "3"));
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.col.normalize", "false"));
+                
+                detector = new ColorHistogram(bins, normalize);
+                
+                logger.info("Detector: " + detector);
+                logger.info("Bins: " + bins);
                 logger.info("Normalize: " + normalize);
             }
 
