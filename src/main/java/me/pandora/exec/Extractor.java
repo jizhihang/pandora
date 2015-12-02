@@ -12,6 +12,7 @@ import me.pandora.image.global.ColorLayoutHistogram;
 import me.pandora.image.global.Edge;
 import me.pandora.image.global.Hog;
 import me.pandora.image.global.Phog;
+import me.pandora.image.global.Phog2;
 import me.pandora.image.global.ScalableColorHistogram;
 import me.pandora.image.global.SpatialGist;
 import me.pandora.image.global.TamuraHistogram;
@@ -207,6 +208,17 @@ public class Extractor {
                 logger.info("Detector: " + detector);
                 logger.info("X Blocks: " + xBlocks);
                 logger.info("Y Blocks: " + yBlocks);
+            } else if (method.equalsIgnoreCase("phog2")) {
+                int levels = Integer.parseInt(props.getProperty("detector.phog2.levels", "1"));
+                int bins = Integer.parseInt(props.getProperty("detector.phog2.bins", "12"));
+                boolean signed = Boolean.parseBoolean(props.getProperty("detector.phog2.signed", "true"));
+                
+                detector = new Phog2(levels, bins, signed);
+                
+                logger.info("Detector: " + detector);
+                logger.info("Levels: " + levels);
+                logger.info("Bins: " + bins);
+                logger.info("Signed: " + signed);
             }
 
             logger.info("Process started");
