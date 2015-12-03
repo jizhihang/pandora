@@ -1,6 +1,8 @@
 package me.pandora.units;
 
+import java.util.Arrays;
 import me.pandora.util.ArrayOps;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -96,5 +98,26 @@ public class ArrayOpsTest {
         result = ArrayOps.equal(k, l);
 
         assertFalse(result);
+    }
+    
+    @Test
+    public void testFlatten() {
+        int[][] a = {{1, 2, 3}, {4, 5}, {8, 8, 99, 5}};
+        
+        double[] b = ArrayOps.flatten(a);
+        
+        assertEquals(b.length, 9);
+        
+        double[][] c = {{1, 2, 3}, {4, 5}, {8, 8, 99, 5}};
+        
+        double[] d = ArrayOps.flatten(c);
+        
+        assertEquals(d.length, 9);
+        
+        double[][] e = {{1}};
+        
+        double[] f = ArrayOps.flatten(e);
+        
+        assertEquals(e.length, 1);
     }
 }

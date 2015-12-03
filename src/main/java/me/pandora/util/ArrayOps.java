@@ -261,4 +261,73 @@ public final class ArrayOps {
             return true;
         }
     }
+
+    /**
+     * A method to flatten a given 2d array to a single array.
+     *
+     * @param array the array to be flatten.
+     * @return a single array of doubles.
+     */
+    public static double[] flatten(final double[][] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new double[0];
+        }
+
+        int size = 0;
+
+        for (int i = 0; i < array.length; i++) {
+            size += array[i].length;
+        }
+
+        double[] result = new double[size];
+
+        int index = 0;
+
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                result[index] = array[i][j];
+
+                index++;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * A method to flatten and convert a given 2d integer array to a single
+     * array of doubles.
+     *
+     * @param array the array to be flatten.
+     * @return a single array of doubles.
+     */
+    public static double[] flatten(final int[][] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new double[0];
+        }
+
+        int size = 0;
+
+        for (int i = 0; i < array.length; i++) {
+            size += array[i].length;
+        }
+
+        double[] result = new double[size];
+
+        int index = 0;
+
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                result[index] = array[i][j];
+
+                index++;
+            }
+        }
+
+        return result;
+    }
 }
