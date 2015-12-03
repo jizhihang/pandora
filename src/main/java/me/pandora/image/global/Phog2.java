@@ -60,9 +60,4 @@ public class Phog2 implements FeatureDetector {
 
         return new Description(descriptor);
     }
-
-    @Override
-    public String toString() {
-        return "Phog2:?";
-    }
 }

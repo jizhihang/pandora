@@ -55,9 +55,4 @@ public class BinaryPattern implements FeatureDetector {
 
         return new Description(descriptor);
     }
-
-    @Override
-    public String toString() {
-        return "BinaryPattern:Width*Height";
-    }
 }

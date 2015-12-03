@@ -37,6 +37,7 @@ public class Extractor {
 
     // Statistics
     private static DescriptiveStatistics stats = new DescriptiveStatistics();
+    private static DescriptiveStatistics components = new DescriptiveStatistics();
 
     // Formater
     private static DecimalFormat formater = new DecimalFormat("#.###");
@@ -85,7 +86,7 @@ public class Extractor {
 
                 detector = new Surf(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Radius: " + radius);
                 logger.info("Threshold: " + threshold);
                 logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
@@ -107,7 +108,7 @@ public class Extractor {
 
                 detector = new ColorSurf(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided, normalize);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Radius: " + radius);
                 logger.info("Threshold: " + threshold);
                 logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
@@ -126,7 +127,7 @@ public class Extractor {
 
                 detector = new Sift(extractRadius, detectThreshold, maxFeaturesPerScale, edgeThreshold, normalize);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Extract Radius: " + extractRadius);
                 logger.info("Detect Threshold: " + detectThreshold);
                 logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
@@ -142,7 +143,7 @@ public class Extractor {
 
                 detector = new Cedd(t0, t1, t2, t3, compact, normalize);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Threshold 0: " + t0);
                 logger.info("Threshold 1: " + t1);
                 logger.info("Threshold 2: " + t2);
@@ -154,35 +155,35 @@ public class Extractor {
                 
                 detector = new ColorLayoutHistogram(normalize);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("sch")) {
                 boolean normalize = Boolean.parseBoolean(props.getProperty("detector.sch.normalize", "false"));
                 
                 detector = new ScalableColorHistogram(normalize);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("edge")) {
                 boolean normalize = Boolean.parseBoolean(props.getProperty("detector.edge.normalize", "false"));
                 
                 detector = new Edge(normalize);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("phog")) {
                 boolean normalize = Boolean.parseBoolean(props.getProperty("detector.phog.normalize", "false"));
                 
                 detector = new Phog(normalize);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("tam")) {
                 boolean normalize = Boolean.parseBoolean(props.getProperty("detector.tam.normalize", "false"));
                 
                 detector = new TamuraHistogram(normalize);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("col")) {
                 int bins = Integer.parseInt(props.getProperty("detector.col.bins", "3"));
@@ -190,7 +191,7 @@ public class Extractor {
                 
                 detector = new ColorHistogram(bins, normalize);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Bins: " + bins);
                 logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("gist")) {
@@ -198,7 +199,7 @@ public class Extractor {
                 
                 detector = new SpatialGist(normalize);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("hog")) {
                 int xBlocks = Integer.parseInt(props.getProperty("detector.hog.x.blocks", "3"));
@@ -206,7 +207,7 @@ public class Extractor {
                 
                 detector = new Hog(xBlocks, yBlocks);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("X Blocks: " + xBlocks);
                 logger.info("Y Blocks: " + yBlocks);
             } else if (method.equalsIgnoreCase("phog2")) {
@@ -216,14 +217,14 @@ public class Extractor {
                 
                 detector = new Phog2(levels, bins, signed);
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Levels: " + levels);
                 logger.info("Bins: " + bins);
                 logger.info("Signed: " + signed);
             } else if (method.equalsIgnoreCase("luo")) {
                 detector = new Luo();
                 
-                logger.info("Detector: " + detector);
+                logger.info("Detector: " + detector.getClass().getName());
             }
 
             logger.info("Process started");
@@ -236,6 +237,7 @@ public class Extractor {
                     double[][] descriptors = detector.extract(image).getDescriptors();
 
                     stats.addValue(descriptors.length);
+                    components.addValue(descriptors[0].length);
 
                     // Saving descriptor with an identical name
                     int pos = filenames[i].lastIndexOf(".");
@@ -258,6 +260,9 @@ public class Extractor {
             logger.info("Descriptors: " + stats.getSum());
             logger.info("Mean: " + formater.format(stats.getMean()) + " (" + formater.format(stats.getGeometricMean()) + ")");
             logger.info("MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
+            logger.info("Components: " + components.getSum());
+            logger.info("Mean: " + formater.format(components.getMean()) + " (" + formater.format(components.getGeometricMean()) + ")");
+            logger.info("MinMax: [" + components.getMin() + ", " + components.getMax() + "]");
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {

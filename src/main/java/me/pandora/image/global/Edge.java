@@ -47,9 +47,4 @@ public class Edge implements FeatureDetector {
 
         return new Description(descriptor);
     }
-
-    @Override
-    public String toString() {
-        return "EdgeHistogram:80";
-    }
 }

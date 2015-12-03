@@ -37,7 +37,7 @@ public class SpatialGist implements FeatureDetector {
      */
     @Override
     public Description extract(BufferedImage image) throws Exception {
-        MBFImage img = ImageUtilities.createMBFImage(image, true);
+        MBFImage img = ImageUtilities.createMBFImage(image, false);
 
         Gist detector = new Gist(image.getWidth(), image.getHeight());
 
@@ -50,10 +50,5 @@ public class SpatialGist implements FeatureDetector {
         }
 
         return new Description(descriptor);
-    }
-
-    @Override
-    public String toString() {
-        return "SpatialGist:2048";
     }
 }

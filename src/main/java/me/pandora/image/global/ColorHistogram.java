@@ -42,7 +42,7 @@ public class ColorHistogram implements FeatureDetector {
      */
     @Override
     public Description extract(BufferedImage image) throws Exception {
-        MBFImage img = ImageUtilities.createMBFImage(image, true);
+        MBFImage img = ImageUtilities.createMBFImage(image, false);
 
         HistogramModel model = new HistogramModel(bins, bins, bins);
 
@@ -55,10 +55,5 @@ public class ColorHistogram implements FeatureDetector {
         }
 
         return new Description(descriptor);
-    }
-
-    @Override
-    public String toString() {
-        return "ColorHistogram:" + (bins * bins * bins);
     }
 }

@@ -34,9 +34,4 @@ public class Luo implements FeatureDetector {
 
         return new Description(descriptor);
     }
-
-    @Override
-    public String toString() {
-        return "Luo:1";
-    }
 }

@@ -47,9 +47,4 @@ public class Phog implements FeatureDetector {
 
         return new Description(descriptor);
     }
-
-    @Override
-    public String toString() {
-        return "Phog:630";
-    }
 }

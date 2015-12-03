@@ -47,9 +47,4 @@ public class TamuraHistogram implements FeatureDetector {
 
         return new Description(descriptor);
     }
-
-    @Override
-    public String toString() {
-        return "Tamura:18";
-    }
 }
