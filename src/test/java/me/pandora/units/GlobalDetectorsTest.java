@@ -1,9 +1,13 @@
 package me.pandora.units;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.Arrays;
+import javax.imageio.ImageIO;
 import me.pandora.image.global.BinaryPattern;
 import me.pandora.image.global.ColorHistogram;
 import me.pandora.image.global.Hog;
+import me.pandora.image.global.Luo;
 import me.pandora.image.global.Phog2;
 import me.pandora.image.global.SpatialGist;
 import me.pandora.image.global.TamuraHistogram;
@@ -23,7 +27,7 @@ public class GlobalDetectorsTest {
     @BeforeClass
     public static void setUp() {
         int width = 420;
-        int height = 241;
+        int height = 240;
 
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
@@ -101,5 +105,14 @@ public class GlobalDetectorsTest {
         double[] descriptor = detector.extract(image).getDescriptor(0);
 
         assertEquals(descriptor.length, image.getWidth() * image.getHeight());
+    }
+
+    @Test
+    public void testLuo() throws Exception {
+        Luo detector = new Luo();
+
+        double[] descriptor = detector.extract(image).getDescriptor(0);
+
+        assertEquals(descriptor.length, 1);
     }
 }

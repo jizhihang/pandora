@@ -11,6 +11,7 @@ import me.pandora.image.global.ColorHistogram;
 import me.pandora.image.global.ColorLayoutHistogram;
 import me.pandora.image.global.Edge;
 import me.pandora.image.global.Hog;
+import me.pandora.image.global.Luo;
 import me.pandora.image.global.Phog;
 import me.pandora.image.global.Phog2;
 import me.pandora.image.global.ScalableColorHistogram;
@@ -219,6 +220,10 @@ public class Extractor {
                 logger.info("Levels: " + levels);
                 logger.info("Bins: " + bins);
                 logger.info("Signed: " + signed);
+            } else if (method.equalsIgnoreCase("luo")) {
+                detector = new Luo();
+                
+                logger.info("Detector: " + detector);
             }
 
             logger.info("Process started");
