@@ -12,7 +12,7 @@ import net.semanticmetadata.lire.imageanalysis.ScalableColor;
  *
  * @author Akis Papadopoulos
  */
-public class ScalableColorHistogram implements FeatureDetector {
+public class ColorScale implements FeatureDetector {
 
     // Normalization
     private boolean normalize;
@@ -22,7 +22,7 @@ public class ScalableColorHistogram implements FeatureDetector {
      *
      * @param normalize true to normalize otherwise false.
      */
-    public ScalableColorHistogram(boolean normalize) {
+    public ColorScale(boolean normalize) {
         this.normalize = normalize;
     }
 

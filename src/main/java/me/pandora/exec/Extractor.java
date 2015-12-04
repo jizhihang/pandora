@@ -8,11 +8,10 @@ import java.util.Properties;
 import me.pandora.image.FeatureDetector;
 import me.pandora.image.global.Cedd;
 import me.pandora.image.global.ColorHistogram;
-import me.pandora.image.global.ColorLayoutHistogram;
 import me.pandora.image.global.Edge;
 import me.pandora.image.global.Hog;
-import me.pandora.image.global.Phog2;
-import me.pandora.image.global.ScalableColorHistogram;
+import me.pandora.image.global.Phog;
+import me.pandora.image.global.ColorScale;
 import me.pandora.image.global.TamuraHistogram;
 import me.pandora.image.local.ColorSurf;
 import me.pandora.image.local.Sift;
@@ -38,7 +37,7 @@ public class Extractor {
     private static DescriptiveStatistics extrStats = new DescriptiveStatistics();
 
     // Formater
-    private static DecimalFormat formater = new DecimalFormat("#.###");
+    private static DecimalFormat formater = new DecimalFormat("#.####");
 
     public static void main(String[] args) {
         Logger logger = null;
@@ -48,11 +47,11 @@ public class Extractor {
             Properties props = new Properties();
             props.load(new FileInputStream(args[0]));
 
-            String inpath = props.getProperty("dataset.images.input.path");
-            String extension = props.getProperty("dataset.image.file.extension");
-            String method = props.getProperty("descriptions.detection.method");
-            String outpath = props.getProperty("descriptions.output.path");
-            String logfile = props.getProperty("log.file.path");
+            String inpath = props.getProperty("dataset.images.file.path");
+            String extension = props.getProperty("dataset.images.file.extension");
+            String method = props.getProperty("detector.extraction.method");
+            String outpath = props.getProperty("descriptions.output.file.path");
+            String logfile = outpath + "/extract.log";
 
             // Setting up the logger
             System.setProperty("log.file", logfile);
@@ -148,17 +147,19 @@ public class Extractor {
                 logger.info("Threshold 3: " + t3);
                 logger.info("Compact: " + compact);
                 logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("clh")) {
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.clh.normalize", "false"));
+            } else if (method.equalsIgnoreCase("coh")) {
+                int bins = Integer.parseInt(props.getProperty("detector.coh.bins", "3"));
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.coh.normalize", "false"));
 
-                detector = new ColorLayoutHistogram(normalize);
+                detector = new ColorHistogram(bins, normalize);
 
                 logger.info("Detector: " + detector.getClass().getName());
+                logger.info("Bins: " + bins);
                 logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("sch")) {
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.sch.normalize", "false"));
+            } else if (method.equalsIgnoreCase("csc")) {
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.csc.normalize", "false"));
 
-                detector = new ScalableColorHistogram(normalize);
+                detector = new ColorScale(normalize);
 
                 logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Normalize: " + normalize);
@@ -169,22 +170,6 @@ public class Extractor {
 
                 logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("tam")) {
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.tam.normalize", "false"));
-
-                detector = new TamuraHistogram(normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("col")) {
-                int bins = Integer.parseInt(props.getProperty("detector.col.bins", "3"));
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.col.normalize", "false"));
-
-                detector = new ColorHistogram(bins, normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Bins: " + bins);
-                logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("hog")) {
                 int xBlocks = Integer.parseInt(props.getProperty("detector.hog.x.blocks", "3"));
                 int yBlocks = Integer.parseInt(props.getProperty("detector.hog.y.blocks", "3"));
@@ -194,17 +179,24 @@ public class Extractor {
                 logger.info("Detector: " + detector.getClass().getName());
                 logger.info("X Blocks: " + xBlocks);
                 logger.info("Y Blocks: " + yBlocks);
-            } else if (method.equalsIgnoreCase("phog2")) {
+            } else if (method.equalsIgnoreCase("phog")) {
                 int levels = Integer.parseInt(props.getProperty("detector.phog2.levels", "1"));
                 int bins = Integer.parseInt(props.getProperty("detector.phog2.bins", "12"));
                 boolean signed = Boolean.parseBoolean(props.getProperty("detector.phog2.signed", "true"));
 
-                detector = new Phog2(levels, bins, signed);
+                detector = new Phog(levels, bins, signed);
 
                 logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Levels: " + levels);
                 logger.info("Bins: " + bins);
                 logger.info("Signed: " + signed);
+            } else if (method.equalsIgnoreCase("tam")) {
+                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.tam.normalize", "false"));
+
+                detector = new TamuraHistogram(normalize);
+
+                logger.info("Detector: " + detector.getClass().getName());
+                logger.info("Normalize: " + normalize);
             }
 
             logger.info("Process started");
@@ -251,7 +243,7 @@ public class Extractor {
             logger.info(" Components: " + descStats.getSum());
             logger.info("  Mean: " + formater.format(descStats.getMean()) + " (" + formater.format(descStats.getGeometricMean()) + ")");
             logger.info("  MinMax: [" + descStats.getMin() + ", " + descStats.getMax() + "]");
-            logger.info("Extraction: " + formater.format(extrStats.getSum()) + " secs (" + (extrStats.getSum() / 60.0) + " mins)");
+            logger.info("Extraction: " + formater.format(extrStats.getSum()) + " secs (" + (formater.format(extrStats.getSum() / 60.0)) + " mins)");
             logger.info("  Mean: " + formater.format(extrStats.getMean()) + " (" + formater.format(extrStats.getGeometricMean()) + ")");
             logger.info("  MinMax: [" + extrStats.getMin() + ", " + extrStats.getMax() + "]");
             logger.info("Outpath: " + outpath);

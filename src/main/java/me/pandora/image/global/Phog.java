@@ -15,7 +15,7 @@ import org.openimaj.image.processing.convolution.FImageGradients.Mode;
  *
  * @author Akis Papadopoulos
  */
-public class Phog2 implements FeatureDetector {
+public class Phog implements FeatureDetector {
 
     // Levels
     private int levels = 3;
@@ -33,7 +33,7 @@ public class Phog2 implements FeatureDetector {
      * @param bins the number of bins.
      * @param signed true for signed orientation otherwise false.
      */
-    public Phog2(int levels, int bins, boolean signed) {
+    public Phog(int levels, int bins, boolean signed) {
         this.levels = levels;
         this.bins = bins;
         this.signed = signed;
