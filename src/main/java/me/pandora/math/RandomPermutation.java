@@ -6,58 +6,68 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * An indices random permutation engine.
+ * A sampling engine using indices of random permutation.
  *
  * @author Akis Papadopoulos
  */
 public class RandomPermutation {
 
     // Permutation indices
-    private final int[] indices;
+    private List<Integer> indices;
+
+    // Sampling ratio
+    private double ratio;
+
+    // Random generator
+    private Random rand;
 
     /**
-     * A constructor creating randomly permutations of indices given the size.
+     * A constructor creating a sampling engine using random permutation indices
+     * given the sampling ratio and the seed number.
      *
-     * @param size the size of indices to permute.
+     * @param ratio the sample ratio.
      * @param seed the seed number.
      */
-    public RandomPermutation(int size, long seed) {
-        indices = new int[size];
-
-        // Listing indices
-        List<Integer> list = new ArrayList<Integer>(size);
-
-        for (int i = 0; i < size; i++) {
-            list.add(i);
-        }
-
-        // Shuffling indices
-        Collections.shuffle(list, new Random(seed));
-
-        for (int i = 0; i < size; i++) {
-            indices[i] = list.get(i);
-        }
+    public RandomPermutation(double ratio, long seed) {
+        this.ratio = ratio;
+        rand = new Random(seed);
     }
 
     /**
-     * A method sampling a portion of the permutation indices.
+     * A method permuting the indices given the items and sampling regarding the
+     * ratio with respect to the seed value.
      *
-     * @param ratio the portion of indices to retain.
-     * @return a sample of indices.
+     * @param items the items to sample from.
+     * @return a sample of the given items in arbitrary order.
      */
-    public int[] sample(double ratio) {
-        int size = (int) (indices.length * ratio);
+    public double[][] sample(double[][] items) {
+        // Permuting indices with respect to the items size
+        indices = new ArrayList<Integer>();
 
-        if (size < indices.length) {
-            int[] sampled = new int[size];
-
-            for (int i = 0; i < size; i++) {
-                sampled[i] = indices[i];
-            }
-
-            return sampled;
-        } else {
-            return indices;
+        for (int i = 0; i < items.length; i++) {
+            indices.add(i);
         }
+
+        // Shuffling indices
+        if (indices.size() > 1) {
+            Collections.shuffle(indices, rand);
+        }
+
+        // Sampling items regarding ratio and permutation order
+        List<double[]> list = new ArrayList<double[]>();
+
+        for (Integer index : indices) {
+            if (rand.nextDouble() <= ratio) {
+                list.add(items[index]);
+            }
+        }
+
+        double[][] sampled = new double[list.size()][];
+
+        for (int i = 0; i < list.size(); i++) {
+            sampled[i] = list.get(i);
+        }
+
+        return sampled;
     }
 }

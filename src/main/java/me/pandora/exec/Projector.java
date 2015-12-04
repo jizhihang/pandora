@@ -51,28 +51,25 @@ public class Projector {
             logger.info("Whitening: " + whiten);
             logger.info("Compact: " + compact);
 
+            logger.info("Process started...");
+
             // Loading vectors
             File dirin = new File(inpath);
             String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
 
-            logger.info("Process started...");
+            double[][] vectors = new double[filenames.length][];
 
-            // Sampling vectors using random permutation indices
-            RandomPermutation permutation = new RandomPermutation(filenames.length, seed);
-
-            int[] indices = permutation.sample(ratio);
-
-            // Collecting only premutation indexed vectors
-            double[][] vectors = new double[indices.length][];
-
-            for (int i = 0; i < indices.length; i++) {
-                int index = indices[i];
-
-                vectors[i] = Reader.read(dirin.getPath() + "/" + filenames[index], 1);
+            for (int i = 0; i < filenames.length; i++) {
+                vectors[i] = Reader.read(dirin.getPath() + "/" + filenames[i], 1);
             }
 
+            // Sampling vectors using random permutation indices
+            RandomPermutation permutation = new RandomPermutation(ratio, seed);
+
+            double[][] sample = permutation.sample(vectors);
+
             // Creating the projection space upon the sampled vectors
-            ProjectionSpace projection = new ProjectionSpace(vectors, whiten, compact);
+            ProjectionSpace projection = new ProjectionSpace(sample, whiten, compact);
 
             // Saving the projection space into a file
             double[] mean = projection.getMean();

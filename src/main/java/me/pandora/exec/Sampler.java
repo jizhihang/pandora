@@ -11,107 +11,102 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
 
 /**
- * A sampler selecting randomly local descriptors using random permutations
- * indices.
+ * A sampler selecting randomly description using random permutations indices.
  *
  * Run as: mvn exec:java -Dexec.mainClass="me.pandora.exec.Sampler" -Dexec.args="path/to/config.properties"
  *
  * @author Akis Papadopoulos
  */
 public class Sampler {
-    
+
     // Statistics
-    private static DescriptiveStatistics stats = new DescriptiveStatistics();
-    
+    private static DescriptiveStatistics descStats = new DescriptiveStatistics();
+    private static DescriptiveStatistics sampleStats = new DescriptiveStatistics();
+
     // Formater
-    private static DecimalFormat formater = new DecimalFormat("#.###");
+    private static DecimalFormat formater = new DecimalFormat("#.####");
 
     public static void main(String[] args) {
         Logger logger = null;
-        
+
         try {
             // Loading configuration properties
             Properties props = new Properties();
             props.load(new FileInputStream(args[0]));
 
-            String inpath = props.getProperty("local.descriptors.input.path");
-            String extension = props.getProperty("local.descriptors.file.extension");
-            double ratio = Double.parseDouble(props.getProperty("random.permutation.ratio", "1.0"));
-            long seed = Long.parseLong(props.getProperty("random.permutation.seed", "1"));
-            String outpath = props.getProperty("sample.file.absolute.path");
-            String logfile = props.getProperty("log.file.path");
-            
+            String inpath = props.getProperty("descriptions.input.file.path");
+            String extension = props.getProperty("descriptions.file.extension");
+            double ratio = Double.parseDouble(props.getProperty("sampler.permutations.ratio", "0.1"));
+            long seed = Long.parseLong(props.getProperty("sampler.permutations.seed", "1"));
+            String outpath = props.getProperty("sample.output.file.path");
+            String logfile = outpath + ".log";
+
             // Setting up the logger
             System.setProperty("log.file", logfile);
             logger = Logger.getLogger(Sampler.class);
-            
+
             System.out.println("See logs as: tail -f -n 100 " + logfile);
 
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);
-            logger.info("Descriptors: " + inpath);
+            logger.info("Descriptions: " + inpath);
             logger.info("Type: " + extension);
             logger.info("Ratio: " + ratio);
             logger.info("Seed: " + seed);
 
-            // Loading local descriptor files
+            // Loading description files
             File dirin = new File(inpath);
             String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
 
             logger.info("Process started");
 
-            // Sampling local descriptors per image
-            int sampled = 0;
+            boolean append = false;
+
+            // Sampling descriptors
+            RandomPermutation permutation = new RandomPermutation(ratio, seed);
 
             for (int i = 0; i < filenames.length; i++) {
                 try {
-                    // Loading the local descriptors of the next image
+                    // Loading next description regarding descriptors
                     double[][] descriptors = Reader.read(dirin.getPath() + "/" + filenames[i]);
-                    
-                    stats.addValue(descriptors.length);
 
-                    // Creating random permutations regarding total number of descriptors
-                    RandomPermutation permutations = new RandomPermutation(descriptors.length, seed);
+                    descStats.addValue(descriptors.length);
 
-                    // Sampling permutations
-                    int[] indices = permutations.sample(ratio);
+                    // Sampling descriptors
+                    double[][] sampled = permutation.sample(descriptors);
 
                     // Writing down the sampled descriptors indexed by permutations
-                    for (int j = 0; j < indices.length; j++) {
-                        int index = indices[j];
+                    if (sampled.length > 0) {
+                        Writer.write(sampled, outpath, append);
 
-                        // Appending except the very first descriptor
-                        boolean append = true;
+                        sampleStats.addValue(sampled.length);
 
-                        if (i == 0 && j == 0) {
-                            append = false;
+                        // Starting to append next descriptors
+                        if (!append) {
+                            append = true;
                         }
-
-                        Writer.write(descriptors[index], outpath, append);
-
-                        sampled++;
                     }
-                    
+
                     if (i % 100 == 0) {
                         int progress = (i * 100) / filenames.length;
                         logger.info(progress + "%...");
                     }
                 } catch (Exception exc) {
-                    logger.error("An unknown error occurred sampling local descriptors.", exc);
+                    logger.error("An unknown error occurred sampling descriptors.", exc);
                 }
             }
 
             logger.info("100%");
             logger.info("Process completed successfuly");
-            logger.info("Images: " + stats.getN());
-            logger.info("Descriptors: " + stats.getSum());
-            logger.info("Mean: " + formater.format(stats.getMean()) + " (" + formater.format(stats.getGeometricMean()) + ")");
-            logger.info("MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
-            logger.info("Sampled: " + sampled);
+            logger.info("Images: " + descStats.getN());
+            logger.info(" Descriptors: " + descStats.getSum());
+            logger.info("  Mean: " + formater.format(descStats.getMean()) + " (" + formater.format(descStats.getGeometricMean()) + ")");
+            logger.info("  MinMax: [" + descStats.getMin() + ", " + descStats.getMax() + "]");
+            logger.info(" Sampled: " + sampleStats.getSum());
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {
-                logger.error("An unknown error occurred sampling local descriptors", exc);
+                logger.error("An unknown error occurred sampling descriptors", exc);
             } else {
                 exc.printStackTrace();
             }
