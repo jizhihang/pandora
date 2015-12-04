@@ -11,11 +11,8 @@ import me.pandora.image.global.ColorHistogram;
 import me.pandora.image.global.ColorLayoutHistogram;
 import me.pandora.image.global.Edge;
 import me.pandora.image.global.Hog;
-import me.pandora.image.global.Luo;
-import me.pandora.image.global.Phog;
 import me.pandora.image.global.Phog2;
 import me.pandora.image.global.ScalableColorHistogram;
-import me.pandora.image.global.SpatialGist;
 import me.pandora.image.global.TamuraHistogram;
 import me.pandora.image.local.ColorSurf;
 import me.pandora.image.local.Sift;
@@ -172,13 +169,6 @@ public class Extractor {
 
                 logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("phog")) {
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.phog.normalize", "false"));
-
-                detector = new Phog(normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("tam")) {
                 boolean normalize = Boolean.parseBoolean(props.getProperty("detector.tam.normalize", "false"));
 
@@ -194,13 +184,6 @@ public class Extractor {
 
                 logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Bins: " + bins);
-                logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("gist")) {
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.gist.normalize", "false"));
-
-                detector = new SpatialGist(normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
                 logger.info("Normalize: " + normalize);
             } else if (method.equalsIgnoreCase("hog")) {
                 int xBlocks = Integer.parseInt(props.getProperty("detector.hog.x.blocks", "3"));
@@ -222,10 +205,6 @@ public class Extractor {
                 logger.info("Levels: " + levels);
                 logger.info("Bins: " + bins);
                 logger.info("Signed: " + signed);
-            } else if (method.equalsIgnoreCase("luo")) {
-                detector = new Luo();
-
-                logger.info("Detector: " + detector.getClass().getName());
             }
 
             logger.info("Process started");

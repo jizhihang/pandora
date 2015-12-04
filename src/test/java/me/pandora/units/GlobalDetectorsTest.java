@@ -1,12 +1,9 @@
 package me.pandora.units;
 
 import java.awt.image.BufferedImage;
-import me.pandora.image.global.BinaryPattern;
 import me.pandora.image.global.ColorHistogram;
 import me.pandora.image.global.Hog;
-import me.pandora.image.global.Luo;
 import me.pandora.image.global.Phog2;
-import me.pandora.image.global.SpatialGist;
 import me.pandora.image.global.TamuraHistogram;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
@@ -63,15 +60,6 @@ public class GlobalDetectorsTest {
     }
 
     @Test
-    public void testSpatialGist() throws Exception {
-        SpatialGist detector = new SpatialGist(false);
-
-        double[] descriptor = detector.extract(image).getDescriptor(0);
-
-        assertTrue(descriptor.length > 0);
-    }
-
-    @Test
     public void testHog() throws Exception {
         int xBlocks = 4;
         int yBlocks = 4;
@@ -89,24 +77,6 @@ public class GlobalDetectorsTest {
         int bins = 1;
 
         Phog2 detector = new Phog2(levels, bins, true);
-
-        double[] descriptor = detector.extract(image).getDescriptor(0);
-
-        assertTrue(descriptor.length > 0);
-    }
-
-    @Test
-    public void testBinaryPattern() throws Exception {
-        BinaryPattern detector = new BinaryPattern(false);
-
-        double[] descriptor = detector.extract(image).getDescriptor(0);
-
-        assertTrue(descriptor.length > 0);
-    }
-
-    @Test
-    public void testLuo() throws Exception {
-        Luo detector = new Luo();
 
         double[] descriptor = detector.extract(image).getDescriptor(0);
 
