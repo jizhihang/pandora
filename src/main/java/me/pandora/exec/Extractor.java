@@ -243,6 +243,7 @@ public class Extractor {
 
                     double extractionTime = (end - start) / 1000.0;
 
+                    // Collecting various statistics
                     imagStats.addValue(descriptors.length);
                     descStats.addValue(descriptors[0].length);
                     extrStats.addValue(extractionTime);
