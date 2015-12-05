@@ -22,7 +22,7 @@ import org.junit.Test;
  */
 public class GlobalDetectorsTest {
 
-    private static final double EXTRACTION_TIME_TOLERANCE = 1.9;
+    private static final double EXTRACTION_TIME_TOLERANCE = 2.5;
 
     private static final double DESCRIPTOR_SIZE_TOLERANCE = 8 * 1024;
 
