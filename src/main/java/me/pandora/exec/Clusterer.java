@@ -26,15 +26,15 @@ public class Clusterer {
             Properties props = new Properties();
             props.load(new FileInputStream(args[0]));
 
-            String inpath = props.getProperty("clustering.instances.input.path");
+            String inpath = props.getProperty("instances.input.file.path");
             int k = Integer.parseInt(props.getProperty("clustering.clusters.number", "64"));
             int iterations = Integer.parseInt(props.getProperty("clustering.max.iterations", "100"));
             int seed = Integer.parseInt(props.getProperty("clustering.seed.number", "1"));
             boolean initialize = Boolean.parseBoolean(props.getProperty("clustering.centroids.initialization", "false"));
             boolean fast = Boolean.parseBoolean(props.getProperty("clustering.fast.distance", "false"));
             int slots = Integer.parseInt(props.getProperty("clustering.parallel.slots", "1"));
-            String outpath = props.getProperty("clustering.centroids.output.path");
-            String logfile = props.getProperty("log.file.path");
+            String outpath = props.getProperty("centroids.output.file.path");
+            String logfile = outpath + ".log";
 
             // Setting up the logger
             System.setProperty("log.file", logfile);
@@ -51,7 +51,7 @@ public class Clusterer {
             logger.info("Fast Distance: " + fast);
             logger.info("Seed: " + seed);
             logger.info("Slots: " + slots);
-            
+
             logger.info("Process started...");
 
             // Loading sample data
