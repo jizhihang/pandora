@@ -39,13 +39,13 @@ public class Builder {
             SmartProperties props = new SmartProperties();
             props.load(new FileInputStream(args[0]));
 
-            String inpath = props.getProperty("local.descriptors.input.path");
+            String inpath = props.getProperty("local.descriptors.input.file.path");
             String extension = props.getProperty("local.descriptors.file.extension");
             String method = props.getProperty("building.aggregation.method");
             boolean normalize = Boolean.parseBoolean(props.getProperty("building.vector.normalization", "true"));
             List<String> vocabs = props.matchProperties("building.vocab.\\d+");
-            String outpath = props.getProperty("building.vectors.output.path");
-            String logfile = props.getProperty("log.file.path");
+            String outpath = props.getProperty("descriptors.output.file.path");
+            String logfile = outpath + "/build.log";
 
             // Setting up the logger
             System.setProperty("log.file", logfile);
@@ -122,14 +122,14 @@ public class Builder {
             logger.info("100%");
             logger.info("Process completed successfuly");
             logger.info("Images: " + stats.getN());
-            logger.info("Descriptors: " + stats.getSum());
-            logger.info("Mean: " + formater.format(stats.getMean()) + " (" + formater.format(stats.getGeometricMean()) + ")");
-            logger.info("MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
-            logger.info("Vector Size: " + vectorSize);
+            logger.info(" Descriptors: " + stats.getSum());
+            logger.info(" Mean: " + formater.format(stats.getMean()) + " (" + formater.format(stats.getGeometricMean()) + ")");
+            logger.info(" MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
+            logger.info("Descriptor Size: " + vectorSize);
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {
-                logger.error("An unknown error occurred building fixed size vectors", exc);
+                logger.error("An unknown error occurred building fixed size descriptors", exc);
             } else {
                 exc.printStackTrace();
             }
