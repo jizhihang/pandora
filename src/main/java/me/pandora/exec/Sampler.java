@@ -11,7 +11,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
 
 /**
- * A sampler selecting randomly description using random permutations indices.
+ * A sampler collecting randomly vectors using random permutations indices.
  *
  * Run as: mvn exec:java -Dexec.mainClass="me.pandora.exec.Sampler" -Dexec.args="path/to/config.properties"
  *
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 public class Sampler {
 
     // Statistics
-    private static DescriptiveStatistics descStats = new DescriptiveStatistics();
+    private static DescriptiveStatistics vectStats = new DescriptiveStatistics();
     private static DescriptiveStatistics sampleStats = new DescriptiveStatistics();
 
     // Formater
@@ -34,8 +34,8 @@ public class Sampler {
             Properties props = new Properties();
             props.load(new FileInputStream(args[0]));
 
-            String inpath = props.getProperty("descriptions.input.file.path");
-            String extension = props.getProperty("descriptions.file.extension");
+            String inpath = props.getProperty("vectors.input.file.path");
+            String extension = props.getProperty("vectors.file.extension");
             double ratio = Double.parseDouble(props.getProperty("sampler.permutations.ratio", "0.1"));
             long seed = Long.parseLong(props.getProperty("sampler.permutations.seed", "1"));
             String outpath = props.getProperty("sample.output.file.path");
@@ -49,12 +49,12 @@ public class Sampler {
 
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);
-            logger.info("Descriptions: " + inpath);
+            logger.info("Vectors: " + inpath);
             logger.info("Type: " + extension);
             logger.info("Ratio: " + ratio);
             logger.info("Seed: " + seed);
 
-            // Loading description files
+            // Loading vectors files
             File dirin = new File(inpath);
             String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
 
@@ -62,26 +62,26 @@ public class Sampler {
 
             boolean append = false;
 
-            // Sampling descriptors
+            // Sampling vectors
             RandomPermutation permutation = new RandomPermutation(ratio, seed);
 
             for (int i = 0; i < filenames.length; i++) {
                 try {
-                    // Loading next description regarding descriptors
-                    double[][] descriptors = Reader.read(dirin.getPath() + "/" + filenames[i]);
+                    // Loading next vectors file
+                    double[][] vectors = Reader.read(dirin.getPath() + "/" + filenames[i]);
 
-                    descStats.addValue(descriptors.length);
+                    vectStats.addValue(vectors.length);
 
-                    // Sampling descriptors
-                    double[][] sampled = permutation.sample(descriptors);
+                    // Sampling vectors
+                    double[][] sampled = permutation.sample(vectors);
 
-                    // Writing down the sampled descriptors indexed by permutations
+                    // Writing down the sampled vectors indexed by permutations
                     if (sampled.length > 0) {
                         Writer.write(sampled, outpath, append);
 
                         sampleStats.addValue(sampled.length);
 
-                        // Starting to append next descriptors
+                        // Starting to append next vectors
                         if (!append) {
                             append = true;
                         }
@@ -92,21 +92,21 @@ public class Sampler {
                         logger.info(progress + "%...");
                     }
                 } catch (Exception exc) {
-                    logger.error("An unknown error occurred sampling descriptors.", exc);
+                    logger.error("An unknown error occurred sampling vectors", exc);
                 }
             }
 
             logger.info("100%");
             logger.info("Process completed successfuly");
-            logger.info("Images: " + descStats.getN());
-            logger.info(" Descriptors: " + descStats.getSum());
-            logger.info("  Mean: " + formater.format(descStats.getMean()) + " (" + formater.format(descStats.getGeometricMean()) + ")");
-            logger.info("  MinMax: [" + descStats.getMin() + ", " + descStats.getMax() + "]");
+            logger.info("Images: " + vectStats.getN());
+            logger.info(" Descriptors: " + vectStats.getSum());
+            logger.info("  Mean: " + formater.format(vectStats.getMean()) + " (" + formater.format(vectStats.getGeometricMean()) + ")");
+            logger.info("  MinMax: [" + vectStats.getMin() + ", " + vectStats.getMax() + "]");
             logger.info(" Sampled: " + sampleStats.getSum());
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {
-                logger.error("An unknown error occurred sampling descriptors", exc);
+                logger.error("An unknown error occurred sampling vectors", exc);
             } else {
                 exc.printStackTrace();
             }
