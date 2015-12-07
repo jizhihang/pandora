@@ -17,8 +17,7 @@ import org.apache.log4j.Logger;
 /**
  * An image descriptor indexing loader.
  *
- * Run as: mvn exec:java -Dexec.mainClass="me.pandora.exec.Indexer"
- * -Dexec.args="path/to/config.properties"
+ * Run as: mvn exec:java -Dexec.mainClass="me.pandora.exec.Indexer" -Dexec.args="path/to/config.properties"
  *
  * @author Akis Papadopoulos
  */
@@ -40,13 +39,13 @@ public class Indexer {
             String dbname = props.getProperty("index.db.name");
             String username = props.getProperty("index.db.username");
             String password = props.getProperty("index.db.password");
-            String inpath = props.getProperty("index.descriptors.input.path");
+            String inpath = props.getProperty("index.descriptors.input.file.path");
             String extension = props.getProperty("index.descriptors.file.extension");
             List<String> vocabs = props.matchProperties("index.vocab.\\d+");
             String projection = props.getProperty("index.projection.file.path");
             boolean whitening = Boolean.parseBoolean(props.getProperty("index.projection.whitening"));
 
-            String logfile = props.getProperty("log.file.path");
+            String logfile = inpath + " /index.log";
 
             // Setting up the logger
             System.setProperty("log.file", logfile);
@@ -230,12 +229,12 @@ public class Indexer {
             }
             
             logger.info("Process completed successfuly");
-            logger.info("Descriptors: " + filenames.length + "[" + descriptorsIndexed + "]");
-            logger.info("Vocabs: " + vocabs.size() + "[" + vocabsIndexed + "]");
-            logger.info("Projections: " + (projection.isEmpty() ? "0" : "1"));
+            logger.info("Descriptors: " + descriptorsIndexed + "/" + filenames.length);
+            logger.info("Vocabs: " + vocabsIndexed + "/" + vocabs.size());
+            logger.info("Projections: " + (projection.isEmpty() ? "0/1" : "1/1"));
         } catch (Exception exc) {
             if (logger != null) {
-                logger.error("An unknown error occurred indexing image descriptors, vocabularies and projection reducer", exc);
+                logger.error("An unknown error occurred indexing descriptors, vocabularies and projection reducer", exc);
             } else {
                 exc.printStackTrace();
             }
