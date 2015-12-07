@@ -28,14 +28,14 @@ public class Reducer {
             Properties props = new Properties();
             props.load(new FileInputStream(args[0]));
 
-            String inpath = props.getProperty("vectors.input.path");
+            String inpath = props.getProperty("vectors.input.file.path");
             String extension = props.getProperty("vectors.file.extension");
             String projectionFile = props.getProperty("projection.space.file.path");
             boolean whiten = Boolean.parseBoolean(props.getProperty("projection.space.whitening", "false"));
             int size = Integer.parseInt(props.getProperty("most.dominant.components", "1"));
             String outpath = props.getProperty("reduced.vectors.output.path");
-            String subspaceFile = props.getProperty("reduced.vectors.subspace.output.path");
-            String logfile = props.getProperty("log.file.path");
+            String subspaceFile = props.getProperty("vectors.subspace.output.file.path");
+            String logfile = outpath + "/reduce.log";
 
             // Setting up the logger
             System.setProperty("log.file", logfile);
