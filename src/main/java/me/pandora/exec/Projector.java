@@ -27,14 +27,14 @@ public class Projector {
             Properties props = new Properties();
             props.load(new FileInputStream(args[0]));
 
-            String inpath = props.getProperty("vectors.input.path");
+            String inpath = props.getProperty("vectors.input.file.path");
             String extension = props.getProperty("vectors.file.extension");
             double ratio = Double.parseDouble(props.getProperty("vectors.sample.ratio", "1.0"));
-            long seed = Long.parseLong(props.getProperty("sample.seed.number", "1"));
+            long seed = Long.parseLong(props.getProperty("vectors.sample.seed.number", "1"));
             boolean whiten = Boolean.parseBoolean(props.getProperty("projection.space.whitening", "false"));
             boolean compact = Boolean.parseBoolean(props.getProperty("projection.space.compact.form", "false"));
-            String outpath = props.getProperty("projection.space.output.path");
-            String logfile = props.getProperty("log.file.path");
+            String outpath = props.getProperty("projection.space.output.file.path");
+            String logfile = outpath + "/project.log";
 
             // Setting up the logger
             System.setProperty("log.file", logfile);
@@ -46,7 +46,7 @@ public class Projector {
             logger.info("File: " + args[0]);
             logger.info("Vectors: " + inpath);
             logger.info("Type: " + extension);
-            logger.info("Sample Ratio: " + ratio);
+            logger.info("Ratio: " + ratio);
             logger.info("Seed: " + seed);
             logger.info("Whitening: " + whiten);
             logger.info("Compact: " + compact);
@@ -81,10 +81,10 @@ public class Projector {
 
             logger.info("Process completed successfuly");
             logger.info("Vectors: " + vectors.length);
-            logger.info("Vector Size: " + vectors[0].length);
+            logger.info(" Size: " + vectors[0].length);
             logger.info("Eigenvectors: " + space.length);
-            logger.info("Eigenvalues: " + space.length);
-            logger.info("Order: desc");
+            logger.info(" Eigenvalues: " + space.length);
+            logger.info(" Order: desc");
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {
