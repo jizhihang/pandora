@@ -96,9 +96,4 @@ public class Sift implements FeatureDetector {
 
         return new Description(descriptors);
     }
-    
-    @Override
-    public String toString() {
-        return "Sift:128";
-    }
 }

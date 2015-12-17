@@ -157,9 +157,4 @@ public class Surf implements FeatureDetector {
 
         return new Description(descriptors);
     }
-    
-    @Override
-    public String toString() {
-        return "Surf:64";
-    }
 }
