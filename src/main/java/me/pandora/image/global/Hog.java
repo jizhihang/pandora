@@ -23,6 +23,14 @@ public class Hog implements FeatureDetector {
 
     // Number of vertical segmentation blocks
     private int yBlocks;
+    
+    /**
+     * A constructor initiating the default parameters.
+     */
+    public Hog() {
+        xBlocks = 1;
+        yBlocks = 1;
+    }
 
     /**
      * A constructor creating a HOG feature detector.

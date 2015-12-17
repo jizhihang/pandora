@@ -37,31 +37,46 @@ import me.pandora.math.Normalizer;
 public class ColorSurf implements FeatureDetector {
 
     // Radius of the non-maximum region
-    private int radius = 1;
+    private int radius;
 
     // Minimum feature intensity
-    private float threshold = 0F;
+    private float threshold;
 
     // Maximum number of returned features per scale, le to 0 returns all features finds
-    private int maxFeaturesPerScale = -1;
+    private int maxFeaturesPerScale;
 
     // How often pixels are sampled in the first octave
-    private int initialSampleRate = 2;
+    private int initialSampleRate;
 
     // Width of the smallest feature/kernel in the lowest octave
-    private int initialSize = 9;
+    private int initialSize;
 
     // How many different feature sizes are considered in a single octave
-    private int numberScalesPerOctave = 4;
+    private int numberScalesPerOctave;
 
     // How many different octaves are considered
-    private int numberOfOctaves = 4;
+    private int numberOfOctaves;
 
     // Sliding orientation estimator mode
-    private boolean slided = false;
+    private boolean slided;
 
     // Normalization option
-    private boolean normalize = false;
+    private boolean normalize;
+    
+    /**
+     * A constructor initiating the default parameters.
+     */
+    public ColorSurf() {
+        radius = 1;
+        threshold = 0F;
+        maxFeaturesPerScale = -1;
+        initialSampleRate = 2;
+        initialSize = 9;
+        numberScalesPerOctave = 4;
+        numberOfOctaves = 4;
+        slided = false;
+        normalize = false;
+    }
 
     /**
      * A constructor initiating the given parameters.

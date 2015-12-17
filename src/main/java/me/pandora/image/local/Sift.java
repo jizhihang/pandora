@@ -23,19 +23,30 @@ import me.pandora.math.Normalizer;
 public class Sift implements FeatureDetector {
 
     // Feature size used to detect the corners
-    private int extractRadius = 2;
+    private int extractRadius;
 
     // Minimum corner intensity required
-    private float detectThreshold = 1;
+    private float detectThreshold;
 
     // Max detected features per scale
-    private int maxFeaturesPerScale = -1;
+    private int maxFeaturesPerScale;
 
     // Edge filtering threshold
-    private double edgeThreshold = 5;
+    private double edgeThreshold;
 
     // Normalization option
-    private boolean normalize = false;
+    private boolean normalize;
+    
+    /**
+     * A constructor initiating the default parameters.
+     */
+    public Sift() {
+        extractRadius = 2;
+        detectThreshold = 1;
+        maxFeaturesPerScale = -1;
+        edgeThreshold = 5;
+        normalize = false;
+    }
 
     /**
      * A constructor initiating the given parameters.

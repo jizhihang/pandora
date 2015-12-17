@@ -16,6 +16,13 @@ public class TamuraHistogram implements FeatureDetector {
 
     // Normalization
     private boolean normalize;
+    
+    /**
+     * A constructor initiating the default parameters.
+     */
+    public TamuraHistogram() {
+        normalize = false;
+    }
 
     /**
      * A constructor creating a tamura histogram feature detector.

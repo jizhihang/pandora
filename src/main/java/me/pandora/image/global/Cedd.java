@@ -15,19 +15,31 @@ import net.semanticmetadata.lire.imageanalysis.CEDD;
 public class Cedd implements FeatureDetector {
 
     // Threshold parameters
-    private double t0 = 14d;
+    private double t0;
 
-    private double t1 = 0.68d;
+    private double t1;
 
-    private double t2 = 0.98d;
+    private double t2;
 
-    private double t3 = 0.98d;
+    private double t3;
 
     // Compact form
-    private boolean compact = false;
+    private boolean compact;
 
     // Normalization
     private boolean normalize;
+
+    /**
+     * A constructor initiating the default parameters.
+     */
+    public Cedd() {
+        t0 = 14d;
+        t1 = 0.68d;
+        t2 = 0.98d;
+        t3 = 0.98d;
+        compact = false;
+        normalize = false;
+    }
 
     /**
      * A constructor creating a CEDD feature detector given the threshold

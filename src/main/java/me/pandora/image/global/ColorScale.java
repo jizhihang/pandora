@@ -16,6 +16,13 @@ public class ColorScale implements FeatureDetector {
 
     // Normalization
     private boolean normalize;
+    
+    /**
+     * A constructor initiating the default parameters.
+     */
+    public ColorScale() {
+        normalize = false;
+    }
 
     /**
      * A constructor creating a scalable color feature detector.

@@ -16,6 +16,13 @@ public class Edge implements FeatureDetector {
 
     // Normalization
     private boolean normalize;
+    
+    /**
+     * A constructor initiating the default parameters.
+     */
+    public Edge() {
+        normalize = false;
+    }
 
     /**
      * A constructor creating an edge histogram feature detector.

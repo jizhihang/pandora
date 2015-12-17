@@ -21,6 +21,14 @@ public class ColorHistogram implements FeatureDetector {
 
     // Normalization
     private boolean normalize;
+    
+    /**
+     * A constructor initiating the default parameters.
+     */
+    public ColorHistogram() {
+        bins = 3;
+        normalize = false;
+    }
 
     /**
      * A constructor creating a color histogram feature detector.

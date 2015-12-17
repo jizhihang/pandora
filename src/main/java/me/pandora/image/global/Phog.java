@@ -18,13 +18,22 @@ import org.openimaj.image.processing.convolution.FImageGradients.Mode;
 public class Phog implements FeatureDetector {
 
     // Levels
-    private int levels = 3;
+    private int levels;
 
     // Histogram bins
-    private int bins = 8;
+    private int bins;
 
     // Orientation signed mode
-    private boolean signed = true;
+    private boolean signed;
+    
+    /**
+     * A constructor initiating the default parameters.
+     */
+    public Phog() {
+        levels = 3;
+        bins = 8;
+        signed = true;
+    }
 
     /**
      * A constructor creating a PHOG feature detector given the parameters.

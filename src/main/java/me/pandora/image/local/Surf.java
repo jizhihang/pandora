@@ -55,6 +55,20 @@ public class Surf implements FeatureDetector {
 
     // Sliding orientation estimator mode
     private boolean slided = false;
+    
+    /**
+     * A constructor initiating the default parameters.
+     */
+    public Surf() {
+        radius = 1;
+        threshold = 0F;
+        maxFeaturesPerScale = -1;
+        initialSampleRate = 2;
+        initialSize = 9;
+        numberScalesPerOctave = 4;
+        numberOfOctaves = 4;
+        slided = false;
+    }
 
     /**
      * A constructor initiating the given parameters.
