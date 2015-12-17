@@ -1,6 +1,5 @@
 package me.pandora.units;
 
-import java.util.Arrays;
 import me.pandora.util.ArrayOps;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -99,25 +98,44 @@ public class ArrayOpsTest {
 
         assertFalse(result);
     }
-    
+
     @Test
     public void testFlatten() {
         int[][] a = {{1, 2, 3}, {4, 5}, {8, 8, 99, 5}};
-        
+
         double[] b = ArrayOps.flatten(a);
-        
+
         assertEquals(b.length, 9);
-        
+
         double[][] c = {{1, 2, 3}, {4, 5}, {8, 8, 99, 5}};
-        
+
         double[] d = ArrayOps.flatten(c);
-        
+
         assertEquals(d.length, 9);
-        
+
         double[][] e = {{1}};
-        
+
         double[] f = ArrayOps.flatten(e);
-        
+
         assertEquals(e.length, 1);
+    }
+
+    @Test
+    public void testFloatToDouble() {
+        float[] a = {1.2f, 2.3f, 3.5f};
+
+        double[] g = {(double) 1.2f, (double) 2.3f, (double) 3.5f};
+
+        double[] b = ArrayOps.toDouble(a);
+
+        assertTrue(ArrayOps.equal(b, g));
+
+        float[][] a2 = {{1.1f, 2.3f, 3.2f}, {4.4f, 5f}, {8f, 8.9f, 99f, 5.8f}};
+
+        double[][] g2 = {{(double) 1.1f, (double) 2.3f, (double) 3.2f}, {(double) 4.4f, (double) 5f}, {(double) 8f, (double) 8.9f, (double) 99f, (double) 5.8f}};
+
+        double[][] b2 = ArrayOps.toDouble(a2);
+
+        assertTrue(ArrayOps.equal(b2, g2));
     }
 }

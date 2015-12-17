@@ -330,4 +330,52 @@ public final class ArrayOps {
 
         return result;
     }
+
+    /**
+     * A method up casts an array of floats to doubles.
+     *
+     * @param array an array of floats.
+     * @return an array of doubles.
+     */
+    public static double[] toDouble(final float[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new double[0];
+        }
+
+        final double[] result = new double[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            result[i] = (double) array[i];
+        }
+
+        return result;
+    }
+
+    /**
+     * A method up casts a 2d array of floats to doubles.
+     *
+     * @param array an array of floats.
+     * @return an array of doubles.
+     */
+    public static double[][] toDouble(final float[][] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new double[0][];
+        }
+
+        final double[][] result = new double[array.length][];
+
+        for (int i = 0; i < array.length; i++) {
+            result[i] = new double[array[i].length];
+
+            for (int j = 0; j < array[i].length; j++) {
+                result[i][j] = (double) array[i][j];
+            }
+        }
+
+        return result;
+    }
 }
