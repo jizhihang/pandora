@@ -82,4 +82,52 @@ public class Cedd implements FeatureDetector {
 
         return new Description(descriptor);
     }
+
+    public double getT0() {
+        return t0;
+    }
+
+    public void setT0(double t0) {
+        this.t0 = t0;
+    }
+
+    public double getT1() {
+        return t1;
+    }
+
+    public void setT1(double t1) {
+        this.t1 = t1;
+    }
+
+    public double getT2() {
+        return t2;
+    }
+
+    public void setT2(double t2) {
+        this.t2 = t2;
+    }
+
+    public double getT3() {
+        return t3;
+    }
+
+    public void setT3(double t3) {
+        this.t3 = t3;
+    }
+
+    public boolean isCompact() {
+        return compact;
+    }
+
+    public void setCompact(boolean compact) {
+        this.compact = compact;
+    }
+
+    public boolean isNormalize() {
+        return normalize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
+    }
 }

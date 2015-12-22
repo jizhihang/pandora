@@ -21,7 +21,7 @@ public class ColorHistogram implements FeatureDetector {
 
     // Normalization
     private boolean normalize;
-    
+
     /**
      * A constructor initiating the default parameters.
      */
@@ -63,5 +63,21 @@ public class ColorHistogram implements FeatureDetector {
         }
 
         return new Description(descriptor);
+    }
+
+    public int getBins() {
+        return bins;
+    }
+
+    public void setBins(int bins) {
+        this.bins = bins;
+    }
+
+    public boolean isNormalize() {
+        return normalize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
     }
 }

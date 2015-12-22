@@ -62,7 +62,7 @@ public class ColorSurf implements FeatureDetector {
 
     // Normalization option
     private boolean normalize;
-    
+
     /**
      * A constructor initiating the default parameters.
      */
@@ -216,5 +216,77 @@ public class ColorSurf implements FeatureDetector {
         }
 
         return new Description(descriptors);
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+    public float getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(float threshold) {
+        this.threshold = threshold;
+    }
+
+    public int getMaxFeaturesPerScale() {
+        return maxFeaturesPerScale;
+    }
+
+    public void setMaxFeaturesPerScale(int maxFeaturesPerScale) {
+        this.maxFeaturesPerScale = maxFeaturesPerScale;
+    }
+
+    public int getInitialSampleRate() {
+        return initialSampleRate;
+    }
+
+    public void setInitialSampleRate(int initialSampleRate) {
+        this.initialSampleRate = initialSampleRate;
+    }
+
+    public int getInitialSize() {
+        return initialSize;
+    }
+
+    public void setInitialSize(int initialSize) {
+        this.initialSize = initialSize;
+    }
+
+    public int getNumberScalesPerOctave() {
+        return numberScalesPerOctave;
+    }
+
+    public void setNumberScalesPerOctave(int numberScalesPerOctave) {
+        this.numberScalesPerOctave = numberScalesPerOctave;
+    }
+
+    public int getNumberOfOctaves() {
+        return numberOfOctaves;
+    }
+
+    public void setNumberOfOctaves(int numberOfOctaves) {
+        this.numberOfOctaves = numberOfOctaves;
+    }
+
+    public boolean isSlided() {
+        return slided;
+    }
+
+    public void setSlided(boolean slided) {
+        this.slided = slided;
+    }
+
+    public boolean isNormalize() {
+        return normalize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
     }
 }

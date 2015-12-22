@@ -155,4 +155,92 @@ public class GaussianSift implements FeatureDetector {
 
         return new Description(descriptors);
     }
+
+    public float getMagnificationFactor() {
+        return magnificationFactor;
+    }
+
+    public void setMagnificationFactor(float magnificationFactor) {
+        this.magnificationFactor = magnificationFactor;
+    }
+
+    public int getNumOriHistBins() {
+        return numOriHistBins;
+    }
+
+    public void setNumOriHistBins(int numOriHistBins) {
+        this.numOriHistBins = numOriHistBins;
+    }
+
+    public float getScaling() {
+        return scaling;
+    }
+
+    public void setScaling(float scaling) {
+        this.scaling = scaling;
+    }
+
+    public int getSmoothingIterations() {
+        return smoothingIterations;
+    }
+
+    public void setSmoothingIterations(int smoothingIterations) {
+        this.smoothingIterations = smoothingIterations;
+    }
+
+    public float getSamplingSize() {
+        return samplingSize;
+    }
+
+    public void setSamplingSize(float samplingSize) {
+        this.samplingSize = samplingSize;
+    }
+
+    public int getNumOriBins() {
+        return numOriBins;
+    }
+
+    public void setNumOriBins(int numOriBins) {
+        this.numOriBins = numOriBins;
+    }
+
+    public int getNumSpatialBins() {
+        return numSpatialBins;
+    }
+
+    public void setNumSpatialBins(int numSpatialBins) {
+        this.numSpatialBins = numSpatialBins;
+    }
+
+    public float getValueThreshold() {
+        return valueThreshold;
+    }
+
+    public void setValueThreshold(float valueThreshold) {
+        this.valueThreshold = valueThreshold;
+    }
+
+    public float getGaussianSigma() {
+        return gaussianSigma;
+    }
+
+    public void setGaussianSigma(float gaussianSigma) {
+        this.gaussianSigma = gaussianSigma;
+    }
+
+    public boolean isColored() {
+        return colored;
+    }
+
+    public void setColored(boolean colored) {
+        this.colored = colored;
+    }
+
+    public boolean isNormalize() {
+        return normalize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
+    }
 }

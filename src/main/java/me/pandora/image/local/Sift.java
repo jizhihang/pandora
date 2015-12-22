@@ -36,7 +36,7 @@ public class Sift implements FeatureDetector {
 
     // Normalization option
     private boolean normalize;
-    
+
     /**
      * A constructor initiating the default parameters.
      */
@@ -106,5 +106,45 @@ public class Sift implements FeatureDetector {
         }
 
         return new Description(descriptors);
+    }
+
+    public int getExtractRadius() {
+        return extractRadius;
+    }
+
+    public void setExtractRadius(int extractRadius) {
+        this.extractRadius = extractRadius;
+    }
+
+    public float getDetectThreshold() {
+        return detectThreshold;
+    }
+
+    public void setDetectThreshold(float detectThreshold) {
+        this.detectThreshold = detectThreshold;
+    }
+
+    public int getMaxFeaturesPerScale() {
+        return maxFeaturesPerScale;
+    }
+
+    public void setMaxFeaturesPerScale(int maxFeaturesPerScale) {
+        this.maxFeaturesPerScale = maxFeaturesPerScale;
+    }
+
+    public double getEdgeThreshold() {
+        return edgeThreshold;
+    }
+
+    public void setEdgeThreshold(double edgeThreshold) {
+        this.edgeThreshold = edgeThreshold;
+    }
+
+    public boolean isNormalize() {
+        return normalize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
     }
 }

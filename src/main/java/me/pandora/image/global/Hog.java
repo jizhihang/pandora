@@ -19,28 +19,28 @@ import org.openimaj.math.geometry.shape.Rectangle;
 public class Hog implements FeatureDetector {
 
     // Number of horizontal segmentation blocks
-    private int xBlocks;
+    private int widthBlocks;
 
     // Number of vertical segmentation blocks
-    private int yBlocks;
-    
+    private int heightBlocks;
+
     /**
      * A constructor initiating the default parameters.
      */
     public Hog() {
-        xBlocks = 1;
-        yBlocks = 1;
+        widthBlocks = 1;
+        heightBlocks = 1;
     }
 
     /**
      * A constructor creating a HOG feature detector.
      *
-     * @param xBlocks the number of the horizontal segmentation blocks.
-     * @param yBlocks the number of the vertical segmentation blocks.
+     * @param widthBlocks the number of the horizontal segmentation blocks.
+     * @param heightBlocks the number of the vertical segmentation blocks.
      */
-    public Hog(int xBlocks, int yBlocks) {
-        this.xBlocks = xBlocks;
-        this.yBlocks = yBlocks;
+    public Hog(int widthBlocks, int heightBlocks) {
+        this.widthBlocks = widthBlocks;
+        this.heightBlocks = heightBlocks;
     }
 
     /**
@@ -54,12 +54,12 @@ public class Hog implements FeatureDetector {
     public Description extract(BufferedImage image) throws Exception {
         FImage img = ImageUtilities.createFImage(image);
 
-        int w = img.getWidth() / xBlocks;
-        int h = img.getHeight() / yBlocks;
+        int w = img.getWidth() / widthBlocks;
+        int h = img.getHeight() / heightBlocks;
 
         BlockNormalisation norm = FixedHOGStrategy.BlockNormalisation.L2;
 
-        FixedHOGStrategy strategy = new FixedHOGStrategy(w, h, xBlocks, yBlocks, 1, 1, norm);
+        FixedHOGStrategy strategy = new FixedHOGStrategy(w, h, widthBlocks, heightBlocks, 1, 1, norm);
 
         HOG detector = new HOG(strategy);
 
@@ -70,5 +70,21 @@ public class Hog implements FeatureDetector {
         double[] descriptor = detector.getFeatureVector(window).values;
 
         return new Description(descriptor);
+    }
+
+    public int getWidthBlocks() {
+        return widthBlocks;
+    }
+
+    public void setWidthBlocks(int widthBlocks) {
+        this.widthBlocks = widthBlocks;
+    }
+
+    public int getHeightBlocks() {
+        return heightBlocks;
+    }
+
+    public void setHeightBlocks(int heightBlocks) {
+        this.heightBlocks = heightBlocks;
     }
 }

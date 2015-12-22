@@ -69,4 +69,28 @@ public class Phog implements FeatureDetector {
 
         return new Description(descriptor);
     }
+
+    public int getLevels() {
+        return levels;
+    }
+
+    public void setLevels(int levels) {
+        this.levels = levels;
+    }
+
+    public int getBins() {
+        return bins;
+    }
+
+    public void setBins(int bins) {
+        this.bins = bins;
+    }
+
+    public boolean isSigned() {
+        return signed;
+    }
+
+    public void setSigned(boolean signed) {
+        this.signed = signed;
+    }
 }

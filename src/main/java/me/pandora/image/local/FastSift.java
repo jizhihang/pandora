@@ -8,7 +8,6 @@ import org.openimaj.feature.local.list.LocalFeatureList;
 import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
 import org.openimaj.image.feature.dense.gradient.dsift.ApproximateDenseSIFT;
-import org.openimaj.image.feature.dense.gradient.dsift.DenseSIFT;
 import org.openimaj.image.feature.dense.gradient.dsift.FloatDSIFTKeypoint;
 
 /**
@@ -130,5 +129,85 @@ public class FastSift implements FeatureDetector {
         }
 
         return new Description(descriptors);
+    }
+
+    public int getStepX() {
+        return stepX;
+    }
+
+    public void setStepX(int stepX) {
+        this.stepX = stepX;
+    }
+
+    public int getStepY() {
+        return stepY;
+    }
+
+    public void setStepY(int stepY) {
+        this.stepY = stepY;
+    }
+
+    public int getBinWidth() {
+        return binWidth;
+    }
+
+    public void setBinWidth(int binWidth) {
+        this.binWidth = binWidth;
+    }
+
+    public int getBinHeight() {
+        return binHeight;
+    }
+
+    public void setBinHeight(int binHeight) {
+        this.binHeight = binHeight;
+    }
+
+    public int getNumBinsX() {
+        return numBinsX;
+    }
+
+    public void setNumBinsX(int numBinsX) {
+        this.numBinsX = numBinsX;
+    }
+
+    public int getNumBinsY() {
+        return numBinsY;
+    }
+
+    public void setNumBinsY(int numBinsY) {
+        this.numBinsY = numBinsY;
+    }
+
+    public int getNumOriBins() {
+        return numOriBins;
+    }
+
+    public void setNumOriBins(int numOriBins) {
+        this.numOriBins = numOriBins;
+    }
+
+    public float getGaussianWindowSize() {
+        return gaussianWindowSize;
+    }
+
+    public void setGaussianWindowSize(float gaussianWindowSize) {
+        this.gaussianWindowSize = gaussianWindowSize;
+    }
+
+    public float getValueThreshold() {
+        return valueThreshold;
+    }
+
+    public void setValueThreshold(float valueThreshold) {
+        this.valueThreshold = valueThreshold;
+    }
+
+    public boolean isNormalize() {
+        return normalize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
     }
 }
