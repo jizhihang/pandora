@@ -1,21 +1,12 @@
 package me.pandora.exec;
 
 import boofcv.io.image.UtilImageIO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.Properties;
 import me.pandora.image.FeatureDetector;
-import me.pandora.image.global.Cedd;
-import me.pandora.image.global.ColorHistogram;
-import me.pandora.image.global.Edge;
-import me.pandora.image.global.Hog;
-import me.pandora.image.global.Phog;
-import me.pandora.image.global.ColorScale;
-import me.pandora.image.global.TamuraHistogram;
-import me.pandora.image.local.ColorSurf;
-import me.pandora.image.local.Sift;
-import me.pandora.image.local.Surf;
 import me.pandora.io.Writer;
 import me.pandora.io.MultipleFilenameFilter;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -47,11 +38,11 @@ public class Extractor {
             Properties props = new Properties();
             props.load(new FileInputStream(args[0]));
 
-            String inpath = props.getProperty("dataset.images.file.path");
-            String extension = props.getProperty("dataset.images.file.extension");
-            String method = props.getProperty("detector.extraction.method");
-            String outpath = props.getProperty("descriptions.output.file.path");
-            String logfile = outpath + "/extract.log";
+            String imagesPath = props.getProperty("dataset.images.file.path");
+            String detectorClassPath = props.getProperty("detector.class.path");
+            String detectorSettings = props.getProperty(detectorClassPath);
+            String outputPath = props.getProperty("descriptions.output.file.path");
+            String logfile = outputPath + "/extract.log";
 
             // Setting up the logger
             System.setProperty("log.file", logfile);
@@ -61,144 +52,23 @@ public class Extractor {
 
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);
-            logger.info("Images: " + inpath);
-            logger.info("Type: " + extension);
+            logger.info("Images: " + imagesPath);
 
             // Loading image files
-            File dirin = new File(inpath);
-            String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
+            File dirin = new File(imagesPath);
+            String[] filenames = dirin.list(new MultipleFilenameFilter("jpg", "jpeg", "png"));
 
             // Setting up the detector
-            FeatureDetector detector = null;
+            ClassLoader classLoader = FeatureDetector.class.getClassLoader();
 
-            if (method.equalsIgnoreCase("surf")) {
-                int radius = Integer.parseInt(props.getProperty("detector.surf.radius", "1"));
-                float threshold = Float.parseFloat(props.getProperty("detector.surf.threshold", "0F"));
-                int maxFeaturesPerScale = Integer.parseInt(props.getProperty("detector.surf.max.features.per.scale", "-1"));
-                int initialSampleRate = Integer.parseInt(props.getProperty("detector.surf.initial.sample.rate", "2"));
-                int initialSize = Integer.parseInt(props.getProperty("detector.surf.initial.size", "9"));
-                int numberScalesPerOctave = Integer.parseInt(props.getProperty("detector.surf.number.scales.per.octave", "4"));
-                int numberOfOctaves = Integer.parseInt(props.getProperty("detector.surf.number.of.octaves", "4"));
-                boolean slided = Boolean.parseBoolean(props.getProperty("detector.surf.slided.orientation", "false"));
+            Class<FeatureDetector> detectorClass = (Class<FeatureDetector>) classLoader.loadClass(detectorClassPath);
 
-                detector = new Surf(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided);
+            ObjectMapper mapper = new ObjectMapper();
 
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Radius: " + radius);
-                logger.info("Threshold: " + threshold);
-                logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
-                logger.info("Initial Sample Rate: " + initialSampleRate);
-                logger.info("Initial Size: " + initialSize);
-                logger.info("Number Scales Per Octave: " + numberScalesPerOctave);
-                logger.info("Number Of Octaves: " + numberOfOctaves);
-                logger.info("Sliding Orientation: " + slided);
-            } else if (method.equalsIgnoreCase("csurf")) {
-                int radius = Integer.parseInt(props.getProperty("detector.csurf.radius", "1"));
-                float threshold = Float.parseFloat(props.getProperty("detector.csurf.threshold", "0F"));
-                int maxFeaturesPerScale = Integer.parseInt(props.getProperty("detector.csurf.max.features.per.scale", "-1"));
-                int initialSampleRate = Integer.parseInt(props.getProperty("detector.csurf.initial.sample.rate", "2"));
-                int initialSize = Integer.parseInt(props.getProperty("detector.csurf.initial.size", "9"));
-                int numberScalesPerOctave = Integer.parseInt(props.getProperty("detector.csurf.number.scales.per.octave", "4"));
-                int numberOfOctaves = Integer.parseInt(props.getProperty("detector.csurf.number.of.octaves", "4"));
-                boolean slided = Boolean.parseBoolean(props.getProperty("detector.csurf.slided.orientation", "false"));
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.csurf.normalize", "false"));
+            FeatureDetector detector = mapper.readValue(detectorSettings, detectorClass);
 
-                detector = new ColorSurf(radius, threshold, maxFeaturesPerScale, initialSampleRate, initialSize, numberScalesPerOctave, numberOfOctaves, slided, normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Radius: " + radius);
-                logger.info("Threshold: " + threshold);
-                logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
-                logger.info("Initial Sample Rate: " + initialSampleRate);
-                logger.info("Initial Size: " + initialSize);
-                logger.info("Number Scales Per Octave: " + numberScalesPerOctave);
-                logger.info("Number Of Octaves: " + numberOfOctaves);
-                logger.info("Sliding Orientation: " + slided);
-                logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("sift")) {
-                int extractRadius = Integer.parseInt(props.getProperty("detector.sift.extract.radius", "2"));
-                float detectThreshold = Float.parseFloat(props.getProperty("detector.sift.detect.threshold", "1"));
-                int maxFeaturesPerScale = Integer.parseInt(props.getProperty("detector.sift.max.features.per.scale", "-1"));
-                double edgeThreshold = Double.parseDouble(props.getProperty("detector.sift.edge.threshold", "5"));
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.sift.normalize", "false"));
-
-                detector = new Sift(extractRadius, detectThreshold, maxFeaturesPerScale, edgeThreshold, normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Extract Radius: " + extractRadius);
-                logger.info("Detect Threshold: " + detectThreshold);
-                logger.info("Max Features Per Scale: " + maxFeaturesPerScale);
-                logger.info("Edge Threshold: " + edgeThreshold);
-                logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("cedd")) {
-                double t0 = Double.parseDouble(props.getProperty("detector.cedd.threshold.0", "14d"));
-                double t1 = Double.parseDouble(props.getProperty("detector.cedd.threshold.1", "0.68d"));
-                double t2 = Double.parseDouble(props.getProperty("detector.cedd.threshold.2", "0.98d"));
-                double t3 = Double.parseDouble(props.getProperty("detector.cedd.threshold.3", "0.98d"));
-                boolean compact = Boolean.parseBoolean(props.getProperty("detector.cedd.compact.form", "false"));
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.cedd.normalize", "false"));
-
-                detector = new Cedd(t0, t1, t2, t3, compact, normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Threshold 0: " + t0);
-                logger.info("Threshold 1: " + t1);
-                logger.info("Threshold 2: " + t2);
-                logger.info("Threshold 3: " + t3);
-                logger.info("Compact: " + compact);
-                logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("coh")) {
-                int bins = Integer.parseInt(props.getProperty("detector.coh.bins", "3"));
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.coh.normalize", "false"));
-
-                detector = new ColorHistogram(bins, normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Bins: " + bins);
-                logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("csc")) {
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.csc.normalize", "false"));
-
-                detector = new ColorScale(normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("edge")) {
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.edge.normalize", "false"));
-
-                detector = new Edge(normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Normalize: " + normalize);
-            } else if (method.equalsIgnoreCase("hog")) {
-                int xBlocks = Integer.parseInt(props.getProperty("detector.hog.x.blocks", "3"));
-                int yBlocks = Integer.parseInt(props.getProperty("detector.hog.y.blocks", "3"));
-
-                detector = new Hog(xBlocks, yBlocks);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("X Blocks: " + xBlocks);
-                logger.info("Y Blocks: " + yBlocks);
-            } else if (method.equalsIgnoreCase("phog")) {
-                int levels = Integer.parseInt(props.getProperty("detector.phog2.levels", "1"));
-                int bins = Integer.parseInt(props.getProperty("detector.phog2.bins", "12"));
-                boolean signed = Boolean.parseBoolean(props.getProperty("detector.phog2.signed", "true"));
-
-                detector = new Phog(levels, bins, signed);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Levels: " + levels);
-                logger.info("Bins: " + bins);
-                logger.info("Signed: " + signed);
-            } else if (method.equalsIgnoreCase("tam")) {
-                boolean normalize = Boolean.parseBoolean(props.getProperty("detector.tam.normalize", "false"));
-
-                detector = new TamuraHistogram(normalize);
-
-                logger.info("Detector: " + detector.getClass().getName());
-                logger.info("Normalize: " + normalize);
-            }
-
+            logger.info("Detector: " + detector.getClass().getName());
+            logger.info("Settings: " + mapper.writeValueAsString(detector));
             logger.info("Process started");
 
             // Extracting descriptors per image
@@ -221,7 +91,7 @@ public class Extractor {
 
                     // Saving descriptor with an identical name
                     int pos = filenames[i].lastIndexOf(".");
-                    String filepath = outpath + "/" + filenames[i].substring(0, pos) + "." + method.toLowerCase();
+                    String filepath = outputPath + "/" + filenames[i].substring(0, pos) + ".desc";
 
                     Writer.write(descriptors, filepath, false);
 
@@ -240,13 +110,13 @@ public class Extractor {
             logger.info(" Descriptors: " + imagStats.getSum());
             logger.info("  Mean: " + formater.format(imagStats.getMean()) + " (" + formater.format(imagStats.getGeometricMean()) + ")");
             logger.info("  MinMax: [" + imagStats.getMin() + ", " + imagStats.getMax() + "]");
-            logger.info(" Components: " + descStats.getSum());
+            logger.info(" Components: " + imagStats.getSum() * descStats.getSum());
             logger.info("  Mean: " + formater.format(descStats.getMean()) + " (" + formater.format(descStats.getGeometricMean()) + ")");
             logger.info("  MinMax: [" + descStats.getMin() + ", " + descStats.getMax() + "]");
             logger.info("Extraction: " + formater.format(extrStats.getSum()) + " secs (" + (formater.format(extrStats.getSum() / 60.0)) + " mins)");
             logger.info("  Mean: " + formater.format(extrStats.getMean()) + " (" + formater.format(extrStats.getGeometricMean()) + ")");
             logger.info("  MinMax: [" + extrStats.getMin() + ", " + extrStats.getMax() + "]");
-            logger.info("Outpath: " + outpath);
+            logger.info("Outpath: " + outputPath);
         } catch (Exception exc) {
             if (logger != null) {
                 logger.error("An unknown error occurred extracting visual descriptions", exc);
