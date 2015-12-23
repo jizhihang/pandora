@@ -62,7 +62,7 @@ public class Indexer {
 
             if (!vocabs.isEmpty()) {
                 for (int i = 0; i < vocabs.size(); i++) {
-                    logger.info("Vocabulary #" + (i + 1) + ": " + vocabs.get(i));
+                    logger.info("Vocab " + (i + 1) + ": " + vocabs.get(i));
                 }
             }
 

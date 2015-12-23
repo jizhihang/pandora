@@ -77,7 +77,7 @@ public class Builder {
 
                 codebooks[i] = codebook;
 
-                logger.info("Vocabulary #" + (i + 1) + ": " + vocab);
+                logger.info("Vocab " + (i + 1) + ": " + vocab);
             }
 
             // Setting up the aggregator
