@@ -1,10 +1,13 @@
 package me.pandora.exec;
 
 import boofcv.io.image.UtilImageIO;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.DecimalFormat;
+import java.util.Iterator;
 import java.util.Properties;
 import me.pandora.image.FeatureDetector;
 import me.pandora.io.Writer;
@@ -68,7 +71,17 @@ public class Extractor {
             FeatureDetector detector = mapper.readValue(detectorSettings, detectorClass);
 
             logger.info("Detector: " + detector.getClass().getName());
-            logger.info("Settings: " + mapper.writeValueAsString(detector));
+
+            ObjectNode root = (ObjectNode) mapper.readTree(mapper.writeValueAsString(detector));
+            Iterator<String> fields = root.fieldNames();
+
+            while (fields.hasNext()) {
+                String field = fields.next();
+                JsonNode value = root.findValue(field);
+
+                logger.info(" " + field + ": '" + value.asText() + "'");
+            }
+
             logger.info("Process started");
 
             // Extracting descriptors per image
@@ -86,7 +99,7 @@ public class Extractor {
 
                     // Collecting various statistics
                     imagStats.addValue(descriptors.length);
-                    descStats.addValue(descriptors[0].length);
+                    descStats.addValue(descriptors.length * descriptors[0].length);
                     extrStats.addValue(extractionTime);
 
                     // Saving descriptor with an identical name
@@ -110,7 +123,7 @@ public class Extractor {
             logger.info(" Descriptors: " + imagStats.getSum());
             logger.info("  Mean: " + formater.format(imagStats.getMean()) + " (" + formater.format(imagStats.getGeometricMean()) + ")");
             logger.info("  MinMax: [" + imagStats.getMin() + ", " + imagStats.getMax() + "]");
-            logger.info(" Components: " + imagStats.getSum() * descStats.getSum());
+            logger.info(" Components: " + descStats.getSum());
             logger.info("  Mean: " + formater.format(descStats.getMean()) + " (" + formater.format(descStats.getGeometricMean()) + ")");
             logger.info("  MinMax: [" + descStats.getMin() + ", " + descStats.getMax() + "]");
             logger.info("Extraction: " + formater.format(extrStats.getSum()) + " secs (" + (formater.format(extrStats.getSum() / 60.0)) + " mins)");
