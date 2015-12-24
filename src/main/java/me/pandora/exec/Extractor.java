@@ -99,7 +99,7 @@ public class Extractor {
 
                     // Collecting various statistics
                     imagStats.addValue(descriptors.length);
-                    descStats.addValue(descriptors.length * descriptors[0].length);
+                    descStats.addValue(descriptors[0].length);
                     extrStats.addValue(extractionTime);
 
                     // Saving descriptor with an identical name
@@ -123,7 +123,7 @@ public class Extractor {
             logger.info(" Descriptors: " + imagStats.getSum());
             logger.info("  Mean: " + formater.format(imagStats.getMean()) + " (" + formater.format(imagStats.getGeometricMean()) + ")");
             logger.info("  MinMax: [" + imagStats.getMin() + ", " + imagStats.getMax() + "]");
-            logger.info(" Components: " + descStats.getSum());
+            logger.info(" Components: " + imagStats.getSum() * (int) descStats.getMean());
             logger.info("  Mean: " + formater.format(descStats.getMean()) + " (" + formater.format(descStats.getGeometricMean()) + ")");
             logger.info("  MinMax: [" + descStats.getMin() + ", " + descStats.getMax() + "]");
             logger.info("Extraction: " + formater.format(extrStats.getSum()) + " secs (" + (formater.format(extrStats.getSum() / 60.0)) + " mins)");
