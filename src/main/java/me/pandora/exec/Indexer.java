@@ -45,7 +45,7 @@ public class Indexer {
             String projection = props.getProperty("index.projection.file.path");
             boolean whitening = Boolean.parseBoolean(props.getProperty("index.projection.whitening"));
 
-            String logfile = inpath + " /index.log";
+            String logfile = inpath + "/index.log";
 
             // Setting up the logger
             System.setProperty("log.file", logfile);

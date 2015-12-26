@@ -34,7 +34,7 @@ public class Projector {
             boolean whiten = Boolean.parseBoolean(props.getProperty("projection.space.whitening", "false"));
             boolean compact = Boolean.parseBoolean(props.getProperty("projection.space.compact.form", "false"));
             String outpath = props.getProperty("projection.space.output.file.path");
-            String logfile = outpath + "/project.log";
+            String logfile = outpath + ".log";
 
             // Setting up the logger
             System.setProperty("log.file", logfile);
