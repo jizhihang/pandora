@@ -103,43 +103,14 @@
     
     <profiles>
         <profile>
-            <id>lib</id>
+            <id>full</id>
+            
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             
             <build>
-                <finalName>pandora</finalName>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>2.3.2</version>
-                        <configuration>
-                            <source>${jdk.version}</source>
-                            <target>${jdk.version}</target>
-                        </configuration>
-                    </plugin>
-            
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <version>2.6</version>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/me/pandora/exec/</exclude>
-                                <exclude>**/*.properties</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    
-        <profile>
-            <id>exec</id>
-            <build>
-                <finalName>pandora</finalName>
+                <finalName>pandora-${project.version}</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -218,6 +189,45 @@
                                 </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>lite</id>
+            
+            <build>
+                <finalName>pandora-lite-${project.version}</finalName>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>2.3.2</version>
+                        <configuration>
+                            <source>${jdk.version}</source>
+                            <target>${jdk.version}</target>
+                        </configuration>
+                    </plugin>
+            
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>2.6</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/me/pandora/exec/</exclude>
+                                <exclude>**/me/pandora/image/global/</exclude>
+                                <exclude>**/me/pandora/image/local/ColorSurf.class</exclude>
+                                <exclude>**/me/pandora/image/local/DenseSift.class</exclude>
+                                <exclude>**/me/pandora/image/local/FastSift.class</exclude>
+                                <exclude>**/me/pandora/image/local/GaussianSift.class</exclude>
+                                <exclude>**/me/pandora/image/local/GridSift.class</exclude>
+                                <exclude>**/me/pandora/image/local/Sift.class</exclude>
+                                <exclude>**/me/pandora/math/ProjectionSpace.class</exclude>
+                                <exclude>**/*.properties</exclude>
+                            </excludes>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
