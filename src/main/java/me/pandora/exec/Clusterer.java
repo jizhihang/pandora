@@ -88,9 +88,9 @@ public class Clusterer {
 
             logger.info("Process completed successfuly");
             logger.info("Instances: " + data.numInstances());
-            logger.info("Centroids: " + centroids.numInstances());
-            logger.info("Centroid Size: " + data.numAttributes());
-            logger.info("Squared Error: " + clusterer.getSquaredError());
+            logger.info(" Centroids: " + centroids.numInstances());
+            logger.info(" Centroid Size: " + data.numAttributes());
+            logger.info(" Square Error: " + clusterer.getSquaredError());
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {

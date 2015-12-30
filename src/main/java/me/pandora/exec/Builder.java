@@ -26,7 +26,8 @@ import org.apache.log4j.Logger;
 public class Builder {
 
     // Statistics
-    private static DescriptiveStatistics stats = new DescriptiveStatistics();
+    private static DescriptiveStatistics descStats = new DescriptiveStatistics();
+    private static DescriptiveStatistics aggStats = new DescriptiveStatistics();
 
     // Formater
     private static DecimalFormat formater = new DecimalFormat("#.###");
@@ -49,7 +50,7 @@ public class Builder {
 
             // Setting up the logger
             System.setProperty("log.file", logfile);
-            logger = Logger.getLogger(Clusterer.class);
+            logger = Logger.getLogger(Builder.class);
 
             System.out.println("See logs as: tail -f -n 100 " + logfile);
 
@@ -94,18 +95,16 @@ public class Builder {
             logger.info("Process started");
 
             // Aggregating local descriptors per image
-            int vectorSize = 0;
-
             for (int i = 0; i < filenames.length; i++) {
                 // Loading local descriptor
                 double[][] descriptors = Reader.read(dirin.getPath() + "/" + filenames[i]);
 
-                stats.addValue(descriptors.length);
+                descStats.addValue(descriptors.length);
 
                 // Vectorizing descriptors
                 double[] vector = aggregator.aggregate(descriptors);
 
-                vectorSize = vector.length;
+                aggStats.addValue(vector.length);
 
                 // Saving vector with an identical filename
                 int pos = filenames[i].lastIndexOf(".");
@@ -121,11 +120,12 @@ public class Builder {
 
             logger.info("100%");
             logger.info("Process completed successfuly");
-            logger.info("Images: " + stats.getN());
-            logger.info(" Descriptors: " + stats.getSum());
-            logger.info(" Mean: " + formater.format(stats.getMean()) + " (" + formater.format(stats.getGeometricMean()) + ")");
-            logger.info(" MinMax: [" + stats.getMin() + ", " + stats.getMax() + "]");
-            logger.info("Descriptor Size: " + vectorSize);
+            logger.info("Images: " + descStats.getN());
+            logger.info(" Descriptors: " + descStats.getSum());
+            logger.info(" Mean: " + formater.format(descStats.getMean()) + " (" + formater.format(descStats.getGeometricMean()) + ")");
+            logger.info(" MinMax: [" + descStats.getMin() + ", " + descStats.getMax() + "]");
+            logger.info("Aggregated: " + aggStats.getN());
+            logger.info(" Vector Size: " + aggStats.getMean());
             logger.info("Outpath: " + outpath);
         } catch (Exception exc) {
             if (logger != null) {

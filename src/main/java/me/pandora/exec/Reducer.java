@@ -87,10 +87,11 @@ public class Reducer {
                 }
             }
 
+            logger.info("100%");
             logger.info("Process completed successfuly");
             logger.info("Reduced Vectors: " + filenames.length);
-            logger.info("Outpath: " + outpath);
-            logger.info("Sub-space Projection: " + subspaceFile);
+            logger.info(" Outpath: " + outpath);
+            logger.info(" Projection: " + subspaceFile);
         } catch (Exception exc) {
             if (logger != null) {
                 logger.error("An unknown error occurred projecting vectors", exc);
