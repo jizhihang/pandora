@@ -43,7 +43,7 @@ The following command packages and builds the executable of the pandora library 
 #!maven
 mvn clean package -P full -D maven.test.skip=true
 ```
-the result of the build process above is actually a jar file followed by two folders the lib/ where the external dependencies will be stored and the configs/ where the configuration settings provided for each operation. In order to execute the project use the following command despite your system,
+the result of the build process above is actually a jar file followed by two folders the lib/ where the external dependencies will be stored and the configs/ where the configuration settings provided for each operation. In order to execute the project use one of the following commands despite your system,
 
 ```
 #!linux
@@ -57,10 +57,10 @@ java -Xmx1024m -jar pandora.jar index configs/indexer.properties
 ```
 
 ## Lightweight Version ##
-in order to use a more lite version of this library in case of web based application where resources are restricted, you can use the command below where the profile war instructs the maven to ignore various heavy dependencies like SIFT implementations depend in large in size and resources libraries,
+in order to use a more lite version of this library in case of a web based application where resources are restricted, you can use the command below where the profile war instructs the maven to ignore various heavy dependencies like SIFT implementations depend in large in size and resources libraries,
 ```
 #!maven
-mvn clean package -P war -D maven.test.skip=true
+mvn clean package install -P war -D maven.test.skip=true
 ```
 then you can use the library in another project adding the dependency in the form bellow,
 ```
