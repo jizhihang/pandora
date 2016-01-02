@@ -19,20 +19,29 @@ You gonna need the following prerequisites already installed before build the pr
 * Java JDK 7+
 
 # Build #
-This library can be used in two possible ways, first as an external lite library to another project or as an executable in order to extract image features for given image datasets and so on. In order to build project artifacts you need to specify the profile aiming the purpose of the artifact, as you can see in the next code sections,
+This library can be used in two possible ways, first as an external library to another project or as an executable in order to extract image features in a batch mode for given image datasets as well as sampling and other operations. In order to build project artifacts you need to specify the following command, as you can see in the next code sections both for library or executable purposes,
 
 ## Library ##
-The following command packages and installs an lite version of the pandora library in your local maven repository in order to use in another project (for more ready the pom.xml file,
+The following command packages and installs the pandora library in your local maven repository in order to use in another project,
 ```
 #!maven
-mvn clean package install -P lite -D maven.test.skip=true
+mvn clean package install -P full -D maven.test.skip=true
+```
+then you can use the library in another project adding the dependency in the form bellow,
+```
+#!maven
+<dependency>
+ <groupId>me.ext.libs</groupId>
+ <artifactId>pandora</artifactId>
+ <version>1.1.4-SNAPSHOT</version>
+</dependency>
 ```
 
 ## Executable ##
-The following command packages and builds the executable of the pandora library in order to be used in image features extraction, sampling, clustering etc upon a given image dataset,
+The following command packages and builds the executable of the pandora library in order to be used in image features extraction, sampling, clustering and etc. upon a given image dataset in batch mode,
 ```
 #!maven
-mvn clean package -P exec -D maven.test.skip=true
+mvn clean package -P full -D maven.test.skip=true
 ```
 the result of the build process above is actually a jar file followed by two folders the lib/ where the external dependencies will be stored and the configs/ where the configuration settings provided for each operation. In order to execute the project use the following command despite your system,
 
@@ -45,4 +54,21 @@ java -Xmx1024m -jar pandora.jar build configs/builder.properties
 java -Xmx1024m -jar pandora.jar project configs/projector.properties
 java -Xmx1024m -jar pandora.jar reduce configs/reducer.properties
 java -Xmx1024m -jar pandora.jar index configs/indexer.properties
+```
+
+## Lightweight Version ##
+in order to use a more lite version of this library in case of web based application where resources are restricted, you can use the command below where the profile war instructs the maven to ignore various heavy dependencies like SIFT implementations depend in large in size and resources libraries,
+```
+#!maven
+mvn clean package -P war -D maven.test.skip=true
+```
+then you can use the library in another project adding the dependency in the form bellow,
+```
+#!maven
+<dependency>
+ <groupId>me.ext.libs</groupId>
+ <artifactId>pandora</artifactId>
+ <version>1.1.4-SNAPSHOT</version>
+ <classifier>war</classifier>
+</dependency>
 ```
