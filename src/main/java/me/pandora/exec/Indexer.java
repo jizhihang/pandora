@@ -82,7 +82,27 @@ public class Indexer {
             String[] filenames = dirin.list(filter);
 
             logger.info("Process started");
-            logger.info("Indexing descriptors...");
+            logger.info("Descriptors");
+
+            try {
+                // Truncating already indexed images
+                statement = connection.createStatement();
+
+                StringBuilder query = new StringBuilder();
+
+                query.append("TRUNCATE TABLE ONLY images");
+
+                statement.executeUpdate(query.toString());
+            } catch (SQLException exc) {
+                logger.error("An error occurred truncating image descriptors", exc);
+            } finally {
+                if (statement != null) {
+                    statement.close();
+                }
+            }
+
+            logger.info(" Truncated");
+            logger.info(" Indexing started");
 
             // Indexing decriptors
             int descriptorsIndexed = 0;
@@ -97,22 +117,24 @@ public class Indexer {
                 int pos = filenames[i].lastIndexOf(".");
                 String id = filenames[i].substring(0, pos);
 
-                // TMP
-                id += ".jpg";
+                // Extracting the bucket id the image indexed to
+                String[] tokens = id.split("-");
+                int bucketId = Integer.parseInt(tokens[0]);
 
                 try {
-                    // Indexing the descriptor given the image id
+                    // Indexing the image descriptor
                     statement = connection.createStatement();
 
                     StringBuilder query = new StringBuilder();
 
-                    query.append("UPDATE images ")
-                            .append("SET descriptor = '").append(descriptor).append("' ")
-                            .append("WHERE id = '").append(id).append("'");
+                    query.append("INSERT INTO images (id, descriptor, bucket) ")
+                            .append("VALUES ('").append(id).append("', ")
+                            .append("'").append(descriptor).append("', ")
+                            .append(bucketId).append(")");
 
                     descriptorsIndexed += statement.executeUpdate(query.toString());
                 } catch (SQLException exc) {
-                    logger.error("An error occurred indexing descriptor '" + filenames[i] + "'", exc);
+                    logger.error("An error occurred indexing image descriptor '" + filenames[i] + "'", exc);
                 } finally {
                     if (statement != null) {
                         statement.close();
@@ -121,17 +143,18 @@ public class Indexer {
 
                 if (i % 100 == 0) {
                     int progress = (i * 100) / filenames.length;
-                    logger.info(progress + "%...");
+                    logger.info(" " + progress + "%...");
                 }
             }
-            
-            logger.info("100%");
+
+            logger.info(" 100%");
+            logger.info(" Indexing completed");
 
             int vocabsIndexed = 0;
 
             if (!vocabs.isEmpty()) {
-                logger.info("Indexing vocabularies...");
-                
+                logger.info("Vocabularies");
+
                 try {
                     // Truncating already stored vocabularies
                     statement = connection.createStatement();
@@ -148,6 +171,9 @@ public class Indexer {
                         statement.close();
                     }
                 }
+
+                logger.info(" Truncated");
+                logger.info(" Indexing started...");
 
                 // Indexing vocabularies
                 for (int i = 0; i < vocabs.size(); i++) {
@@ -174,11 +200,13 @@ public class Indexer {
                         }
                     }
                 }
+
+                logger.info(" Indexing completed");
             }
 
             if (!projection.isEmpty()) {
-                logger.info("Indexing projection...");
-                
+                logger.info("Reducers");
+
                 try {
                     // Truncating already stored projection reducers
                     statement = connection.createStatement();
@@ -195,6 +223,9 @@ public class Indexer {
                         statement.close();
                     }
                 }
+
+                logger.info(" Truncated");
+                logger.info(" Indexing started...");
 
                 // Indexing the projection reducer
                 double[][] matrix = Reader.read(projection);
@@ -226,8 +257,10 @@ public class Indexer {
                         statement.close();
                     }
                 }
+
+                logger.info(" Indexing completed");
             }
-            
+
             logger.info("Process completed successfuly");
             logger.info("Descriptors: " + descriptorsIndexed + "/" + filenames.length);
             logger.info("Vocabs: " + vocabsIndexed + "/" + vocabs.size());
