@@ -4,6 +4,14 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
 /**
  * A singleton implementing various image processing methods.
@@ -54,5 +62,41 @@ public final class Transformer {
         } else {
             return image;
         }
+    }
+
+    /**
+     * A method compressing a given image using JPEG algorithm regarding the
+     * size of quality after compression, where 0 means full compression and 1
+     * full of quality.
+     *
+     * @param image the image to be compressed.
+     * @param quality size of quality after compression.
+     * @return a compressed buffered image.
+     * @throws IOException throws unknown exceptions.
+     */
+    public static BufferedImage compress(BufferedImage image, float quality) throws IOException {
+        // Setting up the compression algorithm
+        ImageWriter writer = ImageIO.getImageWritersByFormatName("jpg").next();
+
+        ImageWriteParam parameters = writer.getDefaultWriteParam();
+        parameters.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        parameters.setCompressionQuality(quality);
+
+        // Compressing the image
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageOutputStream ios = ImageIO.createImageOutputStream(bos);
+        writer.setOutput(ios);
+
+        writer.write(null, new IIOImage(image, null, null), parameters);
+        ios.flush();
+
+        ByteArrayInputStream in = new ByteArrayInputStream(bos.toByteArray());
+        BufferedImage compressed = ImageIO.read(in);
+
+        bos.close();
+        ios.close();
+        writer.dispose();
+
+        return compressed;
     }
 }
