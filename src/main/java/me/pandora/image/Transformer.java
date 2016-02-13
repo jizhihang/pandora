@@ -3,6 +3,7 @@ package me.pandora.image;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,9 +27,10 @@ public final class Transformer {
      *
      * @param image the image to be scaled down.
      * @param target the target size in pixels.
+     * @param affine use affine transformation.
      * @return a buffered image.
      */
-    public static BufferedImage scale(BufferedImage image, int target) {
+    public static BufferedImage scale(BufferedImage image, int target, boolean affine) {
         int type = image.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : image.getType();
 
         int width = image.getWidth();
@@ -49,14 +51,20 @@ public final class Transformer {
 
             Graphics2D graphics = scaled.createGraphics();
 
-            // Regarding quality parameters
-            graphics.setComposite(AlphaComposite.Src);
-            graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            if (affine) {
+                // Creating an affine transformation with respect to the ratio
+                AffineTransform at = AffineTransform.getScaleInstance(ratio, ratio);
+                graphics.drawRenderedImage(image, at);
+            } else {
+                // Regarding quality parameters
+                graphics.setComposite(AlphaComposite.Src);
+                graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            graphics.drawImage(image, 0, 0, targetWidth, targetHeight, null);
-            graphics.dispose();
+                graphics.drawImage(image, 0, 0, targetWidth, targetHeight, null);
+                graphics.dispose();
+            }
 
             return scaled;
         } else {
