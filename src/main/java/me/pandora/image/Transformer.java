@@ -1,9 +1,7 @@
 package me.pandora.image;
 
-import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,14 +21,15 @@ public final class Transformer {
 
     /**
      * A method scaling down a given image in the target size in pixels
-     * regarding the original ratio retaining the proportions.
+     * regarding the original ratio retaining the proportions and an optional
+     * stepwise mode in terms of better quality.
      *
      * @param image the image to be scaled down.
      * @param target the target size in pixels.
-     * @param affine use affine transformation.
+     * @param stepwise apply stepwise scaling for better quality.
      * @return a buffered image.
      */
-    public static BufferedImage scale(BufferedImage image, int target, boolean affine) {
+    public static BufferedImage downscale(BufferedImage image, int target, boolean stepwise) {
         int type = image.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : image.getType();
 
         int width = image.getWidth();
@@ -38,7 +37,6 @@ public final class Transformer {
 
         long size = width * height;
 
-        // Scaling down otherwise return the same image
         if (target < size) {
             // Calculating the scale ratio and target dims
             double ratio = Math.sqrt((double) target / size);
@@ -46,25 +44,41 @@ public final class Transformer {
             int targetWidth = (int) (width * ratio);
             int targetHeight = (int) (height * ratio);
 
-            // Drawing the scaled image
-            BufferedImage scaled = new BufferedImage(targetWidth, targetHeight, type);
+            // Initiating width and height regarding a stepwised process or not
+            int w = stepwise ? width : targetWidth;
+            int h = stepwise ? height : targetHeight;
 
-            Graphics2D graphics = scaled.createGraphics();
+            BufferedImage scaled = (BufferedImage) image;
 
-            if (affine) {
-                // Creating an affine transformation with respect to the ratio
-                AffineTransform at = AffineTransform.getScaleInstance(ratio, ratio);
-                graphics.drawRenderedImage(image, at);
-            } else {
+            do {
+                // Calculating the new dims for the next step
+                if (stepwise) {
+                    // Downscaling in a half for each step until reach target
+                    if (w > targetWidth) {
+                        w = (w / 2 < targetWidth) ? targetWidth : w / 2;
+                    }
+
+                    if (h > targetHeight) {
+                        h = (h / 2 < targetHeight) ? targetHeight : h / 2;
+                    }
+                }
+
+                // Drawing the temporary scaled image
+                BufferedImage temp = new BufferedImage(w, h, type);
+
+                Graphics2D graphics = temp.createGraphics();
+
                 // Regarding quality parameters
-                graphics.setComposite(AlphaComposite.Src);
                 graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                 graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                graphics.drawImage(image, 0, 0, targetWidth, targetHeight, null);
+                graphics.drawImage(scaled, 0, 0, w, h, null);
                 graphics.dispose();
-            }
+
+                // Saving scaled image for the next step if any
+                scaled = temp;
+            } while (w != targetWidth || h != targetHeight);
 
             return scaled;
         } else {
