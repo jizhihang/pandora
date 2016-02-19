@@ -73,15 +73,11 @@ public final class Transformer {
                     }
                 }
 
-                // Drawing the temporary scaled image
+                // Drawing the temporary scaled image regarding rendering parameters
                 BufferedImage temp = new BufferedImage(w, h, type);
 
                 Graphics2D graphics = temp.createGraphics();
-
-                // Regarding quality parameters
-                graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
                 graphics.drawImage(scaled, 0, 0, w, h, null);
                 graphics.dispose();
