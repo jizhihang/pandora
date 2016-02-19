@@ -55,11 +55,21 @@ public final class Transformer {
                 if (stepwise) {
                     // Downscaling in a half for each step until reach target
                     if (w > targetWidth) {
-                        w = (w / 2 < targetWidth) ? targetWidth : w / 2;
+                        w /= 2;
+
+                        // Restoring the minimum target value
+                        if (w < targetWidth) {
+                            w = targetWidth;
+                        }
                     }
 
                     if (h > targetHeight) {
-                        h = (h / 2 < targetHeight) ? targetHeight : h / 2;
+                        h /= 2;
+
+                        // Restoring the minimum target value
+                        if (h < targetHeight) {
+                            h = targetHeight;
+                        }
                     }
                 }
 
