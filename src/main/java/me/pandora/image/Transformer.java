@@ -1,8 +1,12 @@
 package me.pandora.image;
 
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,25 +25,25 @@ public final class Transformer {
 
     /**
      * A method scaling down a given image in the target size in pixels
-     * regarding the original ratio retaining the proportions and an optional
-     * stepwise mode in terms of better quality.
+     * regarding the original ratio retaining the proportions given an optional
+     * stepwise mode in which more steps means better quality.
      *
      * @param image the image to be scaled down.
-     * @param target the target size in pixels.
-     * @param stepwise apply stepwise scaling for better quality.
-     * @return a buffered image.
+     * @param targetSize the target size in pixels.
+     * @param stepwise to apply a stepwise mode scaling.
+     * @return a scaled down buffered image.
      */
-    public static BufferedImage downscale(BufferedImage image, int target, boolean stepwise) {
+    public static BufferedImage downscale(BufferedImage image, int targetSize, boolean stepwise) {
         int type = image.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : image.getType();
 
         int width = image.getWidth();
         int height = image.getHeight();
 
-        long size = width * height;
+        long originalSize = width * height;
 
-        if (target < size) {
+        if (targetSize < originalSize) {
             // Calculating the scale ratio and target dims
-            double ratio = Math.sqrt((double) target / size);
+            double ratio = Math.sqrt((double) targetSize / originalSize);
 
             int targetWidth = (int) (width * ratio);
             int targetHeight = (int) (height * ratio);
@@ -87,6 +91,51 @@ public final class Transformer {
             } while (w != targetWidth || h != targetHeight);
 
             return scaled;
+        } else {
+            return image;
+        }
+    }
+
+    /**
+     * A method down scaling a given image in the target size in pixels
+     * regarding the original ratio retaining the proportions applying a
+     * convolve filter given a kernel factor usually 0.05 is enough in order to
+     * get soften results.
+     *
+     * @param image the image to be scaled.
+     * @param targetSize the target size in pixels.
+     * @param softenFactor the soften factor for smoother results.
+     * @return the scaled image.
+     */
+    public static BufferedImage downscale(BufferedImage image, int targetSize, float softenFactor) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        long originalSize = width * height;
+
+        if (targetSize < originalSize) {
+            // Calculating the scale ratio and target dims
+            double ratio = Math.sqrt((double) targetSize / originalSize);
+
+            int targetWidth = (int) (width * ratio);
+            int targetHeight = (int) (height * ratio);
+
+            // Scaling down the image towards target size
+            BufferedImage scaled = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics graphics = scaled.createGraphics();
+
+            Image temp = image.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+            graphics.drawImage(temp, 0, 0, null);
+            graphics.dispose();
+
+            // Applying convolve filter to get soften and smoother results
+            float[] factors = {0, softenFactor, 0, softenFactor, 1 - (softenFactor * 4), softenFactor, 0, softenFactor, 0};
+            Kernel kernel = new Kernel(3, 3, factors);
+            ConvolveOp convolve = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
+
+            BufferedImage filtered = convolve.filter(scaled, null);
+
+            return filtered;
         } else {
             return image;
         }
