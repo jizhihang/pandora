@@ -131,6 +131,7 @@
                         <configuration>
                             <source>${jdk.version}</source>
                             <target>${jdk.version}</target>
+                            <debug>true</debug>
                         </configuration>
                     </plugin>
             
@@ -218,6 +219,7 @@
                         <configuration>
                             <source>${jdk.version}</source>
                             <target>${jdk.version}</target>
+                            <debug>true</debug>
                             <excludes>
                                 <exclude>**/me/pandora/exec/</exclude>
                                 <exclude>**/me/pandora/io/Writer.java</exclude>
