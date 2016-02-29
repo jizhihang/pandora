@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Properties;
 import me.pandora.io.Reader;
 import me.pandora.io.Writer;
-import me.pandora.io.MultipleFilenameFilter;
+import me.pandora.io.MultipleFileNameFilter;
 import me.pandora.math.ComponentReducer;
 import me.pandora.math.ProjectionReducer;
 import me.pandora.math.ProjectionSpace;
@@ -53,7 +53,7 @@ public class Reducer {
 
             // Loading the vectors
             File dirin = new File(inpath);
-            String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
+            String[] filenames = dirin.list(new MultipleFileNameFilter(extension));
 
             // Setting up the component reducer regarding the projection space
             ProjectionSpace ps = new ProjectionSpace(projectionFile);

@@ -8,7 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import me.pandora.io.MultipleFilenameFilter;
+import me.pandora.io.MultipleFileNameFilter;
 import me.pandora.io.Reader;
 import me.pandora.util.ArrayOps;
 import me.pandora.util.SmartProperties;
@@ -78,7 +78,7 @@ public class Indexer {
 
             // Indexing descriptors into the database
             File dirin = new File(inpath);
-            MultipleFilenameFilter filter = new MultipleFilenameFilter(extension);
+            MultipleFileNameFilter filter = new MultipleFileNameFilter(extension);
             String[] filenames = dirin.list(filter);
 
             logger.info("Process started");

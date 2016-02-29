@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import me.pandora.image.FeatureDetector;
 import me.pandora.io.Writer;
-import me.pandora.io.MultipleFilenameFilter;
+import me.pandora.io.MultipleFileNameFilter;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
 
@@ -59,7 +59,7 @@ public class Extractor {
 
             // Loading image files
             File dirin = new File(imagesPath);
-            String[] filenames = dirin.list(new MultipleFilenameFilter("jpg", "jpeg", "png"));
+            String[] filenames = dirin.list(new MultipleFileNameFilter("jpg", "jpeg", "png"));
 
             // Setting up the detector
             ClassLoader classLoader = FeatureDetector.class.getClassLoader();

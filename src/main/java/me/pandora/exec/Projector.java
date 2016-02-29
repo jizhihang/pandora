@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Properties;
 import me.pandora.io.Writer;
 import me.pandora.io.Reader;
-import me.pandora.io.MultipleFilenameFilter;
+import me.pandora.io.MultipleFileNameFilter;
 import me.pandora.math.ProjectionSpace;
 import me.pandora.math.RandomPermutation;
 import org.apache.log4j.Logger;
@@ -55,7 +55,7 @@ public class Projector {
 
             // Loading vectors
             File dirin = new File(inpath);
-            String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
+            String[] filenames = dirin.list(new MultipleFileNameFilter(extension));
 
             double[][] vectors = new double[filenames.length][];
 

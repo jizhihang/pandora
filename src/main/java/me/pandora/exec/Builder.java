@@ -10,7 +10,7 @@ import me.pandora.vector.VladAggregator;
 import me.pandora.vector.VlatAggregator;
 import me.pandora.io.Writer;
 import me.pandora.io.Reader;
-import me.pandora.io.MultipleFilenameFilter;
+import me.pandora.io.MultipleFileNameFilter;
 import me.pandora.util.SmartProperties;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.log4j.Logger;
@@ -63,7 +63,7 @@ public class Builder {
 
             // Loading local descriptor files
             File dirin = new File(inpath);
-            String[] filenames = dirin.list(new MultipleFilenameFilter(extension));
+            String[] filenames = dirin.list(new MultipleFileNameFilter(extension));
 
             // Loading up vocabularies given each file path in restricted order
             Codebook[] codebooks = new Codebook[vocabs.size()];

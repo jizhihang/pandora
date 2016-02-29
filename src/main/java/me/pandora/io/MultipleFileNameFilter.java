@@ -8,7 +8,7 @@ import java.io.FilenameFilter;
  *
  * @author Akis Papadopoulos
  */
-public class MultipleFilenameFilter implements FilenameFilter {
+public class MultipleFileNameFilter implements FilenameFilter {
 
     // Supported file types
     private String[] patterns;
@@ -18,7 +18,7 @@ public class MultipleFilenameFilter implements FilenameFilter {
      *
      * @param patterns multiple user define patterns.
      */
-    public MultipleFilenameFilter(String... patterns) {
+    public MultipleFileNameFilter(String... patterns) {
         this.patterns = patterns;
     }
 
