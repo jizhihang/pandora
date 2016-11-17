@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import me.pandora.image.Description;
 import me.pandora.image.FeatureDetector;
 import me.pandora.math.Normalizer;
-import net.semanticmetadata.lire.imageanalysis.EdgeHistogram;
+import net.semanticmetadata.lire.imageanalysis.features.global.EdgeHistogram;
 
 /**
  * A global detector extracting the MPEG-7 edge histogram descriptor given an
@@ -46,7 +46,7 @@ public class Edge implements FeatureDetector {
 
         detector.extract(image);
 
-        double[] descriptor = detector.getDoubleHistogram();
+        double[] descriptor = detector.getFeatureVector();
 
         if (normalize) {
             Normalizer.euclidean(descriptor);

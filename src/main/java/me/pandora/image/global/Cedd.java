@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import me.pandora.image.Description;
 import me.pandora.image.FeatureDetector;
 import me.pandora.math.Normalizer;
-import net.semanticmetadata.lire.imageanalysis.CEDD;
+import net.semanticmetadata.lire.imageanalysis.features.global.CEDD;
 
 /**
  * A global detector extracting the color and edge directivity descriptor given
@@ -74,7 +74,7 @@ public class Cedd implements FeatureDetector {
 
         detector.extract(image);
 
-        double[] descriptor = detector.getDoubleHistogram();
+        double[] descriptor = detector.getFeatureVector();
 
         if (normalize) {
             Normalizer.euclidean(descriptor);

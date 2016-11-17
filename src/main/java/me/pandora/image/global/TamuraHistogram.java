@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import me.pandora.image.Description;
 import me.pandora.image.FeatureDetector;
 import me.pandora.math.Normalizer;
-import net.semanticmetadata.lire.imageanalysis.Tamura;
+import net.semanticmetadata.lire.imageanalysis.features.global.Tamura;
 
 /**
  * A global detector extracting the tamura histogram descriptor given an image
@@ -46,7 +46,7 @@ public class TamuraHistogram implements FeatureDetector {
 
         detector.extract(image);
 
-        double[] descriptor = detector.getDoubleHistogram();
+        double[] descriptor = detector.getFeatureVector();
 
         if (normalize) {
             Normalizer.euclidean(descriptor);

@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import me.pandora.image.Description;
 import me.pandora.image.FeatureDetector;
 import me.pandora.math.Normalizer;
-import net.semanticmetadata.lire.imageanalysis.ScalableColor;
+import net.semanticmetadata.lire.imageanalysis.features.global.ScalableColor;
 
 /**
  * A global detector extracting the MPEG-7 scalable color descriptor given an
@@ -46,7 +46,7 @@ public class ColorScale implements FeatureDetector {
 
         detector.extract(image);
 
-        double[] descriptor = detector.getDoubleHistogram();
+        double[] descriptor = detector.getFeatureVector();
 
         if (normalize) {
             Normalizer.euclidean(descriptor);
