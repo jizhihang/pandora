@@ -151,7 +151,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath>true</addClasspath>
-                                    <mainClass>me.pandora.exec.Dispatcher</mainClass>
+                                    <mainClass>com.tkb.pandora.exec.Dispatcher</mainClass>
                                     <classpathPrefix>libs/</classpathPrefix>
                                 </manifest>
                             </archive>
@@ -220,16 +220,7 @@
                             <target>${jdk.version}</target>
                             <debug>true</debug>
                             <excludes>
-                                <exclude>**/me/pandora/exec/</exclude>
-                                <exclude>**/me/pandora/io/Writer.java</exclude>
-                                <exclude>**/me/pandora/image/global/</exclude>
-                                <exclude>**/me/pandora/image/local/ColorSurf.java</exclude>
-                                <exclude>**/me/pandora/image/local/DenseSift.java</exclude>
-                                <exclude>**/me/pandora/image/local/FastSift.java</exclude>
-                                <exclude>**/me/pandora/image/local/GaussianSift.java</exclude>
-                                <exclude>**/me/pandora/image/local/GridSift.java</exclude>
-                                <exclude>**/me/pandora/image/local/Sift.java</exclude>
-                                <exclude>**/me/pandora/math/ProjectionSpace.java</exclude>
+                                <exclude>**/com/tkb/pandora/exec/</exclude>
                             </excludes>
                         </configuration>
                     </plugin>
