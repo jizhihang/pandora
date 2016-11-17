@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>me.ext.libs</groupId>
+    <groupId>com.tkb.lib</groupId>
     <artifactId>pandora</artifactId>
     <name>pandora</name>
-    <url>https://bitbucket.org/tz3ik/pandora</url>
     <version>1.2.1</version>
     <packaging>jar</packaging>
+    <description>A computer vision library providing various methods for visual feature detection, extraction and aggregation.</description>
 
     <properties>
-        <encoding>UTF-8</encoding>
-        <jdk.version>1.7</jdk.version>
+        <project.encoding>UTF-8</project.encoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <exec.classpath.home>${project.build.directory}/lib/</exec.classpath.home>
+        <exec.config.home>${project.build.directory}/config/</exec.config.home>
     </properties>
     
     <dependencies>
@@ -115,21 +121,23 @@
     
     <profiles>
         <profile>
-            <id>full</id>
+            <id>exec</id>
             
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             
             <build>
+                <finalName>${project.artifactId}-${project.version}</finalName>
+                
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>2.3.2</version>
+                        <version>3.1</version>
                         <configuration>
-                            <source>${jdk.version}</source>
-                            <target>${jdk.version}</target>
+                            <source>${maven.compiler.source}</source>
+                            <target>${maven.compiler.target}</target>
                             <debug>true</debug>
                         </configuration>
                     </plugin>
@@ -152,7 +160,7 @@
                                 <manifest>
                                     <addClasspath>true</addClasspath>
                                     <mainClass>com.tkb.pandora.exec.Dispatcher</mainClass>
-                                    <classpathPrefix>libs/</classpathPrefix>
+                                    <classpathPrefix>${exec.classpath.home}</classpathPrefix>
                                 </manifest>
                             </archive>
                         </configuration>
@@ -169,7 +177,7 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/configs</outputDirectory>
+                                    <outputDirectory>${exec.config.home}</outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>src/main/resources</directory>
@@ -197,7 +205,7 @@
                                 </goals>
                                 <configuration>
                                     <includeScope>runtime</includeScope>
-                                    <outputDirectory>${project.build.directory}/libs/</outputDirectory>
+                                    <outputDirectory>${exec.classpath.home}</outputDirectory>
                                 </configuration>
                             </execution>
                         </executions>
@@ -207,17 +215,19 @@
         </profile>
         
         <profile>
-            <id>war</id>
+            <id>lib</id>
             
             <build>
+                <finalName>${project.artifactId}-${project.version}</finalName>
+                
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>2.3.2</version>
+                        <version>3.1</version>
                         <configuration>
-                            <source>${jdk.version}</source>
-                            <target>${jdk.version}</target>
+                            <source>${maven.compiler.source}</source>
+                            <target>${maven.compiler.target}</target>
                             <debug>true</debug>
                             <excludes>
                                 <exclude>**/com/tkb/pandora/exec/</exclude>
@@ -230,7 +240,7 @@
                         <artifactId>maven-jar-plugin</artifactId>
                         <version>2.6</version>
                         <configuration>
-                            <classifier>war</classifier>
+                            <classifier>lib</classifier>
                             <excludes>
                                 <exclude>**/*.properties</exclude>
                             </excludes>
