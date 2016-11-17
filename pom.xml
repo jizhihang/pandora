@@ -231,6 +231,7 @@
                             <debug>true</debug>
                             <excludes>
                                 <exclude>**/com/tkb/pandora/exec/</exclude>
+                                <exclude>**/com/tkb/pandora/io/</exclude>
                             </excludes>
                         </configuration>
                     </plugin>
