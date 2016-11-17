@@ -1,7 +1,5 @@
 package com.tkb.pandora.math;
 
-import java.io.IOException;
-import com.tkb.pandora.io.Reader;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.factory.DecompositionFactory;
 import org.ejml.interfaces.decomposition.SingularValueDecomposition;
@@ -43,7 +41,7 @@ public class ProjectionSpace {
         if (data.length < data[0].length && whiten) {
             throw new Exception("Data size must be greater or equal to vector size: " + data.length + " <> " + data[0].length);
         }
-        
+
         // Loading original data
         DenseMatrix64F A = new DenseMatrix64F(data);
 
@@ -115,32 +113,6 @@ public class ProjectionSpace {
         V_t = new DenseMatrix64F(space);
 
         m = DenseMatrix64F.wrap(mean.length, 1, mean);
-    }
-
-    /**
-     * A constructor creating a projection space given the file containing in
-     * the first line the adjustment mean vector followed in the subsequent
-     * lines by the eigenvectors in descending eigenvalues order.
-     *
-     * @param filepath the absolute path to the projection space file.
-     * @throws IOException unknown IO exceptions.
-     */
-    public ProjectionSpace(String filepath) throws IOException {
-        double[][] lines = Reader.read(filepath);
-
-        // Loading the mean adjustment vector
-        double[] mean = lines[0];
-
-        m = DenseMatrix64F.wrap(mean.length, 1, mean);
-
-        // Loading the eigenvectors matrix
-        V_t = new DenseMatrix64F(lines.length - 1, lines[1].length);
-
-        for (int i = 1; i < lines.length; i++) {
-            for (int j = 0; j < lines[i].length; j++) {
-                V_t.set(i - 1, j, lines[i][j]);
-            }
-        }
     }
 
     /**

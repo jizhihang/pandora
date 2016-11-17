@@ -14,7 +14,8 @@ import org.apache.log4j.Logger;
  * An executable reducing the components of vectors to the most principal
  * components given the eigen value projection space.
  *
- * Run as: mvn exec:java -Dexec.mainClass="com.tkb.pandora.exec.Reducer" -Dexec.args="path/to/config.properties"
+ * Run as: mvn exec:java -Dexec.mainClass="com.tkb.pandora.exec.Reducer"
+ * -Dexec.args="path/to/config.properties"
  *
  * @author Akis Papadopoulos
  */
@@ -56,10 +57,23 @@ public class Reducer {
             String[] filenames = dirin.list(new MultipleFileNameFilter(extension));
 
             // Setting up the component reducer regarding the projection space
-            ProjectionSpace ps = new ProjectionSpace(projectionFile);
+            double[][] lines = Reader.read(projectionFile);
+
+            // Loading the mean adjustment vector
+            double[] mean = lines[0];
+
+            // Loading the eigenvectors matrix
+            double[][] space = new double[lines.length - 1][lines[1].length];
+
+            for (int i = 1; i < lines.length; i++) {
+                for (int j = 0; j < lines[i].length; j++) {
+                    space[i - 1][j] = lines[i][j];
+                }
+            }
+
+            ProjectionSpace ps = new ProjectionSpace(space, mean);
 
             // Geeting the sub-space basis regarding the requested number of components
-            double[] mean = ps.getMean();
             double[][] subspace = ps.getBasis(size);
 
             // Saving the sub-space projection
