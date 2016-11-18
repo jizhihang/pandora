@@ -8,6 +8,7 @@ import com.tkb.pandora.io.MultipleFileNameFilter;
 import com.tkb.pandora.math.ComponentReducer;
 import com.tkb.pandora.math.ProjectionReducer;
 import com.tkb.pandora.math.ProjectionSpace;
+import com.tkb.pandora.util.ArrayOps;
 import org.apache.log4j.Logger;
 
 /**
@@ -62,13 +63,7 @@ public class Reducer {
             double[] mean = lines[0];
 
             // Loading the eigenvectors matrix, rest of the lines is the space matrix
-            double[][] space = new double[lines.length - 1][lines[1].length];
-
-            for (int i = 1; i < lines.length; i++) {
-                for (int j = 0; j < lines[i].length; j++) {
-                    space[i - 1][j] = lines[i][j];
-                }
-            }
+            double[][] space = ArrayOps.copy(lines, 1);
 
             ProjectionSpace ps = new ProjectionSpace(space, mean);
 
