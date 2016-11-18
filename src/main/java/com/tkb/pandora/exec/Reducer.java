@@ -58,10 +58,10 @@ public class Reducer {
             // Setting up the component reducer regarding the projection space
             double[][] lines = Reader.read(projectionFile);
 
-            // Loading the mean adjustment vector
+            // Loading the mean adjustment vector, first line is the mean vector
             double[] mean = lines[0];
 
-            // Loading the eigenvectors matrix
+            // Loading the eigenvectors matrix, rest of the lines is the space matrix
             double[][] space = new double[lines.length - 1][lines[1].length];
 
             for (int i = 1; i < lines.length; i++) {
