@@ -12,9 +12,9 @@
     <description>A computer vision library providing various methods for visual feature detection, extraction and aggregation.</description>
 
     <properties>
-        <project.encoding>UTF-8</project.encoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <exec.classpath.home>${project.build.directory}/lib/</exec.classpath.home>
         <exec.config.home>${project.build.directory}/config/</exec.config.home>
     </properties>
