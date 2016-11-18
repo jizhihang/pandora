@@ -14,8 +14,7 @@ import org.apache.log4j.Logger;
  * An executable reducing the components of vectors to the most principal
  * components given the eigen value projection space.
  *
- * Run as: mvn exec:java -Dexec.mainClass="com.tkb.pandora.exec.Reducer"
- * -Dexec.args="path/to/config.properties"
+ * Run as: mvn exec:java -Dexec.mainClass="com.tkb.pandora.exec.Reducer" -Dexec.args="path/to/config.properties"
  *
  * @author Akis Papadopoulos
  */
