@@ -69,7 +69,7 @@ for now on you can add it as dependency into other projects, just by adding into
 </dependency>
 ```
 
-in the case you want to add pandora library as binary file in the classpath of your project instead as a maven dependency, you will find in the `target/` folder the `pandora-<version>-lib.jar` binary file, just copy and paste it in the classpath of your project. In case you want to eliminate the file size of the binaries in the classpath due to the transitive depenedencies, please read [here](#exclude-transitive-dependencies) to get a more lite version without losing any functionality.
+in the case you want to add pandora library as binary file in the classpath of your project instead as a maven dependency, you will find in the `target/` folder the `pandora-<version>-lib.jar` binary file, just copy and paste it in the classpath of your project. In case you want to eliminate the total file size of the binaries in the classpath due to the transitive dependencies, please read [here](#exclude-transitive-dependencies) to get a lite version without losing any functionality.
 
 # How to Use #
 Pandora can be used in two possible ways, as an external dependency to another project or in command line as an executable software in order to extract image features in batch mode given a big dataset of images, as well as for other operations mentioned before like sampling, aggregation etc.
