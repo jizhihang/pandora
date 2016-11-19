@@ -75,7 +75,7 @@ in the case you want to add pandora library as binary file in the classpath of y
 Pandora can be used in two possible ways, as an external dependency to another project or in command line as an executable software in order to extract image features in batch mode given a big dataset of images, as well as for other operations mentioned before like sampling, aggregation etc.
 
 ## Extracting SURF descriptors given a dataset ##
-The purpose of this tutorial is to extract local descriptors per image from a given dataset of images, using the SURF feature detector wrapper of the BoofCV library. Assuming you've build the project as an executable (see previous section), please follow the instructions below in order to complete the task.
+The purpose of this tutorial is to extract local descriptors per image from a given dataset of images, using the SURF feature detector wrapper of the BoofCV library. Assuming you've build the project as an executable (see previous [section](#build-as-an-eExecutable)), please follow the instructions below in order to complete the task.
 
 ### Configuration Properties ###
 First you need to open the extractor's config file `config/extractor.properties` and set properties like the path to the folder containing the image files of the dataset, the path in to which you want to save the local descriptors and the absolute class path of the feature detector used to extract the descriptors. Most of the properties are pretty self explanatory.
@@ -97,7 +97,7 @@ com.tkb.pandora.image.boofcv.ColorSurf={...}
 com.tkb.pandora.image.lire.TamuraHistogram={...}
 ```
 
-In the case you want to use another detector you only have to check all the available detectors found in the `detectors` section of the file, choose the detector best suits your needs and copy it's `key` to the property of the detector class path `detector.class.path`, like so.
+In the case you want to use another detector you only have to check all the available [detectors](#build-a-lite-version) found in the `detectors` section of the file, choose the detector best suits your needs and copy it's `key` to the property of the detector class path `detector.class.path`, like so.
 
 ```
 #!properties
@@ -122,7 +122,7 @@ tail -f -n 100 /path/to/the/log/file
 ```
 
 ## Extracting Tamura descriptors in your project ##
-The purposes of this tutorial is to use pandora as an external library in your project in order to extract the Tamura Histogram of a given image. Assuming you have build and install pandora into your local maven repository (see previous sections).
+The purposes of this tutorial is to use pandora as an external library in your project in order to extract the Tamura Histogram of a given image. Assuming you have build and install pandora into your local maven repository (see previous [section](#build-as-a-library)).
 
 First you have to add the maven dependency of the pandora library into the `pom.xml` file of your project, like so,
 
