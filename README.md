@@ -45,7 +45,7 @@ cd pandora/
 mvn clean package -P exec
 ```
 
-In the `target/` forlder you will find the `pandora-<version>.jar` file as well as two folders, the `config/` containing the configuration files and the `lib/` as the classpath containing all the external libraries the pandora depends on. Please read [Extracting SURF descriptors given a dataset][here], in how you can execute this using the command line terminal.
+In the `target/` forlder you will find the `pandora-<version>.jar` file as well as two folders, the `config/` containing the configuration files and the `lib/` as the classpath containing all the external libraries the pandora depends on. Please read [here](#extracting-surf-descriptors-given-a-dataset), in how you can execute this using the command line terminal.
 
 ## Build as a Library ##
 Pandora currently does not offering any public maven repository, so in order to use it as an external dependency in another project you have to clone and install it in your local maven repository,
