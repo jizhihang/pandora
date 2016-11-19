@@ -155,14 +155,15 @@ The most of these dependencies are linked to the three external libraries mentio
 
 | **BoofCV** | **LIRE** | **OpenIMAJ** |
 |------------|----------|--------------|
-| com.tkb.pandora.image.boofcv.Surf | com.tkb.pandora.image.lire.Cedd |com.tkb.pandora.image.openimaj.ColorHistogram |
-| com.tkb.pandora.image.boofcv.ColorSurf | com.tkb.pandora.image.lire.ColorScale | com.tkb.pandora.image.openimaj.DenseSift |
-| com.tkb.pandora.image.boofcv.Sift | com.tkb.pandora.image.lire.Edge | com.tkb.pandora.image.openimaj.FastSift |
-|-| com.tkb.pandora.image.lire.TamuraHistogram | com.tkb.pandora.image.openimaj.GaussianSift |
-|-|-| com.tkb.pandora.image.openimaj.GridSift |
-|-|-| com.tkb.pandora.image.openimaj.Hog |
-|-|-| com.tkb.pandora.image.openimaj.Phog |
-|-|<exclusion><br/><groupId>net.semanticmetadata</groupId><br/><artifactId>lire</artifactId><br/></exclusion>|<exclusion><br/><groupId>org.openimaj</groupId><br/><artifactId>image-feature-extraction</artifactId><br/></exclusion><br/><exclusion><br/><groupId>org.openimaj</groupId><br/><artifactId>image-local-features</artifactId><br/></exclusion>|
+| com.tkb.pandora.image.boofcv.* | com.tkb.pandora.image.lire.* | com.tkb.pandora.image.openimaj.* |
+| Surf | Cedd | ColorHistogram |
+| ColorSurf | ColorScale | DenseSift |
+| Sift | Edge | FastSift |
+|-| TamuraHistogram | GaussianSift |
+|-|-| GridSift |
+|-|-| Hog |
+|-|-| Phog |
+|-|```<exclusion><br/><groupId>net.semanticmetadata</groupId><br/><artifactId>lire</artifactId><br/></exclusion>```|```<exclusion><br/><groupId>org.openimaj</groupId><br/><artifactId>image-feature-extraction</artifactId><br/></exclusion><br/><exclusion><br/><groupId>org.openimaj</groupId><br/><artifactId>image-local-features</artifactId><br/></exclusion>```|
 
 So let say you only use the SURF detector in your code, then having the reference table above you can exclude the dependencies of the LIRE and OpenIMAJ libraries but the BoofCV. In order to do this add `exclusion` elements into the `dependency` element of the pandora library into the `pom.xml` file of your project, like so,
 
