@@ -71,7 +71,7 @@ for now on you can add it as dependency into other projects, just by adding into
 
 in the case you want to add pandora library as binary file in the classpath of your project instead as a maven dependency, you will find in the `target/` folder the `pandora-<version>-lib.jar` binary file, just copy and paste it in the classpath of your project.
 
-# Build a Lite Version #
+## Build a Lite Version ##
 As written before adding the pandora library as an external dependency into your project will result in the situation, getting a classpath full of the dependencies the pandora project depends on, so you'll end up with a classpath containing many transitive binary files the most of them you don't need. Regarding that the resources in the enviroment an application is running are very limited, you need to eliminate somehow those unwanted transitive dependencies to be excluded from you classpath, without losing any functionality.
 
 The most of these dependencies are linked to the three external libraries mentioned before the BoofCV, LIRE and OpenIMAJ. Excluding dependencies related to these libraries is a tricky process, you need first to make sure which detector belongs to which external library. Below you can find a short reference table,
