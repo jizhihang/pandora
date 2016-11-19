@@ -71,6 +71,48 @@ for now on you can add it as dependency into other projects, just by adding into
 
 in the case you want to add pandora library as binary file in the classpath of your project instead as a maven dependency, you will find in the `target/` folder the `pandora-<version>-lib.jar` binary file, just copy and paste it in the classpath of your project.
 
+# Build a Lite Version #
+As written before adding the pandora library as an external dependency into your project will result in the situation, getting a classpath full of the dependencies the pandora project depends on, so you'll end up with a classpath containing many transitive binary files the most of them you don't need. Regarding that the resources in the enviroment an application is running are very limited, you need to eliminate somehow those unwanted transitive dependencies to be excluded from you classpath, without losing any functionality.
+
+The most of these dependencies are linked to the three external libraries mentioned before the BoofCV, LIRE and OpenIMAJ. Excluding dependencies related to these libraries is a tricky process, you need first to make sure which detector belongs to which external library. Below you can find a short reference table,
+
+| **BoofCV** | **LIRE** | **OpenIMAJ** |
+|------------|----------|--------------|
+| com.tkb.pandora.image.boofcv.* | com.tkb.pandora.image.lire.* | com.tkb.pandora.image.openimaj.* |
+| Surf | Cedd | ColorHistogram |
+| ColorSurf | ColorScale | DenseSift |
+| Sift | Edge | FastSift |
+|-| TamuraHistogram | GaussianSift |
+|-|-| GridSift |
+|-|-| Hog |
+|-|-| Phog |
+
+So let say you only use the SURF detector in your code, then having the reference table above you can exclude the dependencies of the LIRE and OpenIMAJ libraries but the BoofCV. In order to do this add `exclusion` elements into the `dependency` element of the pandora library into the `pom.xml` file of your project, like so,
+
+```
+#!maven
+<dependency>
+ <groupId>com.tkb.lib</groupId>
+ <artifactId>pandora</artifactId>
+ <version>${version}</version>
+ <classifier>lib</classifier>
+ <exclusions>
+  <exclusion>
+   <groupId>net.semanticmetadata</groupId>
+   <artifactId>lire</artifactId>
+  </exclusion>
+  <exclusion>
+   <groupId>org.openimaj</groupId>
+   <artifactId>image-feature-extraction</artifactId>
+  </exclusion>
+  <exclusion>
+   <groupId>org.openimaj</groupId>
+   <artifactId>image-local-features</artifactId>
+  </exclusion>
+ </exclusions>
+</dependency>
+```
+
 # How to Use #
 Pandora can be used in two possible ways, as an external dependency to another project or in command line as an executable software in order to extract image features in batch mode given a big dataset of images, as well as for other operations mentioned before like sampling, aggregation etc.
 
@@ -146,47 +188,5 @@ FeatureDetector detector = new TamuraHistogram(true);
 Description description = detector.extract(image);
 double[][] descriptors = description.getDescriptors();
 ...
-```
-
-# Build a Lite Version #
-As written before adding the pandora library as an external dependency into your project will result in the situation, getting a classpath full of the dependencies the pandora project depends on, so you'll end up with a classpath containing many transitive binary files the most of them you don't need. Regarding that the resources in the enviroment an application is running are very limited, you need to eliminate somehow those unwanted transitive dependencies to be excluded from you classpath, without losing any functionality.
-
-The most of these dependencies are linked to the three external libraries mentioned before the BoofCV, LIRE and OpenIMAJ. Excluding dependencies related to these libraries is a tricky process, you need first to make sure which detector belongs to which external library. Below you can find a short reference table,
-
-| **BoofCV** | **LIRE** | **OpenIMAJ** |
-|------------|----------|--------------|
-| com.tkb.pandora.image.boofcv.* | com.tkb.pandora.image.lire.* | com.tkb.pandora.image.openimaj.* |
-| Surf | Cedd | ColorHistogram |
-| ColorSurf | ColorScale | DenseSift |
-| Sift | Edge | FastSift |
-|-| TamuraHistogram | GaussianSift |
-|-|-| GridSift |
-|-|-| Hog |
-|-|-| Phog |
-
-So let say you only use the SURF detector in your code, then having the reference table above you can exclude the dependencies of the LIRE and OpenIMAJ libraries but the BoofCV. In order to do this add `exclusion` elements into the `dependency` element of the pandora library into the `pom.xml` file of your project, like so,
-
-```
-#!maven
-<dependency>
- <groupId>com.tkb.lib</groupId>
- <artifactId>pandora</artifactId>
- <version>${version}</version>
- <classifier>lib</classifier>
- <exclusions>
-  <exclusion>
-   <groupId>net.semanticmetadata</groupId>
-   <artifactId>lire</artifactId>
-  </exclusion>
-  <exclusion>
-   <groupId>org.openimaj</groupId>
-   <artifactId>image-feature-extraction</artifactId>
-  </exclusion>
-  <exclusion>
-   <groupId>org.openimaj</groupId>
-   <artifactId>image-local-features</artifactId>
-  </exclusion>
- </exclusions>
-</dependency>
 ```
 
