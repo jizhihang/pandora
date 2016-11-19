@@ -75,7 +75,7 @@ in the case you want to add pandora library as binary file in the classpath of y
 Pandora can be used in two possible ways, as an external dependency to another project or in command line as an executable software in order to extract image features in batch mode given a big dataset of images, as well as for other operations mentioned before like sampling, aggregation etc.
 
 ## Extracting SURF descriptors given a dataset ##
-The purpose of this tutorial is to extract local descriptors per image from a given dataset of images, using the SURF feature detector wrapper of the BoofCV library. Assuming you've build the project as an executable (see previous [section](#build-as-an-eExecutable)), please follow the instructions below in order to complete the task.
+The purpose of this tutorial is to extract local descriptors per image from a given dataset of images, using the SURF feature detector wrapper of the BoofCV library. Assuming you've build the project as an executable (see previous [section](#build-as-an-executable)), please follow the instructions below in order to complete the task.
 
 ### Configuration Properties ###
 First you need to open the extractor's config file `config/extractor.properties` and set properties like the path to the folder containing the image files of the dataset, the path in to which you want to save the local descriptors and the absolute class path of the feature detector used to extract the descriptors. Most of the properties are pretty self explanatory.
