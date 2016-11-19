@@ -11,7 +11,7 @@ Pandora as a computer vision library can be used in any project focusing on info
 * image feature extraction,
 * random permutation sampling,
 * clustering single and multiple visual vocabularies,
-* fixe-size vector aggregation on local descriptors,
+* fixed-size vector aggregation on local descriptors,
 * dimensionality reduction,
 * projection space analysis,
 * batch processing on big image datasets,
@@ -45,7 +45,7 @@ cd pandora/
 mvn clean package -P exec
 ```
 
-in the `target/` forlder you will find the `pandora-<version>.jar` file as well as two folders, the `config/` containing the configuration files and the `lib/` as the classpath containing all the external libraries the library depends on. Please read farther, in how you can execute this using the command line terminal.
+In the `target/` forlder you will find the `pandora-<version>.jar` file as well as two folders, the `config/` containing the configuration files and the `lib/` as the classpath containing all the external libraries the pandora depends on. Please read [Extracting SURF descriptors given a dataset][here], in how you can execute this using the command line terminal.
 
 ## Build as a Library ##
 Pandora currently does not offering any public maven repository, so in order to use it as an external dependency in another project you have to clone and install it in your local maven repository,
@@ -87,7 +87,7 @@ descriptions.output.file.path=/path/to/local/descriptors
 detector.class.path=com.tkb.pandora.image.boofcv.Surf
 ```
 
-the absolute class path of the feature detector defined above is actually a `value` matching the `key` of another property in the `detectors` section in the file, which contains the configuration parameters of that specific detector, so in case of the SURF you can find that property and modify some parameters in order to tune it up. The notation used in the value of these properties here is the JSON syntax just to make things more readable.
+The absolute class path property of the feature detector defined above is actually a `value` matching the `key` of another property in the `detectors` section in the file, which contains the configuration parameters of that specific detector, so in case of the SURF you can find that property and modify some parameters in order to tune it up. The notation used in the value of these properties here is the JSON syntax just to make things more readable.
 
 ```
 #!properties
@@ -97,7 +97,7 @@ com.tkb.pandora.image.boofcv.ColorSurf={...}
 com.tkb.pandora.image.lire.TamuraHistogram={...}
 ```
 
-in the case you want to use another detector you only have to check all the available detectors found in the `detectors` section of the file, choose the detector best suits your needs and copy it's `key` to the property of the detector class path `detector.class.path`, like so.
+In the case you want to use another detector you only have to check all the available detectors found in the `detectors` section of the file, choose the detector best suits your needs and copy it's `key` to the property of the detector class path `detector.class.path`, like so.
 
 ```
 #!properties
@@ -122,7 +122,7 @@ tail -f -n 100 /path/to/the/log/file
 ```
 
 ## Extracting Tamura descriptors in your project ##
-The purposes of this tutorial is to use pandora as an external library in your project in order to extract the Tamura Histogram of a given image. Assuming you have build and install pandora into your local maven repository (see previous section).
+The purposes of this tutorial is to use pandora as an external library in your project in order to extract the Tamura Histogram of a given image. Assuming you have build and install pandora into your local maven repository (see previous sections).
 
 First you have to add the maven dependency of the pandora library into the `pom.xml` file of your project, like so,
 
