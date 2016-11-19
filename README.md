@@ -16,7 +16,7 @@ Pandora as a computer vision library can be used in any project focusing on info
 * projection space analysis,
 * batch processing on big image datasets,
 
-which are implemented using various state of the art methods or as modified versions of other open source libraries like [BooCV](https://github.com/lessthanoptimal/BoofCV), [LIRE](https://github.com/dermotte/lire) and [OpenIMAJ](https://github.com/openimaj/openimaj). In image feature extraction it provides various global feature detctors like, CEDD, Scalable Color, Edge Histogram, Tamura, Color Histogram, HOG, PHOG as well as some local like SURF, Color SURF, SIFT, Dense SIFT, Fast SIFT, Gaussian SIFT, Grid SIFT. In the region of vector aggregation of local desrcriptors per image it provides various methods like [BOW](http://link.springer.com/chapter/10.1007%2F978-3-642-33709-3_55), [VLAD](http://ieeexplore.ieee.org/document/6104058/) and [VLAT](http://ieeexplore.ieee.org/document/6467387) for both single and multiple visual vocabularies using k-means clustering. It approaches the dimensionality reduction problem using principal component analysis (PCA) projection to the most dominant eigenvectors. This software can be used in a batch mode on big datasets of given images in order to do a complete image analysis regarding the purpose of your project.
+which are implemented using various state of the art methods or as modified versions of other open source libraries like [BooCV](https://github.com/lessthanoptimal/BoofCV), [LIRE](https://github.com/dermotte/lire) and [OpenIMAJ](https://github.com/openimaj/openimaj). In image feature extraction it provides various global feature detectors like, CEDD, Scalable Color, Edge Histogram, Tamura, Color Histogram, HOG, PHOG as well as some local like SURF, Color SURF, SIFT, Dense SIFT, Fast SIFT, Gaussian SIFT and Grid SIFT. In the region of vector aggregation of local desrcriptors per image it provides various methods like [BOW](http://link.springer.com/chapter/10.1007%2F978-3-642-33709-3_55), [VLAD](http://ieeexplore.ieee.org/document/6104058/) and [VLAT](http://ieeexplore.ieee.org/document/6467387) for both single and multiple visual vocabularies using k-means clustering. It approaches the dimensionality reduction problem using principal component analysis (PCA) projection to the most dominant eigenvectors. This software can be used in a batch mode on big datasets of given images in order to do a complete image analysis regarding the purpose of your project.
 
 # Building from Source #
 ## Prerequisities ##
@@ -45,7 +45,7 @@ cd pandora/
 mvn clean package -P exec
 ```
 
-in the `target/` forlder you will find the `pandora-<version>.jar` file as well as two folders, the `config/` containing the configuration files and the `lib/` as the classpath containing all the external libraries the library depends on. Please read below, in how you can execute this using the command line terminal.
+in the `target/` forlder you will find the `pandora-<version>.jar` file as well as two folders, the `config/` containing the configuration files and the `lib/` as the classpath containing all the external libraries the library depends on. Please read farther, in how you can execute this using the command line terminal.
 
 ## Build as a Library ##
 Pandora currently does not offering any public maven repository, so in order to use it as an external dependency in another project you have to clone and install it in your local maven repository,
@@ -57,7 +57,7 @@ cd pandora/
 mvn clean install -P lib
 ```
 
-for now on you can add it as dependency into other projects like so,
+for now on you can add it as dependency into other projects, just by adding into the `pom.xml` file the following snippet,
 
 ```
 #!maven
@@ -87,7 +87,7 @@ descriptions.output.file.path=/path/to/local/descriptors
 detector.class.path=com.tkb.pandora.image.boofcv.Surf
 ```
 
-the absolute class path of the feature detector defined above is actually a `value` matching the `key` of another property in the `detectors` section in the file (read below the list of the available detectors), which contains the configuration parameters of that specific detector, so in case of the SURF you can find that property and modify some parameters in order to tune it up. The notation used in the value of that properties here is the JSON syntax just to make things more readable.
+the absolute class path of the feature detector defined above is actually a `value` matching the `key` of another property in the `detectors` section in the file, which contains the configuration parameters of that specific detector, so in case of the SURF you can find that property and modify some parameters in order to tune it up. The notation used in the value of these properties here is the JSON syntax just to make things more readable.
 
 ```
 #!properties
@@ -97,7 +97,7 @@ com.tkb.pandora.image.boofcv.ColorSurf={...}
 com.tkb.pandora.image.lire.TamuraHistogram={...}
 ```
 
-in the case you want to use another detector you only have to check all the available detectors found in the `detectors` section of the file, choose the detector best suits your needs and copy it's `key` to the property of the detector class path property `detector.class.path`, like so,
+in the case you want to use another detector you only have to check all the available detectors found in the `detectors` section of the file, choose the detector best suits your needs and copy it's `key` to the property of the detector class path `detector.class.path`, like so.
 
 ```
 #!properties
@@ -106,7 +106,7 @@ com.tkb.pandora.image.openimaj.Hog={ "widthBlocks": 5, ...}
 ```
 
 ### Run the extraction task ###
-After you finished with the configuration you can now run the extraction task just by running the following command in the terminal window,
+After you finished with the configuration you can now run the extraction task just by running the following command in the terminal window.
 
 ```
 #!linux
@@ -114,7 +114,7 @@ java -Xmx1024m -jar pandora-<version>.jar extract config/extractor.properties
 ```
 
 ### Monitor the Progress ###
-In case you want to monitor the progress of the extraction task, you wiil find a log file within the folder where the descriptors will be extracted, so do a tail,
+In case you want to monitor the progress of the extraction task, you wiil find a log file within the folder where the descriptors will be extracted, so do a tail on that file.
 
 ```
 #!linux
@@ -136,7 +136,7 @@ First you have to add the maven dependency of the pandora library into the `pom.
 </dependency>
 ```
 
-be aware to set the correct value in the `version` tag, then you can add code in order to extract descriptors,
+be aware to set the correct value in the `version` tag, then you can add code in order to extract descriptors.
 
 ```
 #!java
@@ -151,29 +151,20 @@ double[][] descriptors = description.getDescriptors();
 # Build a Lite Version #
 As written before adding the pandora library as an external dependency into your project will result in the situation, getting a classpath full of the dependencies the pandora project depends on, so you'll end up with a classpath containing many transitive binary files the most of them you don't need. Regarding that the resources in the enviroment an application is running are very limited, you need to eliminate somehow those unwanted transitive dependencies to be excluded from you classpath, without losing any functionality.
 
-The most of these dependencies are linked to the three external libraries mentioned before the BoofCV, LIRE and OpenIMAJ. Excluding dependencies related to these libraries is a tricky process, you need first to make sure which detector belongs to to which external library. Below you can find a short reference table,
+The most of these dependencies are linked to the three external libraries mentioned before the BoofCV, LIRE and OpenIMAJ. Excluding dependencies related to these libraries is a tricky process, you need first to make sure which detector belongs to which external library. Below you can find a short reference table,
 
-List of Detectors |
--|
-**BoofCV** |
-com.tkb.pandora.image.boofcv.Surf |
-com.tkb.pandora.image.boofcv.ColorSurf |
-com.tkb.pandora.image.boofcv.Sift |
-**LIRE** |
-com.tkb.pandora.image.lire.Cedd |
-com.tkb.pandora.image.lire.ColorScale |
-com.tkb.pandora.image.lire.Edge |
-com.tkb.pandora.image.lire.TamuraHistogram |
-**OpenIMAJ** |
-com.tkb.pandora.image.openimaj.ColorHistogram |
-com.tkb.pandora.image.openimaj.DenseSift |
-com.tkb.pandora.image.openimaj.FastSift |
-com.tkb.pandora.image.openimaj.GaussianSift |
-com.tkb.pandora.image.openimaj.GridSift |
-com.tkb.pandora.image.openimaj.Hog |
-com.tkb.pandora.image.openimaj.Phog |
+| **BoofCV** | **LIRE** | **OpenIMAJ** |
+|------------|----------|--------------|
+| com.tkb.pandora.image.boofcv.Surf | com.tkb.pandora.image.lire.Cedd |com.tkb.pandora.image.openimaj.ColorHistogram |
+| com.tkb.pandora.image.boofcv.ColorSurf | com.tkb.pandora.image.lire.ColorScale | com.tkb.pandora.image.openimaj.DenseSift |
+| com.tkb.pandora.image.boofcv.Sift | com.tkb.pandora.image.lire.Edge | com.tkb.pandora.image.openimaj.FastSift |
+|-| com.tkb.pandora.image.lire.TamuraHistogram | com.tkb.pandora.image.openimaj.GaussianSift |
+|-|-| com.tkb.pandora.image.openimaj.GridSift |
+|-|-| com.tkb.pandora.image.openimaj.Hog |
+|-|-| com.tkb.pandora.image.openimaj.Phog |
+|-|<exclusion><br/><groupId>net.semanticmetadata</groupId><br/><artifactId>lire</artifactId><br/></exclusion>|<exclusion><br/><groupId>org.openimaj</groupId><br/><artifactId>image-feature-extraction</artifactId><br/></exclusion><br/><exclusion><br/><groupId>org.openimaj</groupId><br/><artifactId>image-local-features</artifactId><br/></exclusion>|
 
-So let say you only use the SURF detector in your code, then having the reference table above you can exclude the the dependencies of the LIRE and OpenIMAJ libraries but the BoofCV. In order to do this add `exclusion` elements into the dependency element of the pandora library into the `pom.xml` file of your project, like so,
+So let say you only use the SURF detector in your code, then having the reference table above you can exclude the dependencies of the LIRE and OpenIMAJ libraries but the BoofCV. In order to do this add `exclusion` elements into the `dependency` element of the pandora library into the `pom.xml` file of your project, like so,
 
 ```
 #!maven
