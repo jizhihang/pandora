@@ -1,164 +1,201 @@
 # Introduction #
-Pandora is a computer vision library providing many implementations mostly in the region of **Image Feature Extraction** regarding state of the art methods found so far in scientific papers and open source projects as well. Both local and global feature extractors like,
+Pandora is an open source computer vision library written in Java and is released under the Apache License 2.0. Source code and other utilities are included in this repository. This document contains only a short brief summary of the project structure as also some tutorials in how to build and use this software. For more up to date information about the project, changelog and issues, please check the links below.
 
-* SURF, SIFT and
-* CEDD, Color Histogram, Scalable Color, Edge Histogram, HOG, PHOG, Tamura Histogram
+* [Pandora in Action](http://blog-tz3ik.rhcloud.com/shutter/)
+* [Repository](https://github.com/tzeikob/pandora)
+* [Bug Reports](https://github.com/tzeikob/pandora/issues)
+* [Contributors](https://github.com/tzeikob/pandora/graphs/contributors)
 
-implemented on a wrapper class mode using external libraries like,
+Pandora as a computer vision library can be used in any project focusing on information retrieval and especially on content based image retrieval and visual content similarity, in which you have to resolve problems like search for similar images given a query image and a dataset of images. It provides a set of various features like,
 
-* [BoofCV](http://boofcv.org)
-* [LIRE](http://www.lire-project.net)
-* [OpenIMAJ](http://www.openimaj.org/)
+* image feature extraction,
+* random permutation sampling,
+* clustering single and multiple visual vocabularies,
+* fixe-size vector aggregation on local descriptors,
+* dimensionality reduction,
+* projection space analysis,
+* batch processing on big image datasets,
 
-In the region of **Vectorization** and **Descriptor Aggregation** we implement methods like BOW, VLAD and VLAT for both single or multiple oriented vocabularies. In addition you find also some utility implementations like **Random Permutation** for sampling purposes, **Projection Space Reduction** a dimensionality reduction process based on Principal Component Analysis. This library can be used both as an external library to another project or as an executable software for various purposes like, image feature extraction, descriptors sampling, k-means based aggregation vocabularies, vectorization and descriptor aggregation, projection space and dimensionality reduction on vectors as also for descriptor indexing in database.
+which are implemented using various state of the art methods or as modified versions of other open source libraries like [BooCV](https://github.com/lessthanoptimal/BoofCV), [LIRE](https://github.com/dermotte/lire) and [OpenIMAJ](https://github.com/openimaj/openimaj). In image feature extraction it provides various global feature detctors like, CEDD, Scalable Color, Edge Histogram, Tamura, Color Histogram, HOG, PHOG as well as some local like SURF, Color SURF, SIFT, Dense SIFT, Fast SIFT, Gaussian SIFT, Grid SIFT. In the region of vector aggregation of local desrcriptors per image it provides various methods like [BOW](http://link.springer.com/chapter/10.1007%2F978-3-642-33709-3_55), [VLAD](http://ieeexplore.ieee.org/document/6104058/) and [VLAT](http://ieeexplore.ieee.org/document/6467387) for both single and multiple visual vocabularies using k-means clustering. It approaches the dimensionality reduction problem using principal component analysis (PCA) projection to the most dominant eigenvectors. This software can be used in a batch mode on big datasets of given images in order to do a complete image analysis regarding the purpose of your project.
 
-# Environment #
-You gonna need the following prerequisites already installed before build the project artifact,
+# Building from Source #
+## Prerequisities ##
+
+In order to build this project you need the following software pre installed in your system,
 
 * Apache Maven 3+
 * Java JDK 7+
+* Git
 
-# Build #
-This library can be used in two possible ways, first as an external library to another project or as an executable in order to extract image features in a batch mode for given image datasets as well as for other operations mentioned before. In order to build the project artifact you need to specify the following command, as you can see in the next code sections both for library or executable purposes,
+you need also to install the LIRE dependency, which hasn't any public maven repository, so you have to clone and install it in your local maven repository as well,
+```
+#!linux
+git clone git@github.com:dermotte/LIRE.git
+cd LIRE/
+mvn clean install
+```
 
-### Library ###
-The following command packages and installs the pandora library in your local maven repository in order to use it in another project,
+## Build as an Executable ##
+Pandora currently does not offering any option to download binaries, so in case you want to used it as an executable you have to clone and build it in your system.
+
 ```
-#!maven
-mvn clean package install -P full -D maven.test.skip=true
+#!linux
+git clone git@github.com:tzeikob/pandora.git
+cd pandora/
+mvn clean package -P exec
 ```
-then you can use the library in another project just by adding the following dependency bellow,
+
+in the `target/` forlder you will find the `pandora-<version>.jar` file as well as two folders, the `config/` containing the configuration files and the `lib/` as the classpath containing all the external libraries the library depends on. Please read below, in how you can execute this using the command line terminal.
+
+## Build as a Library ##
+Pandora currently does not offering any public maven repository, so in order to use it as an external dependency in another project you have to clone and install it in your local maven repository,
+
+```
+#!linux
+git clone git@github.com:tzeikob/pandora.git
+cd pandora/
+mvn clean install -P lib
+```
+
+for now on you can add it as dependency into other projects like so,
+
 ```
 #!maven
 <dependency>
- <groupId>me.ext.libs</groupId>
+ <groupId>com.tkb.lib</groupId>
  <artifactId>pandora</artifactId>
- <version>1.1.4-SNAPSHOT</version>
+ <version>${version}</version>
+ <classifier>lib</classifier>
 </dependency>
 ```
 
-### Executable ###
-The following command packages and builds the executable of the pandora library in order to be used in image features extraction, sampling, clustering and etc. upon a given image dataset in batch mode,
-```
-#!maven
-mvn clean package -P full -D maven.test.skip=true
-```
-the result of the build process above is actually a jar file followed by two folders the lib/ where the external dependencies will be stored and the configs/ where you can find the configuration settings provided for each operation. In order to execute the project use one of the following commands despite your system,
+in the case you want to add pandora library as binary file in the classpath of your project instead as a maven dependency, you will find in the `target/` folder the `pandora-<version>-lib.jar` binary file, just copy and paste it in the classpath of your project.
 
-* *extract* image features given a dataset of images,
+# How to Use #
+Pandora can be used in two possible ways, as an external dependency to another project or in command line as an executable software in order to extract image features in batch mode given a big dataset of images, as well as for other operations mentioned before like sampling, aggregation etc.
+
+## Extracting SURF descriptors given a dataset ##
+The purpose of this tutorial is to extract local descriptors per image from a given dataset of images, using the SURF feature detector wrapper of the BoofCV library. Assuming you've build the project as an executable (see previous section), please follow the instructions below in order to complete the task.
+
+### Configuration Properties ###
+First you need to open the extractor's config file `config/extractor.properties` and set properties like the path to the folder containing the image files of the dataset, the path in to which you want to save the local descriptors and the absolute class path of the feature detector used to extract the descriptors. Most of the properties are pretty self explanatory.
+
+```
+#!properties
+dataset.images.file.path=/path/to/dataset/image/files
+descriptions.output.file.path=/path/to/local/descriptors
+detector.class.path=com.tkb.pandora.image.boofcv.Surf
+```
+
+the absolute class path of the feature detector defined above is actually a `value` matching the `key` of another property in the `detectors` section in the file (read below the list of the available detectors), which contains the configuration parameters of that specific detector, so in case of the SURF you can find that property and modify some parameters in order to tune it up. The notation used in the value of that properties here is the JSON syntax just to make things more readable.
+
+```
+#!properties
+com.tkb.pandora.image.boofcv.Surf={"radius": 2, ...}
+com.tkb.pandora.image.boofcv.ColorSurf={...}
+...
+com.tkb.pandora.image.lire.TamuraHistogram={...}
+```
+
+in the case you want to use another detector you only have to check all the available detectors found in the `detectors` section of the file, choose the detector best suits your needs and copy it's `key` to the property of the detector class path property `detector.class.path`, like so,
+
+```
+#!properties
+detector.class.path=com.tkb.pandora.image.openimaj.Hog
+com.tkb.pandora.image.openimaj.Hog={ "widthBlocks": 5, ...}
+```
+
+### Run the extraction task ###
+After you finished with the configuration you can now run the extraction task just by running the following command in the terminal window,
+
 ```
 #!linux
-java -Xmx1024m -jar pandora.jar extract configs/extraction.properties
+java -Xmx1024m -jar pandora-<version>.jar extract config/extractor.properties
 ```
 
-* *sample* a subset of vectors given in text csv form files,
+### Monitor the Progress ###
+In case you want to monitor the progress of the extraction task, you wiil find a log file within the folder where the descriptors will be extracted, so do a tail,
+
 ```
 #!linux
-java -Xmx1024m -jar pandora.jar sample configs/sampler.properties
+tail -f -n 100 /path/to/the/log/file
 ```
 
-* *create* codebook vocabularies using K-means clustering,
-```
-#!linux
-java -Xmx1024m -jar pandora.jar cluster configs/clustering.properties
-```
+## Extracting Tamura descriptors in your project ##
+The purposes of this tutorial is to use pandora as an external library in your project in order to extract the Tamura Histogram of a given image. Assuming you have build and install pandora into your local maven repository (see previous section).
 
-* *aggregate* local descriptors per image into a fixed size vector using single or multiple codebooks,
-```
-#!linux
-java -Xmx1024m -jar pandora.jar build configs/builder.properties
-```
+First you have to add the maven dependency of the pandora library into the `pom.xml` file of your project, like so,
 
-* *compute* the projection space of a vector set using PCA analysis,
-```
-#!linux
-java -Xmx1024m -jar pandora.jar project configs/projector.properties
-```
-
-* *reduce* the most prominent components of each vector given the projection sub-space matrix,
-```
-#!linux
-java -Xmx1024m -jar pandora.jar reduce configs/reducer.properties
-```
-
-* *index* each descriptor into a database using Postgresql,
-```
-#!linux
-java -Xmx1024m -jar pandora.jar index configs/indexer.properties
-```
-
-### Lightweight Version ###
-In case of a web application where resources are restricted, you can build a more lightweight artifact. Use the profile *war* in order to instruct maven to ignore unwanted classes as also their heavy in size and memory external transitive dependencies. For more information please read the pom.xml file, under the *war* profile,
-```
-#!maven
-mvn clean package install -P war -D maven.test.skip=true
-```
-then you can use the library in another project just by adding the dependency bellow given the classifier *war*,
 ```
 #!maven
 <dependency>
- <groupId>me.ext.libs</groupId>
+ <groupId>com.tkb.lib</groupId>
  <artifactId>pandora</artifactId>
- <version>1.1.4-SNAPSHOT</version>
- <classifier>war</classifier>
+ <version>${version}</version>
+ <classifier>lib</classifier>
 </dependency>
 ```
 
-Below you can find an example in order to exclude all SIFT feature implementations and their transitive OpenIMAJ dependecies, add the exclusion tags under the *war* profile section,
-
-```
-#!maven
-<excludes>
- <exclude>**/me/pandora/image/local/DenseSift.java</exclude>
- <exclude>**/me/pandora/image/local/FastSift.java</exclude>
- <exclude>**/me/pandora/image/local/GaussianSift.java</exclude>
- <exclude>**/me/pandora/image/local/GridSift.java</exclude>
- <exclude>**/me/pandora/image/local/Sift.java</exclude>
-</excludes>
-```
-
-and set the *optional* tag to true, so each transitive dependency related to these classes will not be downloaded into the other project,
-
-```
-#!maven
-<dependency>
- <groupId>org.openimaj</groupId>
- <artifactId>image-feature-extraction</artifactId>
- <version>1.3.1</version>
- <optional>true</optional>
-</dependency>
-
-<dependency>
- <groupId>org.openimaj</groupId>
- <artifactId>image-local-features</artifactId>
- <version>1.3.1</version>
- <optional>true</optional>
-</dependency>
-```
-
-# Examples #
-Please find below a short snippet of code in order to get an easy to start tutorial of how this library can be used in a project as an external dependency. Assuming we are gonna use the SURF feature detector in order to extract SURF features from a given image file,
+be aware to set the correct value in the `version` tag, then you can add code in order to extract descriptors,
 
 ```
 #!java
-BufferedImage image = UtilImageIO.loadImage("filepath");
-
-FeatureDetector detector = new Surf(2, 0F, -1, 2, 9, 4, 4, true);
-
-double[][] descriptors = detector.extract(image).getDescriptors();
+...
+BufferedImage image = UtilImageIO.loadImage("/path/to/the/image");
+FeatureDetector detector = new TamuraHistogram(true);
+Description description = detector.extract(image);
+double[][] descriptors = description.getDescriptors();
+...
 ```
 
-or alternatively you can use the JSON constructor using the [Jackson FasterXML](https://github.com/FasterXML/jackson) library,
+# Build a Lite Version #
+As written before adding the pandora library as an external dependency into your project will result in the situation, getting a classpath full of the dependencies the pandora project depends on, so you'll end up with a classpath containing many transitive binary files the most of them you don't need. Regarding that the resources in the enviroment an application is running are very limited, you need to eliminate somehow those unwanted transitive dependencies to be excluded from you classpath, without losing any functionality.
+
+The most of these dependencies are linked to the three external libraries mentioned before the BoofCV, LIRE and OpenIMAJ. Excluding dependencies related to these libraries is a tricky process, you need first to make sure which detector belongs to to which external library. Below you can find a short reference table,
+
+List of Detectors |
+-|
+**BoofCV** |
+com.tkb.pandora.image.boofcv.Surf |
+com.tkb.pandora.image.boofcv.ColorSurf |
+com.tkb.pandora.image.boofcv.Sift |
+**LIRE** |
+com.tkb.pandora.image.lire.Cedd |
+com.tkb.pandora.image.lire.ColorScale |
+com.tkb.pandora.image.lire.Edge |
+com.tkb.pandora.image.lire.TamuraHistogram |
+**OpenIMAJ** |
+com.tkb.pandora.image.openimaj.ColorHistogram |
+com.tkb.pandora.image.openimaj.DenseSift |
+com.tkb.pandora.image.openimaj.FastSift |
+com.tkb.pandora.image.openimaj.GaussianSift |
+com.tkb.pandora.image.openimaj.GridSift |
+com.tkb.pandora.image.openimaj.Hog |
+com.tkb.pandora.image.openimaj.Phog |
+
+So let say you only use the SURF detector in your code, then having the reference table above you can exclude the the dependencies of the LIRE and OpenIMAJ libraries but the BoofCV. In order to do this add `exclusion` elements into the dependency element of the pandora library into the `pom.xml` file of your project, like so,
 
 ```
-#!java
-BufferedImage image = UtilImageIO.loadImage("filepath");
-
-ObjectMapper mapper = new ObjectMapper();
-
-String settings = "{ "radius": 2, "threshold": 0, "maxFeaturesPerScale": -1, "initialSampleRate": 2, "initialSize": 9, "numberScalesPerOctave": 4, "numberOfOctaves": 4, "slided": true }";
-
-FeatureDetector detector = mapper.readValue(settings, Surf.class);
-
-double[][] descriptors = detector.extract(image).getDescriptors();
+#!maven
+<dependency>
+ <groupId>com.tkb.lib</groupId>
+ <artifactId>pandora</artifactId>
+ <version>${version}</version>
+ <classifier>lib</classifier>
+ <exclusions>
+  <exclusion>
+   <groupId>net.semanticmetadata</groupId>
+   <artifactId>lire</artifactId>
+  </exclusion>
+  <exclusion>
+   <groupId>org.openimaj</groupId>
+   <artifactId>image-feature-extraction</artifactId>
+  </exclusion>
+  <exclusion>
+   <groupId>org.openimaj</groupId>
+   <artifactId>image-local-features</artifactId>
+  </exclusion>
+ </exclusions>
+</dependency>
 ```
+
