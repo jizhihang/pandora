@@ -163,7 +163,6 @@ The most of these dependencies are linked to the three external libraries mentio
 |-|-| GridSift |
 |-|-| Hog |
 |-|-| Phog |
-|-|```<exclusion><br/><groupId>net.semanticmetadata</groupId><br/><artifactId>lire</artifactId><br/></exclusion>```|```<exclusion><br/><groupId>org.openimaj</groupId><br/><artifactId>image-feature-extraction</artifactId><br/></exclusion><br/><exclusion><br/><groupId>org.openimaj</groupId><br/><artifactId>image-local-features</artifactId><br/></exclusion>```|
 
 So let say you only use the SURF detector in your code, then having the reference table above you can exclude the dependencies of the LIRE and OpenIMAJ libraries but the BoofCV. In order to do this add `exclusion` elements into the `dependency` element of the pandora library into the `pom.xml` file of your project, like so,
 
