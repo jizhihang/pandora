@@ -176,6 +176,7 @@ So let say you only use the SURF detector in your code, then having the referenc
  <artifactId>pandora</artifactId>
  <version>${version}</version>
  <classifier>lib</classifier>
+
  <exclusions>
   <exclusion>
    <groupId>net.semanticmetadata</groupId>
