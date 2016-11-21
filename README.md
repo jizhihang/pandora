@@ -28,8 +28,8 @@ In order to build this project you need the following software pre installed in 
 * Git
 
 you need also to install the LIRE dependency, which hasn't any public maven repository, so you have to clone and install it in your local maven repository as well,
+
 ```
-#!linux
 git clone git@github.com:dermotte/LIRE.git
 cd LIRE/
 mvn clean install
@@ -39,7 +39,6 @@ mvn clean install
 Pandora currently does not offering any option to download binaries, so in case you want to used it as an executable you have to clone and build it in your system.
 
 ```
-#!linux
 git clone git@github.com:tzeikob/pandora.git
 cd pandora/
 mvn clean package -P exec
@@ -51,7 +50,6 @@ In the `target/` forlder you will find the `pandora-<version>.jar` file as well 
 Pandora currently does not offering any public maven repository, so in order to use it as an external dependency in another project you have to clone and install it in your local maven repository,
 
 ```
-#!linux
 git clone git@github.com:tzeikob/pandora.git
 cd pandora/
 mvn clean install -P lib
@@ -60,7 +58,6 @@ mvn clean install -P lib
 for now on you can add it as dependency into other projects, just by adding into the `pom.xml` file the following snippet,
 
 ```
-#!maven
 <dependency>
  <groupId>com.tkb.lib</groupId>
  <artifactId>pandora</artifactId>
@@ -81,7 +78,6 @@ The purpose of this tutorial is to extract local descriptors per image from a gi
 First you need to open the extractor's config file `config/extractor.properties` and set properties like the path to the folder containing the image files of the dataset, the path in to which you want to save the local descriptors and the absolute class path of the feature detector used to extract the descriptors. Most of the properties are pretty self explanatory.
 
 ```
-#!properties
 dataset.images.file.path=/path/to/dataset/image/files
 descriptions.output.file.path=/path/to/local/descriptors
 detector.class.path=com.tkb.pandora.image.boofcv.Surf
@@ -90,7 +86,6 @@ detector.class.path=com.tkb.pandora.image.boofcv.Surf
 The absolute class path property of the feature detector defined above is actually a `value` matching the `key` of another property in the `detectors` section in the file, which contains the configuration parameters of that specific detector, so in case of the SURF you can find that property and modify some parameters in order to tune it up. The notation used in the value of these properties here is the JSON syntax just to make things more readable.
 
 ```
-#!properties
 com.tkb.pandora.image.boofcv.Surf={"radius": 2, ...}
 com.tkb.pandora.image.boofcv.ColorSurf={...}
 ...
@@ -100,7 +95,6 @@ com.tkb.pandora.image.lire.TamuraHistogram={...}
 In the case you want to use another detector you only have to check all the available [detectors](#exclude-transitive-dependencies) found in the `detectors` section of the file, choose the detector best suits your needs and copy it's `key` to the property of the detector class path `detector.class.path`, like so.
 
 ```
-#!properties
 detector.class.path=com.tkb.pandora.image.openimaj.Hog
 com.tkb.pandora.image.openimaj.Hog={ "widthBlocks": 5, ...}
 ```
@@ -109,7 +103,6 @@ com.tkb.pandora.image.openimaj.Hog={ "widthBlocks": 5, ...}
 After you finished with the configuration you can now run the extraction task just by running the following command in the terminal window.
 
 ```
-#!linux
 java -Xmx1024m -jar pandora-<version>.jar extract config/extractor.properties
 ```
 
@@ -117,7 +110,6 @@ java -Xmx1024m -jar pandora-<version>.jar extract config/extractor.properties
 In case you want to monitor the progress of the extraction task, you wiil find a log file within the folder where the descriptors will be extracted, so do a tail on that file.
 
 ```
-#!linux
 tail -f -n 100 /path/to/the/log/file
 ```
 
@@ -127,7 +119,6 @@ The purposes of this tutorial is to use pandora as an external library in your p
 First you have to add the maven dependency of the pandora library into the `pom.xml` file of your project, like so,
 
 ```
-#!maven
 <dependency>
  <groupId>com.tkb.lib</groupId>
  <artifactId>pandora</artifactId>
@@ -139,7 +130,6 @@ First you have to add the maven dependency of the pandora library into the `pom.
 be aware to set the correct value in the `version` tag, then you can add code in order to extract descriptors.
 
 ```
-#!java
 ...
 BufferedImage image = UtilImageIO.loadImage("/path/to/the/image");
 FeatureDetector detector = new TamuraHistogram(true);
@@ -167,7 +157,6 @@ The most of these dependencies are linked to the three external libraries mentio
 So let say you only use the SURF detector in your code, then having the reference table above you can exclude the dependencies of the LIRE and OpenIMAJ libraries but the BoofCV. In order to do this add `exclusion` elements into the `dependency` element of the pandora library into the `pom.xml` file of your project, like so,
 
 ```
-#!maven
 <dependency>
  <groupId>com.tkb.lib</groupId>
  <artifactId>pandora</artifactId>
