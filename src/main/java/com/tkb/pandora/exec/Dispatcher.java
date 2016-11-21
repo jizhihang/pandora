@@ -31,12 +31,22 @@ public class Dispatcher {
     }
 
     public static void main(String[] args) throws Exception {
+        // Printing the license notice
+        System.out.println("Copyright 2016 Akis Papadopoulos, github.com/tzeikob\n");
+        System.out.println("Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this");
+        System.out.println("file except in compliance with the License. You may obtain a copy of the License at \n");
+        System.out.println("http://www.apache.org/licenses/LICENSE-2.0 \n");
+        System.out.println("Unless required by applicable law or agreed to in writing, software distributed under the");
+        System.out.println("License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,");
+        System.out.println("either express or implied. See the License for the specific language governing permissions");
+        System.out.println("and limitations under the License.\n");
+
         if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
             System.out.println("Pandora Help");
-            System.out.println("Please run available entries as: ");
+            System.out.println("Please run one of the available tasks as: ");
 
             for (String key : entries.keySet()) {
-                System.out.println(" java -jar pandora.jar '" + key + "' 'configs/file'");
+                System.out.println(" java -jar pandora.jar " + key + " config/properties");
             }
 
             System.exit(1);
@@ -57,7 +67,7 @@ public class Dispatcher {
                 System.exit(1);
             }
         } else {
-            System.out.println("Unable to run, no or too many arguments found");
+            System.out.println("Unable to run, none or too many arguments found");
             System.out.println("Please run help as: ");
             System.out.println(" java -jar pandora.jar help");
 
