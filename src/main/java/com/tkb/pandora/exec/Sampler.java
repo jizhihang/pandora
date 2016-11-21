@@ -45,7 +45,7 @@ public class Sampler {
             System.setProperty("log.file", logfile);
             logger = Logger.getLogger(Sampler.class);
 
-            System.out.println("See logs as: tail -f -n 100 " + logfile);
+            System.out.println("See the logs by running: tail -f -n 100 " + logfile);
 
             logger.info("Configuration loaded");
             logger.info("File: " + args[0]);

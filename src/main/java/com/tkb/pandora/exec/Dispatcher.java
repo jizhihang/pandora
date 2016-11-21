@@ -42,8 +42,8 @@ public class Dispatcher {
         System.out.println("and limitations under the License.\n");
 
         if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
-            System.out.println("Pandora Help");
-            System.out.println("Please run one of the available tasks as: ");
+            System.out.println("Pandora's Help Guide");
+            System.out.println("Please run one of the available tasks: ");
 
             for (String key : entries.keySet()) {
                 System.out.println(" java -jar pandora.jar " + key + " config/properties");
@@ -61,14 +61,14 @@ public class Dispatcher {
                 entry.getMethod("main", String[].class).invoke(null, arguments);
             } else {
                 System.out.println("Unable to run, entry '" + args[0] + "' not found");
-                System.out.println("Please run help as: ");
+                System.out.println("Please run help: ");
                 System.out.println(" java -jar pandora.jar help");
 
                 System.exit(1);
             }
         } else {
             System.out.println("Unable to run, none or too many arguments found");
-            System.out.println("Please run help as: ");
+            System.out.println("Please run help: ");
             System.out.println(" java -jar pandora.jar help");
 
             System.exit(1);
