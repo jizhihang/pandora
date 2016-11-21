@@ -66,7 +66,7 @@ for now on you can add it as dependency into other projects, just by adding into
 </dependency>
 ```
 
-in the case you want to add pandora library as binary file in the classpath of your project instead as a maven dependency, you will find in the `target/` folder the `pandora-<version>-lib.jar` binary file, just copy and paste it in the classpath of your project. In case you want to eliminate the total file size of the binaries in the classpath due to the transitive dependencies, please read [here](#exclude-transitive-dependencies) to get a lite version without losing any functionality.
+in the case you want to add pandora library as binary file in the classpath of your project instead as a maven dependency, you will find in the `target/` folder the `pandora-<version>-lib.jar` binary file, just copy and paste it in the classpath of your project, but beaware in that case you have to add also all the binaries the pandora depends on, so it's recommended always to use maven dependencies. In case you want to eliminate the total file size of the binaries in the classpath due to the transitive dependencies, please read [here](#exclude-transitive-dependencies) to get a lite version without losing any functionality.
 
 # How to Use #
 Pandora can be used in two possible ways, as an external dependency to another project or in command line as an executable software in order to extract image features in batch mode given a big dataset of images, as well as for other operations mentioned before like sampling, aggregation etc.
@@ -100,7 +100,7 @@ com.tkb.pandora.image.openimaj.Hog={ "widthBlocks": 5, ...}
 ```
 
 ### Run the extraction task ###
-After you finished with the configuration you can now run the extraction task just by running the following command in the terminal window.
+After you finished with the configuration you can now run the extraction task just by running the following command in the terminal.
 
 ```
 java -Xmx1024m -jar pandora-<version>.jar extract config/extractor.properties
@@ -113,10 +113,10 @@ In case you want to monitor the progress of the extraction task, you wiil find a
 tail -f -n 100 /path/to/the/log/file
 ```
 
-## Extracting Tamura descriptors in your project ##
-The purposes of this tutorial is to use pandora as an external library in your project in order to extract the Tamura Histogram of a given image. Assuming you have build and install pandora into your local maven repository (see previous [section](#build-as-a-library)).
+## Extracting SURF and Tamura descriptors in your project ##
+The purposes of this tutorial is to use pandora as an external library in your project in order to extract the Tamura Histogram of a given image. Assuming you have build and install pandora into your local maven repository (see previous [section](#build-as-a-library)),
 
-First you have to add the maven dependency of the pandora library into the `pom.xml` file of your project, like so,
+first you have to add the maven dependency to the pandora library into the `pom.xml` file of your project, like so,
 
 ```
 <dependency>
@@ -127,16 +127,30 @@ First you have to add the maven dependency of the pandora library into the `pom.
 </dependency>
 ```
 
-be aware to set the correct value in the `version` tag, then you can add code in order to extract descriptors.
+be noticed to set the correct value in the `version` tag, then you can add code in order to extract descriptors.
+
 
 ```
 ...
+// Extracting local descriptors
 BufferedImage image = UtilImageIO.loadImage("/path/to/the/image");
-FeatureDetector detector = new TamuraHistogram(true);
+FeatureDetector detector = new Surf(2, 0, -1, 2, 9, 4, 4, true);
 Description description = detector.extract(image);
 double[][] descriptors = description.getDescriptors();
 ...
 ```
+
+```
+...
+// Extracting global descriptors
+BufferedImage image = UtilImageIO.loadImage("/path/to/the/image");
+FeatureDetector detector = new TamuraHistogram(true);
+Description description = detector.extract(image);
+double[] descriptor = description.getDescriptors()[0];
+...
+```
+
+Be aware, in case of a local feature detector like SURF and SIFT we expecting a 2-d array listing all the local descriptors, but in case of a global detector like Tamura histogram we expecting only one descriptor so we're getting only the first row in the 2-d array.
 
 # Exclude Transitive Dependencies #
 As written before adding the pandora library as an external dependency into your project will result in the situation, getting a classpath full of the dependencies the pandora project depends on, so you'll end up with a classpath containing many transitive binary files the most of them you don't need. Regarding that the resources in the enviroment an application is running are very limited, you need to eliminate somehow those unwanted transitive dependencies to be excluded from you classpath, without losing any functionality.
@@ -167,15 +181,31 @@ So let say you only use the SURF detector in your code, then having the referenc
    <groupId>net.semanticmetadata</groupId>
    <artifactId>lire</artifactId>
   </exclusion>
+
   <exclusion>
    <groupId>org.openimaj</groupId>
    <artifactId>image-feature-extraction</artifactId>
   </exclusion>
+
   <exclusion>
    <groupId>org.openimaj</groupId>
    <artifactId>image-local-features</artifactId>
   </exclusion>
  </exclusions>
 </dependency>
+```
+
+in case you need to exclude the BoofCV instead please find below the dependencies.
+
+```
+<exclusion>
+ <groupId>org.boofcv</groupId>
+ <artifactId>feature</artifactId>
+</exclusion>
+
+<exclusion>
+ <groupId>org.boofcv</groupId>
+ <artifactId>io</artifactId>
+</exclusion>
 ```
 
