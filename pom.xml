@@ -7,7 +7,7 @@
     <groupId>com.tkb.lib</groupId>
     <artifactId>pandora</artifactId>
     <name>pandora</name>
-    <version>1.2.1</version>
+    <version>2.0</version>
     <packaging>jar</packaging>
     <description>A computer vision library providing various methods for visual feature detection, extraction and aggregation.</description>
 
