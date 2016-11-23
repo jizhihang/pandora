@@ -23,8 +23,8 @@ which are implemented using various state of the art methods or as modified vers
 
 In order to build this project you need the following software pre installed in your system,
 
+* Java JDK 8+
 * Apache Maven 3+
-* Java JDK 7+
 * Git
 
 you need also to install the LIRE dependency, which hasn't any public maven repository, so you have to clone and install it in your local maven repository as well,
