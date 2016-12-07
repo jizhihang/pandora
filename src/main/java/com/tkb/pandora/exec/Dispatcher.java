@@ -32,7 +32,7 @@ public class Dispatcher {
 
     public static void main(String[] args) throws Exception {
         // Printing the license notice
-        System.out.println("Copyright 2016 Akis Papadopoulos, github.com/tzeikob\n");
+        System.out.println("\nCopyright 2016 Akis Papadopoulos, github.com/tzeikob\n");
         System.out.println("Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this");
         System.out.println("file except in compliance with the License. You may obtain a copy of the License at \n");
         System.out.println("http://www.apache.org/licenses/LICENSE-2.0 \n");
