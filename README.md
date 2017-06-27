@@ -32,7 +32,7 @@ you need also to install the LIRE dependency, which hasn't any public maven repo
 ```
 git clone git@github.com:dermotte/LIRE.git
 cd LIRE/
-mvn clean install
+mvn clean install -Dmaven.test.skip=true
 ```
 
 ## Build as an Executable ##
@@ -59,7 +59,7 @@ for now on you can add it as dependency into other projects, just by adding into
 
 ```
 <dependency>
- <groupId>com.tkb.lib</groupId>
+ <groupId>com.tzeikob</groupId>
  <artifactId>pandora</artifactId>
  <version>${version}</version>
  <classifier>lib</classifier>
@@ -120,7 +120,7 @@ first you have to add the maven dependency to the pandora library into the `pom.
 
 ```
 <dependency>
- <groupId>com.tkb.lib</groupId>
+ <groupId>com.tzeikob</groupId>
  <artifactId>pandora</artifactId>
  <version>${version}</version>
  <classifier>lib</classifier>
@@ -172,7 +172,7 @@ So let say you only use the SURF detector in your code, then having the referenc
 
 ```
 <dependency>
- <groupId>com.tkb.lib</groupId>
+ <groupId>com.tzeikob</groupId>
  <artifactId>pandora</artifactId>
  <version>${version}</version>
  <classifier>lib</classifier>
