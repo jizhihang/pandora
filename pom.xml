@@ -7,7 +7,7 @@
     <groupId>com.tzeikob</groupId>
     <artifactId>pandora</artifactId>
     <name>pandora</name>
-    <version>2.0</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <description>A computer vision library providing various methods for visual feature detection, extraction and aggregation.</description>
 
