@@ -1,5 +1,5 @@
 # Introduction #
-Pandora is an open source computer vision library written in Java and is released under the Apache License 2.0. Source code and other utilities are included in this repository. This document contains only a short brief summary of the project structure as also some tutorials in how to build and use this software. For more up to date information about the project, changelog and issues, please check the links below.
+Pandora is an open source computer vision library written in Java and is released under the MIT License. Source code and other utilities are included in this repository. This document contains only a short brief summary of the project structure as also some tutorials in how to build and use this software. For more up to date information about the project, changelog and issues, please check the links below.
 
 * [Pandora in Action](http://shutter.tzeikob.com)
 * [Repository](https://github.com/tzeikob/pandora)
